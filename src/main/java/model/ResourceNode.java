@@ -1,26 +1,38 @@
 package model;
 
 public class ResourceNode {
-    private final String type;
+    private final String name;
+    private final int tier;
+    private final int baseCapacity;
     private final double productionCost;
-    private final int output;
+    private final Resource resource;
 
-    public ResourceNode(String type, double productionCost, int output) {
-        this.type = type;
+    public ResourceNode(String name, int tier, int baseCapacity, double productionCost, Resource resource) {
+        this.name = name;
+        this.tier = tier;
+        this.baseCapacity = baseCapacity;
         this.productionCost = productionCost;
-        this.output = output;
+        this.resource = resource;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
+    }
+
+    public int getTier() {
+        return tier;
+    }
+
+    public int getBaseCapacity() {
+        return baseCapacity;
     }
 
     public double getProductionCost() {
         return productionCost;
     }
 
-    public int getOutput() {
-        return output;
+    public Resource getResource() {
+        return resource;
     }
 
     public void produce(double budget) {
