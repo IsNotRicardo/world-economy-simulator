@@ -1,24 +1,36 @@
 package model.core;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Person {
-    private final Country country;
-    private final Map<String, Integer> demand;
+    // Variables immediately initialized
+    private Map<Resource, Double> preferences = new HashMap<>();
 
-    public Person(Country country, Map<String, Integer> demand) {
-        this.country = country;
-        this.demand = demand;
+    // Variables initialized in the constructor
+    private double happiness;
+    private double budget;
+
+    public Person(double initialHappiness, double initialBudget) {
+        this.happiness = initialHappiness;
+        this.budget = initialBudget;
     }
 
-    public Country getCountry() {
-        return country;
+    // Start of Getters
+    public double getHappiness() {
+        return happiness;
     }
 
-    public Map<String, Integer> getDemand() {
-        return demand;
+    public double getBudget() {
+        return budget;
     }
 
+    public Map<Resource, Double> getPreferences() {
+        return preferences;
+    }
+    // End of Getters
+
+    /*
     public void consumeResource(Resource resource) {
         // Simulate resource consumption logic
         // For example, reduce the quantity of the resource based on demand
@@ -28,4 +40,5 @@ public class Person {
         // Create demand for resources
         // For example, populate the demand map with resource types and quantities
     }
+    */
 }
