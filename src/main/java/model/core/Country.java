@@ -6,30 +6,30 @@ import java.util.List;
 import java.util.Map;
 
 public class Country {
+    // Variables immediately initialized
+    private final List<ResourceNode> resourceNodes = new ArrayList<>();
+    private final List<Person> peopleObjects = new ArrayList<>();
+    private final Map<Resource, Integer> resourceStorage = new HashMap<>();
+    private final Map<Resource, int[]> supplyChanges = new HashMap<>();
+
+    // Variables initialized in the constructor
     private final String name;
     private double money;
-    private final long population;
-    private final List<ResourceNode> resourceNodes = new ArrayList<>();
-    private final List<Person> people = new ArrayList<>();
-    private final Map<Resource, Integer> resourceStorage = new HashMap<>();
-    private final Map<Resource, List<Integer>> supplyChanges = new HashMap<>();
+    private long population;
 
-    public Country(String name, double money, int population) {
+    public Country(String name, double initialMoney, int initialPopulation) {
         this.name = name;
-        this.money = money;
-        this.population = population;
+        this.money = initialMoney;
+        this.population = initialPopulation;
     }
 
+    // Start of Getters
     public String getName() {
         return name;
     }
 
     public double getMoney() {
         return money;
-    }
-
-    public void setMoney(double money) {
-        this.money = money;
     }
 
     public long getPopulation() {
@@ -40,21 +40,23 @@ public class Country {
         return resourceNodes;
     }
 
-    public List<Person> getPeople() {
-        return people;
+    public List<Person> getPeopleObjects() {
+        return peopleObjects;
     }
 
     public Map<Resource, Integer> getResourceStorage() {
         return resourceStorage;
     }
 
-    public Map<Resource, List<Integer>> getSupplyChanges() {
+    public Map<Resource, int[]> getSupplyChanges() {
         return supplyChanges;
     }
+    // End of Getters
 
+    /*
     public void allocateResources() {
         // Allocate money to meet domestic resource demands
-        for (Person person : people) {
+        for (Person person : peopleObjects) {
             // Logic to allocate resources based on person's demand
         }
     }
@@ -63,4 +65,5 @@ public class Country {
         // Simulate trade with another country
         // Logic to trade resources with another country
     }
+    */
 }
