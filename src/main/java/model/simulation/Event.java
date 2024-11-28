@@ -1,5 +1,7 @@
 // Event.java
-package model;
+package model.simulation;
+
+import model.core.Country;
 
 public class Event implements Comparable<Event> {
     private final EventType type;
