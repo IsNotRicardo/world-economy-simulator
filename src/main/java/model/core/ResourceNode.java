@@ -1,13 +1,25 @@
 package model.core;
 
 public class ResourceNode {
+    private final Country country;
     private final String name;
     private final int tier;
     private final int baseCapacity;
     private final double productionCost;
     private final Resource resource;
 
-    public ResourceNode(String name, int tier, int baseCapacity, double productionCost, Resource resource) {
+    public ResourceNode(Country country, Resource resource) {
+        this.country = country;
+        this.name = resource.name();
+        this.tier = 0;
+        this.baseCapacity = resource.baseCapacity();
+        this.productionCost = resource.productionCost();
+        this.resource = resource;
+    }
+
+    public ResourceNode(Country country, String name, int tier, int baseCapacity, double productionCost,
+                        Resource resource) {
+        this.country = country;
         this.name = name;
         this.tier = tier;
         this.baseCapacity = baseCapacity;
@@ -16,6 +28,10 @@ public class ResourceNode {
     }
 
     // Start of Getters
+    public Country getCountry() {
+        return country;
+    }
+
     public String getName() {
         return name;
     }
@@ -37,10 +53,11 @@ public class ResourceNode {
     }
     // End of Getters
 
-    public void produce(double budget) {
-        if (budget >= productionCost) {
-            // Logic to produce resources based on the allocated budget
-            // For example, increase the output based on the budget
+    private void produceResources(int quantity) {
+        double availableMoney = country.getMoney();
+
+        if (availableMoney < productionCost * quantity) {
+            //
         }
     }
 }
