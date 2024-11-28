@@ -1,21 +1,14 @@
 package model.core;
 
 import java.util.Map;
-import java.util.UUID;
 
 public class Person {
-    private final String id;
     private final Country country;
     private final Map<String, Integer> demand;
 
     public Person(Country country, Map<String, Integer> demand) {
-        this.id = UUID.randomUUID().toString();
         this.country = country;
         this.demand = demand;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public Country getCountry() {

@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 public class Country {
-    private final String name;
-    private double money;
-    private final long population;
+    // Variables immediately initialized
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
-    private final List<Person> people = new ArrayList<>();
+    private final List<Person> peopleObjects = new ArrayList<>();
     private final Map<Resource, Integer> resourceStorage = new HashMap<>();
     private final Map<Resource, List<Integer>> supplyChanges = new HashMap<>();
+
+    // Variables initialized in the constructor
+    private final String name;
+    private double money;
+    private long population;
 
     public Country(String name, double money, int population) {
         this.name = name;
@@ -28,10 +31,6 @@ public class Country {
         return money;
     }
 
-    public void setMoney(double money) {
-        this.money = money;
-    }
-
     public long getPopulation() {
         return population;
     }
@@ -40,8 +39,8 @@ public class Country {
         return resourceNodes;
     }
 
-    public List<Person> getPeople() {
-        return people;
+    public List<Person> getPeopleObjects() {
+        return peopleObjects;
     }
 
     public Map<Resource, Integer> getResourceStorage() {
@@ -54,7 +53,7 @@ public class Country {
 
     public void allocateResources() {
         // Allocate money to meet domestic resource demands
-        for (Person person : people) {
+        for (Person person : peopleObjects) {
             // Logic to allocate resources based on person's demand
         }
     }

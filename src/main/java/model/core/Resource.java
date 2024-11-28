@@ -2,15 +2,15 @@ package model.core;
 
 public class Resource {
     private final String name;
-    private final double priority;
     private final ResourceCategory category;
+    private final double priority;
     private final int baseCapacity;
     private final double productionCost;
 
-    public Resource(String name, double priority, ResourceCategory category, int baseCapacity, double productionCost) {
+    public Resource(String name, ResourceCategory category, double priority, int baseCapacity, double productionCost) {
         this.name = name;
-        this.priority = priority;
         this.category = category;
+        this.priority = priority;
         this.baseCapacity = baseCapacity;
         this.productionCost = productionCost;
     }
