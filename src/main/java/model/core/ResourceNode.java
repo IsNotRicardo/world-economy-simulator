@@ -15,6 +15,7 @@ public class ResourceNode {
         this.resource = resource;
     }
 
+    // Start of Getters
     public String getName() {
         return name;
     }
@@ -34,6 +35,7 @@ public class ResourceNode {
     public Resource getResource() {
         return resource;
     }
+    // End of Getters
 
     public void produce(double budget) {
         if (budget >= productionCost) {
