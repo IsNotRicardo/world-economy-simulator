@@ -1,14 +1,14 @@
 package controller;
 
-import model.Country;
-import model.ArrivalScheduler;
-import model.Event;
-import model.EventType;
+import model.core.Country;
+import model.simulation.ArrivalScheduler;
+import model.simulation.Event;
+
 import java.util.List;
 import java.util.PriorityQueue;
-import model.ResourceNode;
-import model.Resource;
-import model.ResourceCategory;
+import model.core.ResourceNode;
+import model.core.Resource;
+import model.core.ResourceCategory;
 
 public class InitialController {
     private final List<Country> countries;

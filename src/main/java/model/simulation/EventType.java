@@ -1,5 +1,5 @@
 // EventType.java
-package model;
+package model.simulation;
 
 public enum EventType {
     ARRIVAL,

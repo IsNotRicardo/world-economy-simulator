@@ -1,4 +1,6 @@
-package model;
+package model.simulation;
+
+import model.core.Country;
 
 import java.util.PriorityQueue;
 import java.util.Random;
