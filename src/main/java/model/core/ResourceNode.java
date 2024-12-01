@@ -8,22 +8,12 @@ public class ResourceNode {
     private final double productionCost;
     private final Resource resource;
 
-    public ResourceNode(Country country, Resource resource) {
+    public ResourceNode(Country country, Resource resource, ResourceNodeDTO resourceNodeDTO) {
         this.country = country;
-        this.name = resource.name();
-        this.tier = 0;
-        this.baseCapacity = resource.baseCapacity();
-        this.productionCost = resource.productionCost();
-        this.resource = resource;
-    }
-
-    public ResourceNode(Country country, String name, int tier, int baseCapacity, double productionCost,
-                        Resource resource) {
-        this.country = country;
-        this.name = name;
-        this.tier = tier;
-        this.baseCapacity = baseCapacity;
-        this.productionCost = productionCost;
+        this.name = resourceNodeDTO.resource().name() + " Node";
+        this.tier = resourceNodeDTO.tier();
+        this.baseCapacity = resourceNodeDTO.baseCapacity();
+        this.productionCost = resourceNodeDTO.productionCost();
         this.resource = resource;
     }
 

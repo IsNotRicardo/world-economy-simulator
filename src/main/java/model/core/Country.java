@@ -18,8 +18,8 @@ public class Country {
     private double money;
     private long population;
 
-    public Country(String name, double initialMoney, int initialPopulation, Set<Resource> ownedResources,
-                   Map<Resource, Integer> starterResources) {
+    public Country(String name, double initialMoney, int initialPopulation,
+                   Map<Resource, Integer> starterResources, Map<Resource, ResourceNodeDTO> ownedResources) {
         this.name = name;
         this.money = initialMoney;
         this.population = initialPopulation;
@@ -29,8 +29,8 @@ public class Country {
             supplyChanges.put(resource, new int[SUPPLY_ARCHIVE_TIME]);
         }
 
-        for (Resource resource : ownedResources) {
-            resourceNodes.add(new ResourceNode(this, resource));
+        for (Resource resource : ownedResources.keySet()) {
+            resourceNodes.add(new ResourceNode(this, resource, ownedResources.get(resource)));
         }
     }
 
