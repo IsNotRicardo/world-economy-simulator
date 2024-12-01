@@ -1,26 +1,37 @@
 package model.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Country {
+    // Constants
+    private static final int SUPPLY_ARCHIVE_TIME = 128;
+
     // Variables immediately initialized
-    private final List<ResourceNode> resourceNodes = new ArrayList<>();
-    private final List<Person> peopleObjects = new ArrayList<>();
     private final Map<Resource, Integer> resourceStorage = new HashMap<>();
     private final Map<Resource, int[]> supplyChanges = new HashMap<>();
+
+    private final List<ResourceNode> resourceNodes = new ArrayList<>();
+    private final List<Person> peopleObjects = new ArrayList<>();
 
     // Variables initialized in the constructor
     private final String name;
     private double money;
     private long population;
 
-    public Country(String name, double initialMoney, int initialPopulation) {
+    public Country(String name, double initialMoney, int initialPopulation, Set<Resource> ownedResources,
+                   Map<Resource, Integer> starterResources) {
         this.name = name;
         this.money = initialMoney;
         this.population = initialPopulation;
+
+        resourceStorage.putAll(starterResources);
+        for (Resource resource : starterResources.keySet()) {
+            supplyChanges.put(resource, new int[SUPPLY_ARCHIVE_TIME]);
+        }
+
+        for (Resource resource : ownedResources) {
+            resourceNodes.add(new ResourceNode(this, resource));
+        }
     }
 
     // Start of Getters
