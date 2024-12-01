@@ -5,6 +5,10 @@ import java.util.*;
 public class Country {
     // Constants
     private static final int SUPPLY_ARCHIVE_TIME = 128;
+    private static final int POPULATION_SEGMENT_SIZE = 100_000;
+
+    private static final int PERSON_INITIAL_HAPPINESS = 0;
+    private static final int PERSON_INITIAL_BUDGET = 100;
 
     // Variables immediately initialized
     private final Map<Resource, Integer> resourceStorage = new HashMap<>();
@@ -20,17 +24,32 @@ public class Country {
 
     public Country(String name, double initialMoney, int initialPopulation,
                    Map<Resource, Integer> starterResources, Map<Resource, ResourceNodeDTO> ownedResources) {
+        if (initialMoney < 0) {
+            throw new IllegalArgumentException("Initial money cannot be negative.");
+        }
+        if (initialPopulation <= 0) {
+            throw new IllegalArgumentException("Initial population must be positive.");
+        }
+
         this.name = name;
         this.money = initialMoney;
         this.population = initialPopulation;
 
+        // Initialize the resource storage and supply changes
         resourceStorage.putAll(starterResources);
         for (Resource resource : starterResources.keySet()) {
             supplyChanges.put(resource, new int[SUPPLY_ARCHIVE_TIME]);
         }
 
+        // Create resource nodes based on the owned resources
         for (Resource resource : ownedResources.keySet()) {
             resourceNodes.add(new ResourceNode(this, resource, ownedResources.get(resource)));
+        }
+
+        // Create people objects based on the initial population
+        int numberOfPeople = (int) Math.ceil((double) initialPopulation / POPULATION_SEGMENT_SIZE);
+        for (int i = 0; i < numberOfPeople; i++) {
+            peopleObjects.add(new Person(PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET));
         }
     }
 
