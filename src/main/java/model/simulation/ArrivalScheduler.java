@@ -1,22 +1,25 @@
 package model.simulation;
 
 import model.core.Country;
+import model.simulation.Clock;
+import model.simulation.Event;
+import model.simulation.EventType;
 
 import java.util.PriorityQueue;
 import java.util.Random;
 
 public class ArrivalScheduler {
     private final PriorityQueue<Event> eventQueue;
-    private double currentTime;
+    private final Clock clock;
 
-    public ArrivalScheduler(PriorityQueue<Event> eventQueue, double currentTime) {
+    public ArrivalScheduler(PriorityQueue<Event> eventQueue) {
         this.eventQueue = eventQueue;
-        this.currentTime = currentTime;
+        this.clock = Clock.getInstance();
     }
 
     public void scheduleArrival(Country country, double lambda) {
         double nextArrivalTime = generateExponential(lambda);
-        Event arrivalEvent = new Event(EventType.ARRIVAL, currentTime + nextArrivalTime, country);
+        Event arrivalEvent = new Event(EventType.ARRIVAL, clock.getTime() + nextArrivalTime, country);
         eventQueue.add(arrivalEvent);
     }
 
