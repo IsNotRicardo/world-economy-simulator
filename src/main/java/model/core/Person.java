@@ -2,6 +2,8 @@ package model.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 public class Person {
     // Variables immediately initialized
@@ -11,9 +13,15 @@ public class Person {
     private double happiness;
     private double budget;
 
-    public Person(double initialHappiness, double initialBudget) {
+    public Person(double initialHappiness, double initialBudget, Set<Resource> availableResources) {
         this.happiness = initialHappiness;
         this.budget = initialBudget;
+
+        // Initialize the preferences map with random values
+        Random random = new Random();
+        for (Resource resource : availableResources) {
+            preferences.put(resource, random.nextDouble());
+        }
     }
 
     // Start of Getters

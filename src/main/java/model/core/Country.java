@@ -49,7 +49,7 @@ public class Country {
         // Create people objects based on the initial population
         int numberOfPeople = (int) Math.ceil((double) initialPopulation / POPULATION_SEGMENT_SIZE);
         for (int i = 0; i < numberOfPeople; i++) {
-            peopleObjects.add(new Person(PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET));
+            peopleObjects.add(new Person(PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, starterResources.keySet()));
         }
     }
 
