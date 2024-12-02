@@ -88,6 +88,18 @@ public class Country {
         this.resourceStorage.put(resource, this.resourceStorage.get(resource) + quantity);
     }
 
+    public void updatePeopleObjects() {
+        int numberOfPeople = (int) Math.ceil((double) this.population / POPULATION_SEGMENT_SIZE);
+
+        if (numberOfPeople > this.peopleObjects.size()) {
+            for (int i = this.peopleObjects.size(); i < numberOfPeople; i++) {
+                this.peopleObjects.add(new Person(PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, this.resourceStorage.keySet()));
+            }
+        } else if (numberOfPeople < this.peopleObjects.size()) {
+            this.peopleObjects.subList(numberOfPeople, this.peopleObjects.size()).clear();
+        }
+    }
+
     /*
     public void allocateResources() {
         // Allocate money to meet domestic resource demands
