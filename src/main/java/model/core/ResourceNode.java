@@ -45,9 +45,10 @@ public class ResourceNode {
 
     private void produceResources(int quantity) {
         double availableMoney = country.getMoney();
+        int producedQuantity = (int) Math.min(quantity, (int) availableMoney / productionCost);
 
-        if (availableMoney < productionCost * quantity) {
-            //
+        if (quantity > 0) {
+            country.updateStorageAndFunds(resource, producedQuantity, producedQuantity * productionCost);
         }
     }
 }

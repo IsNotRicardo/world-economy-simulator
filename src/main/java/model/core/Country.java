@@ -83,6 +83,11 @@ public class Country {
     }
     // End of Getters
 
+    public void updateStorageAndFunds(Resource resource, int quantity, double cost) {
+        this.money -= cost;
+        this.resourceStorage.put(resource, this.resourceStorage.get(resource) + quantity);
+    }
+
     /*
     public void allocateResources() {
         // Allocate money to meet domestic resource demands
