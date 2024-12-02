@@ -1,4 +1,3 @@
-// Event.java
 package model.simulation;
 
 import model.core.Country;

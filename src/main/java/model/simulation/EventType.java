@@ -1,4 +1,3 @@
-// EventType.java
 package model.simulation;
 
 public enum EventType {
