@@ -82,12 +82,29 @@ public class Country {
     }
     // End of Getters
 
-    public void updateStorageAndFunds(Resource resource, int quantity, double cost) {
+    public void obtainResources() {
+        for (ResourceNode resourceNode : resourceNodes) {
+            // Logic to get resources from the resource node
+        }
+    }
+
+    public void servePeople() {
+        for (Person person : peopleObjects) {
+            // Logic to serve people based on their preferences
+        }
+    }
+
+    public void requestResources() {
+        // Logic to buy or produce resources based on demand
+    }
+
+    // This method needs to be modified to match the event types
+    protected void updateStorageAndFunds(Resource resource, int quantity, double cost) {
         this.money -= cost;
         this.resourceStorage.put(resource, this.resourceStorage.get(resource) + quantity);
     }
 
-    public void updatePeopleObjects() {
+    private void updatePeopleObjects() {
         int numberOfPeople = (int) Math.ceil((double) this.population / SimulationConfig.getPopulationSegmentSize());
 
         if (numberOfPeople > this.peopleObjects.size()) {
