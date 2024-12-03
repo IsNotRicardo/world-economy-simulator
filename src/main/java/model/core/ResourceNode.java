@@ -43,7 +43,8 @@ public class ResourceNode {
     }
     // End of Getters
 
-    private void produceResources(int quantity) {
+    // This method needs to be modified to match the event types
+    protected void produceResources(int quantity) {
         double availableMoney = country.getMoney();
         int producedQuantity = (int) Math.min(quantity, (int) availableMoney / productionCost);
 
