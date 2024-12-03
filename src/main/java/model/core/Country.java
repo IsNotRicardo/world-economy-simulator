@@ -1,12 +1,11 @@
 package model.core;
 
+import model.simulation.SimulationConfig;
+
 import java.util.*;
 
 public class Country {
     // Constants
-    private static final int SUPPLY_ARCHIVE_TIME = 128;
-    private static final int POPULATION_SEGMENT_SIZE = 100_000;
-
     private static final int PERSON_INITIAL_HAPPINESS = 0;
     private static final int PERSON_INITIAL_BUDGET = 100;
 
@@ -38,7 +37,7 @@ public class Country {
         // Initialize the resource storage and supply changes
         resourceStorage.putAll(starterResources);
         for (Resource resource : starterResources.keySet()) {
-            supplyChanges.put(resource, new int[SUPPLY_ARCHIVE_TIME]);
+            supplyChanges.put(resource, new int[SimulationConfig.getSupplyArchiveTime()]);
         }
 
         // Create resource nodes based on the owned resources
@@ -47,7 +46,7 @@ public class Country {
         }
 
         // Create people objects based on the initial population
-        int numberOfPeople = (int) Math.ceil((double) initialPopulation / POPULATION_SEGMENT_SIZE);
+        int numberOfPeople = (int) Math.ceil((double) initialPopulation / SimulationConfig.getPopulationSegmentSize());
         for (int i = 0; i < numberOfPeople; i++) {
             peopleObjects.add(new Person(PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, starterResources.keySet()));
         }
@@ -89,7 +88,7 @@ public class Country {
     }
 
     public void updatePeopleObjects() {
-        int numberOfPeople = (int) Math.ceil((double) this.population / POPULATION_SEGMENT_SIZE);
+        int numberOfPeople = (int) Math.ceil((double) this.population / SimulationConfig.getPopulationSegmentSize());
 
         if (numberOfPeople > this.peopleObjects.size()) {
             for (int i = this.peopleObjects.size(); i < numberOfPeople; i++) {
