@@ -1,7 +1,7 @@
 package model.core;
 
-public record Resource (
-        String name, ResourceCategory category, double priority, int baseCapacity, double productionCost) {
+public record Resource (String name, ResourceCategory category, double priority, int baseCapacity,
+                        double productionCost) {
 
     public Resource {
         if (priority < 0 || priority > 1) {
