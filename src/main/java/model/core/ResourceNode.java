@@ -12,7 +12,6 @@ public class ResourceNode {
 
     // Variables initialized in the constructor
     private final Country country;
-    private final String name;
     private final int baseCapacity;
     private final double baseProductionCost;
     private final Resource resource;
@@ -21,7 +20,6 @@ public class ResourceNode {
 
     public ResourceNode(Country country, Resource resource, ResourceNodeDTO resourceNodeDTO) {
         this.country = country;
-        this.name = resourceNodeDTO.resource().name() + " Node";
         this.baseCapacity = resourceNodeDTO.baseCapacity();
         this.resource = resource;
         this.baseProductionCost = resourceNodeDTO.productionCost();
@@ -31,10 +29,6 @@ public class ResourceNode {
     // Start of Getters
     public Country getCountry() {
         return country;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getBaseCapacity() {
