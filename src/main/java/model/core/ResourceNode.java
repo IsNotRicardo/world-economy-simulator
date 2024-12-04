@@ -1,20 +1,31 @@
 package model.core;
 
+import model.simulation.SimulationConfig;
+
 public class ResourceNode {
+    // Constants
+    private static final double MAX_REDUCTION_PERCENTAGE = 0.5;
+
+    // Variables immediately initialized
+    private int storedResources = 0;
+    private int daysSinceLastProduction = 0;
+
+    // Variables initialized in the constructor
     private final Country country;
     private final String name;
-    private final int tier;
     private final int baseCapacity;
-    private final double productionCost;
+    private final double baseProductionCost;
     private final Resource resource;
+
+    private int tier;
 
     public ResourceNode(Country country, Resource resource, ResourceNodeDTO resourceNodeDTO) {
         this.country = country;
         this.name = resourceNodeDTO.resource().name() + " Node";
-        this.tier = resourceNodeDTO.tier();
         this.baseCapacity = resourceNodeDTO.baseCapacity();
-        this.productionCost = resourceNodeDTO.productionCost();
         this.resource = resource;
+        this.baseProductionCost = resourceNodeDTO.productionCost();
+        this.tier = resourceNodeDTO.tier();
     }
 
     // Start of Getters
@@ -26,30 +37,62 @@ public class ResourceNode {
         return name;
     }
 
-    public int getTier() {
-        return tier;
-    }
-
     public int getBaseCapacity() {
         return baseCapacity;
-    }
-
-    public double getProductionCost() {
-        return productionCost;
     }
 
     public Resource getResource() {
         return resource;
     }
+
+    public double getBaseProductionCost() {
+        return baseProductionCost;
+    }
+
+    public int getTier() {
+        return tier;
+    }
     // End of Getters
 
-    // This method needs to be modified to match the event types
-    protected void produceResources(int quantity) {
+    int getMaxCapacity() {
+        return (int) Math.round(baseCapacity * (1 + tier * 0.1));
+    }
+
+    double getUpgradeCost() {
+        return (tier + 1) * baseProductionCost * SimulationConfig.getPopulationSegmentSize();
+    }
+
+    double adjustProductionCost() {
+        double reductionFactor = Math.min(daysSinceLastProduction * 0.01, MAX_REDUCTION_PERCENTAGE);
+        return baseProductionCost * (1 - reductionFactor);
+    }
+
+    void collectResources() {
+        if (storedResources != 0) {
+            country.updateResourceStorage(resource, storedResources);
+        } else {
+            daysSinceLastProduction++;
+        }
+        adjustProductionCost();
+    }
+
+    void produceResources(int quantity) {
         double availableMoney = country.getMoney();
-        int producedQuantity = (int) Math.min(quantity, (int) availableMoney / productionCost);
+        double actualProductionCost = adjustProductionCost();
+        int producedQuantity = (int) Math.min(quantity, Math.min(getMaxCapacity(), availableMoney / actualProductionCost));
 
         if (quantity > 0) {
-            country.updateStorageAndFunds(resource, producedQuantity, producedQuantity * productionCost);
+            country.subtractMoney(producedQuantity * actualProductionCost);
+            storedResources += producedQuantity;
+            daysSinceLastProduction = 0;
+        }
+    }
+
+    void upgradeNode() {
+        double upgradeCost = getUpgradeCost();
+        if (country.getMoney() >= upgradeCost) {
+            country.subtractMoney(upgradeCost);
+            tier++;
         }
     }
 }

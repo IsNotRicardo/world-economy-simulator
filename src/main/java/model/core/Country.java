@@ -84,7 +84,7 @@ public class Country {
 
     public void obtainResources() {
         for (ResourceNode resourceNode : resourceNodes) {
-            // Logic to get resources from the resource node
+            resourceNode.collectResources();
         }
     }
 
@@ -99,9 +99,16 @@ public class Country {
     }
 
     // This method needs to be modified to match the event types
-    protected void updateStorageAndFunds(Resource resource, int quantity, double cost) {
-        this.money -= cost;
+    protected void updateResourceStorage(Resource resource, int quantity) {
         this.resourceStorage.put(resource, this.resourceStorage.get(resource) + quantity);
+    }
+
+    protected void addMoney(double amount) {
+        this.money += amount;
+    }
+
+    protected void subtractMoney(double amount) {
+        this.money -= amount;
     }
 
     private void updatePeopleObjects() {
