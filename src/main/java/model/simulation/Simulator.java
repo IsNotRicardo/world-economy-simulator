@@ -19,26 +19,36 @@ public class Simulator {
 
     public void runSimulation() {
         initializeSimulation();
+        clock.start(); // Start the clock
 
         while (clock.getTime() < SimulationConfig.getSimulationTime()) {
             // A-phase
             // Advance the clock to the next event time
-
-            // B-phase
-            // Process all events that are scheduled to occur at the current time
+            Event nextEvent = eventList.peekNextEvent();
+            if (nextEvent != null && nextEvent.getTime() <= clock.getTime()) {
+                // B-phase
+                // Process all events that are scheduled to occur at the current time
+                processEvent(nextEvent);
+                eventList.getNextEvent(); // Remove the processed event
+            }
 
             // C-phase
             // Process any events that are triggered by the events in the B-phase
         }
 
+        clock.stop(); // Stop the clock when the simulation ends
         obtainResults();
     }
 
     private void initializeSimulation() {
+        // Initialize the simulation (e.g., schedule initial events)
+    }
 
+    private void processEvent(Event event) {
+        // Implement event processing logic
     }
 
     private void obtainResults() {
-
+        // Obtain and process the results of the simulation
     }
 }
