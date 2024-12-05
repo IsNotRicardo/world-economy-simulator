@@ -24,8 +24,11 @@ public class Simulator {
         while (clock.getTime() < SimulationConfig.getSimulationTime()) {
             // A-phase
             // Advance the clock to the next event time
-            Event nextEvent = eventList.peekNextEvent();
-            if (nextEvent != null && nextEvent.getTime() <= clock.getTime()) {
+            while (true) {
+                Event nextEvent = eventList.peekNextEvent();
+                if (nextEvent == null || nextEvent.getTime() > clock.getTime()) {
+                    break;
+                }
                 // B-phase
                 // Process all events that are scheduled to occur at the current time
                 processEvent(nextEvent);
