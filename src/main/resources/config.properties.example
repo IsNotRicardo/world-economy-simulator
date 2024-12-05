@@ -1,2 +1,2 @@
-db.user = ""
-db.password = ""
+db.user = yourUsername
+db.password = yourPassword
