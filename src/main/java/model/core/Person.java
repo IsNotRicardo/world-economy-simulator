@@ -8,7 +8,8 @@ public class Person {
     private final static double PREFERENCE_ADJUSTMENT_RANGE = 0.1;
 
     // Variables immediately initialized
-    private Map<Resource, Double> preferences = new HashMap<>();
+    private final Map<Resource, Double> preferences = new HashMap<>();
+    private final Map<Resource, Integer> demand = new HashMap<>();
 
     // Variables initialized in the constructor
     private double happiness;
@@ -39,6 +40,11 @@ public class Person {
     }
     // End of Getters
 
+    void updatePerson() {
+        adjustPreferences();
+        generateDemand();
+    }
+
     private void adjustPreferences() {
         Random random = new Random();
         int totalPreferences = preferences.size();
@@ -57,15 +63,53 @@ public class Person {
         }
     }
 
+    private void generateDemand() {
+        int totalResources = preferences.size();
+        int numberOfResources = Math.max(1, (int) Math.round((happiness + 1) / 2 * totalResources));
+
+        demand.clear();
+        Random random = new Random();
+        Map<Resource, Double> weightedProbabilities = getWeighedProbabilities();
+
+        List<Resource> resourceList = new ArrayList<>(weightedProbabilities.keySet());
+        for (int i = 0; i < numberOfResources; i++) {
+            double rand = random.nextDouble();
+            double cumulativeProbability = 0.0;
+
+            for (Resource resource : resourceList) {
+                cumulativeProbability += weightedProbabilities.get(resource);
+                if (rand <= cumulativeProbability) {
+                    demand.put(resource, 1);
+                    break;
+                }
+            }
+        }
+    }
+
+    private Map<Resource, Double> getWeighedProbabilities() {
+        Map<Resource, Double> weightedProbabilities = new HashMap<>();
+        double totalWeight = 0.0;
+
+        for (Map.Entry<Resource, Double> entry : preferences.entrySet()) {
+            Resource resource = entry.getKey();
+            double preference = entry.getValue();
+            double weight = preference * resource.priority();
+            weightedProbabilities.put(resource, weight);
+            totalWeight += weight;
+        }
+
+        // Normalize the probabilities
+        for (Map.Entry<Resource, Double> entry : weightedProbabilities.entrySet()) {
+            weightedProbabilities.put(entry.getKey(), entry.getValue() / totalWeight);
+        }
+
+        return weightedProbabilities;
+    }
+
     /*
     public void consumeResource(Resource resource) {
         // Simulate resource consumption logic
         // For example, reduce the quantity of the resource based on demand
-    }
-
-    public void generateDemand() {
-        // Create demand for resources
-        // For example, populate the demand map with resource types and quantities
     }
     */
 }

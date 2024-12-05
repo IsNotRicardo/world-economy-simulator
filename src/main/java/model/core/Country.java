@@ -95,9 +95,10 @@ public class Country {
     }
 
     public void updatePeople() {
+        updateNumberOfPeople();
+
         for (Person person : peopleObjects) {
-            // Logic to update people's preferences
-            // Logic to regenerate demand for resources
+            person.updatePerson();
         }
     }
 
