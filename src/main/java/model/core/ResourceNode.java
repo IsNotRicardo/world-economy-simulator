@@ -56,7 +56,7 @@ public class ResourceNode {
         return (tier + 1) * baseProductionCost * SimulationConfig.getPopulationSegmentSize();
     }
 
-    double adjustProductionCost() {
+    double getProductionCost() {
         double reductionFactor = Math.min(daysSinceLastProduction * 0.01, MAX_REDUCTION_PERCENTAGE);
         return baseProductionCost * (1 - reductionFactor);
     }
@@ -67,12 +67,11 @@ public class ResourceNode {
         } else {
             daysSinceLastProduction++;
         }
-        adjustProductionCost();
     }
 
     void produceResources(int quantity) {
         double availableMoney = country.getMoney();
-        double actualProductionCost = adjustProductionCost();
+        double actualProductionCost = getProductionCost();
         int producedQuantity = (int) Math.min(quantity, Math.min(getMaxCapacity(), availableMoney / actualProductionCost));
 
         if (quantity > 0) {
