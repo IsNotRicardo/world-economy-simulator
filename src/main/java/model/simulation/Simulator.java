@@ -17,66 +17,65 @@ public class Simulator {
         this.countries = countries;
     }
 
-    private void runSimulation() {
+    public void runSimulation() {
         initializeSimulation();
-        clock.start(); // Start the clock
+        clock.start();
 
-        do {
+        while (clock.getTime() < SimulationConfig.getSimulationTime()) {
             // A-phase
             // Advance the clock to the next event time
-            Event nextEvent = eventList.peekNextEvent();
+            Event nextEvent = eventList.getNextEvent();
             if (nextEvent != null) {
                 clock.setTime(nextEvent.getTime());
             }
 
             // B-phase
             // Process all events that are scheduled to occur at the current time
-            while (true) {
-                nextEvent = eventList.peekNextEvent();
-                if (nextEvent == null || nextEvent.getTime() > clock.getTime()) {
-                    break;
-                }
+            while (nextEvent != null && nextEvent.getTime() == clock.getTime()) {
                 processEvent(nextEvent);
-                eventList.getNextEvent(); // Remove the processed event
+                nextEvent = eventList.getNextEvent();
             }
 
             // C-phase
-            // Process any events that are triggered by the events in the B-phase
-            checkAndAddNewEvents();
-        } while (clock.getTime() < SimulationConfig.getSimulationTime());
+            // Create new events based on specific conditions
 
-        clock.stop(); // Stop the clock when the simulation ends
+            // Currently, there are no available conditions to check
+        }
+
+        clock.stop();
         obtainResults();
     }
 
     private void initializeSimulation() {
-        // Initialize the simulation (e.g., schedule initial events)
-        // need to create four events types to be able to start the simulation and add it to the event list
-        Event obtainResourcesEvent = new Event(EventType.OBTAIN_RESOURCES, clock.getTime(), null);
-        Event servePeopleEvent = new Event(EventType.SERVE_PEOPLE, clock.getTime(), null);
-        Event updatePeopleEvent = new Event(EventType.UPDATE_PEOPLE, clock.getTime(), null);
-        Event requestResourcesEvent = new Event(EventType.REQUEST_RESOURCES, clock.getTime(), null);
+        // Since all current events happen daily, adding +1 to the current time is sufficient
+        int nextEventTime = clock.getTime() + 1;
 
-        eventList.addEvent(obtainResourcesEvent);
-        eventList.addEvent(servePeopleEvent);
-        eventList.addEvent(updatePeopleEvent);
-        eventList.addEvent(requestResourcesEvent);
+        eventList.addEvent(new Event(EventType.OBTAIN_RESOURCES, nextEventTime));
+        eventList.addEvent(new Event(EventType.SERVE_PEOPLE, nextEventTime));
+        eventList.addEvent(new Event(EventType.UPDATE_PEOPLE, nextEventTime));
+        eventList.addEvent(new Event(EventType.REQUEST_RESOURCES, nextEventTime));
     }
 
     private void processEvent(Event event) {
+        int nextEventTime = clock.getTime() + 1;
+
         for (Country country : countries) {
             switch (event.getType()) {
                 case OBTAIN_RESOURCES:
                     country.obtainResources();
+                    eventList.addEvent(new Event(EventType.OBTAIN_RESOURCES, nextEventTime));
                     break;
                 case SERVE_PEOPLE:
                     country.servePeople();
+                    eventList.addEvent(new Event(EventType.SERVE_PEOPLE, nextEventTime));
                     break;
                 case UPDATE_PEOPLE:
                     country.updatePeople();
+                    eventList.addEvent(new Event(EventType.UPDATE_PEOPLE, nextEventTime));
                     break;
                 case REQUEST_RESOURCES:
                     country.requestResources();
+                    eventList.addEvent(new Event(EventType.REQUEST_RESOURCES, nextEventTime));
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown event type: " + event.getType());
@@ -86,18 +85,6 @@ public class Simulator {
 
     private void obtainResults() {
         // Obtain and process the results of the simulation
-    }
-
-    private void checkAndAddNewEvents() {
-        for (EventType eventType : EventType.values()) {
-            boolean eventExists = eventList.getEventQueue().stream()
-                    .anyMatch(event -> event.getType() == eventType);
-
-            if (!eventExists) {
-                Event newEvent = new Event(eventType, clock.getTime(), null);
-                eventList.addEvent(newEvent);
-            }
-        }
     }
 }
 

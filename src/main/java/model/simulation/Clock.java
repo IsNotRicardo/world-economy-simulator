@@ -2,7 +2,7 @@ package model.simulation;
 
 public class Clock {
     private static Clock instance;
-    private long time;
+    private int time;
     private boolean running;
 
     private Clock() {
@@ -58,12 +58,12 @@ public class Clock {
     }
 
     // Get the current time
-    public long getTime() {
+    public int getTime() {
         return time;
     }
 
     // Set the current time (useful for testing or resetting)
-    public void setTime(long time) {
+    public void setTime(int time) {
         this.time = time;
     }
 }

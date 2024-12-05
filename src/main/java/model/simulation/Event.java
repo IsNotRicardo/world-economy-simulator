@@ -1,12 +1,10 @@
 package model.simulation;
 
-import model.core.Country;
-
 public class Event implements Comparable<Event> {
     private final EventType type;
-    private final double time;
+    private final int time;
 
-    public Event(EventType type, double time, Country country) {
+    public Event(EventType type, int time) {
         this.type = type;
         this.time = time;
     }
@@ -15,7 +13,7 @@ public class Event implements Comparable<Event> {
         return type;
     }
 
-    public double getTime() {
+    public int getTime() {
         return time;
     }
 
