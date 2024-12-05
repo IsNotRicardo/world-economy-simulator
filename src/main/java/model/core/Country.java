@@ -98,16 +98,15 @@ public class Country {
         // Logic to buy or produce resources based on demand
     }
 
-    // This method needs to be modified to match the event types
-    protected void updateResourceStorage(Resource resource, int quantity) {
+    void updateResourceStorage(Resource resource, int quantity) {
         this.resourceStorage.put(resource, this.resourceStorage.get(resource) + quantity);
     }
 
-    protected void addMoney(double amount) {
+    void addMoney(double amount) {
         this.money += amount;
     }
 
-    protected void subtractMoney(double amount) {
+    void subtractMoney(double amount) {
         this.money -= amount;
     }
 
