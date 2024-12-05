@@ -2,12 +2,15 @@ package dao;
 
 import datasource.MariaDbConnection;
 import model.core.Country;
+import model.core.Resource;
+import model.core.ResourceCategory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 import java.util.List;
 
 public class CountryDao {
@@ -17,7 +20,7 @@ public class CountryDao {
 	int population;
 	int count;
 
-	public List<Country> getAllCountries() {
+	public List<Country> getAllCountries() throws SQLException {
 		Connection conn = MariaDbConnection.getConnection();
 		String sql = "SELECT * FROM country";
 		List<Country> countries = new ArrayList<>();
@@ -39,9 +42,9 @@ public class CountryDao {
 		return countries;
 	}
 
-	public Country getCountryByName(String name) {
+	public Country getCountryByName(String name) throws SQLException {
 		Connection conn = MariaDbConnection.getConnection();
-		String sql = "SELECT * FROM country WHERE name = '" + name + "'";
+		String sql = String.format("SELECT * FROM country WHERE name = '%s'", name);
 		try {
 			Statement s = conn.createStatement();
 			ResultSet rs = s.executeQuery(sql);
@@ -63,10 +66,39 @@ public class CountryDao {
 		}
 	}
 
-	public void saveCountry(Country country) {
+	public List<Resource> getResourcesByCountryName(String countryName) throws SQLException {
 		Connection conn = MariaDbConnection.getConnection();
-		String sql = "INSERT INTO country (name, money, population) VALUES ('" + country.getName() + "', " +
-		             country.getMoney() + ", " + country.getPopulation() + ")";
+		String sql = String.format(
+				"SELECT r.name, r.category, r.base_capacity, r.production_cost, r.priority " +
+				"FROM resource r " +
+				"JOIN country_resource cr ON r.id = cr.resource_id " +
+				"JOIN country c ON cr.country_id = c.id " +
+				"WHERE c.name = '%s'", countryName);
+		List<Resource> resources = new ArrayList<>();
+
+		try (Statement s = conn.createStatement(); ResultSet rs = s.executeQuery(sql)) {
+			while (rs.next()) {
+				String name = rs.getString("name");
+				String category = rs.getString("category").toUpperCase();
+				double priority = rs.getDouble("priority");
+				int baseCapacity = rs.getInt("base_capacity");
+				double productionCost = rs.getDouble("production_cost");
+				Resource resource = new Resource(name, ResourceCategory.valueOf(category), priority, baseCapacity,
+				                                 productionCost
+				);
+				resources.add(resource);
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return resources;
+	}
+
+	public void saveCountry(Country country) throws SQLException {
+		Connection conn = MariaDbConnection.getConnection();
+		String sql =
+				String.format("INSERT INTO country (name, money, population) VALUES ('%s', %f, %d)", country.getName(),
+				              country.getMoney(), country.getPopulation());
 		try {
 			Statement s = conn.createStatement();
 			s.executeUpdate(sql);
@@ -75,10 +107,11 @@ public class CountryDao {
 		}
 	}
 
-	public void updateCountry(Country country) {
+	public void updateCountry(Country country) throws SQLException {
 		Connection conn = MariaDbConnection.getConnection();
-		String sql = "UPDATE country SET money = " + country.getMoney() + ", population = " + country.getPopulation() +
-		             " WHERE name = '" + country.getName() + "'";
+		String sql =
+				String.format("UPDATE country SET money = %f, population = %d WHERE name = '%s'", country.getMoney(),
+				              country.getPopulation(), country.getName());
 		try {
 			Statement s = conn.createStatement();
 			s.executeUpdate(sql);
@@ -87,9 +120,9 @@ public class CountryDao {
 		}
 	}
 
-	public void deleteCountry(String name) {
+	public void deleteCountry(String name) throws SQLException {
 		Connection conn = MariaDbConnection.getConnection();
-		String sql = "DELETE FROM country WHERE name = '" + name + "'";
+		String sql = String.format("DELETE FROM country WHERE name = '%s'", name);
 		try {
 			Statement s = conn.createStatement();
 			s.executeUpdate(sql);
@@ -98,7 +131,7 @@ public class CountryDao {
 		}
 	}
 
-	public void deleteAllCountries() {
+	public void deleteAllCountries() throws SQLException {
 		Connection conn = MariaDbConnection.getConnection();
 		String sql = "DELETE FROM country";
 		try {
@@ -108,6 +141,4 @@ public class CountryDao {
 			throw new RuntimeException(e);
 		}
 	}
-
-
 }
