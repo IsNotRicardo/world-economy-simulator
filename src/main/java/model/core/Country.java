@@ -90,12 +90,21 @@ public class Country {
 
     public void servePeople() {
         for (Person person : peopleObjects) {
-            // Logic to serve people based on their preferences
+            // Logic to serve people based on their needs
+        }
+    }
+
+    public void updatePeople() {
+        for (Person person : peopleObjects) {
+            // Logic to update people's preferences
+            // Logic to regenerate demand for resources
         }
     }
 
     public void requestResources() {
         // Logic to buy or produce resources based on demand
+        // Logic to request resources from other countries
+        // Logic to upgrade resource nodes if needed
     }
 
     void updateResourceStorage(Resource resource, int quantity) {
@@ -110,7 +119,7 @@ public class Country {
         this.money -= amount;
     }
 
-    private void updatePeopleObjects() {
+    private void updateNumberOfPeople() {
         int numberOfPeople = (int) Math.ceil((double) this.population / SimulationConfig.getPopulationSegmentSize());
 
         if (numberOfPeople > this.peopleObjects.size()) {
