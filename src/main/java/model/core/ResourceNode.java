@@ -63,7 +63,7 @@ public class ResourceNode {
 
     void collectResources() {
         if (storedResources != 0) {
-            country.updateResourceStorage(resource, storedResources);
+            country.addResources(resource, storedResources);
         } else {
             daysSinceLastProduction++;
         }

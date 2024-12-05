@@ -1,21 +1,27 @@
 package model.core;
 
+import model.simulation.SimulationConfig;
+
 import java.util.*;
 
 public class Person {
     // Constants
     private final static double PREFERENCE_ADJUSTMENT_PROBABILITY = 0.2;
     private final static double PREFERENCE_ADJUSTMENT_RANGE = 0.1;
+    private static final double MAX_HAPPINESS_CHANGE = 0.05;
 
     // Variables immediately initialized
     private final Map<Resource, Double> preferences = new HashMap<>();
     private final Map<Resource, Integer> demand = new HashMap<>();
 
     // Variables initialized in the constructor
+    private final Country country;
     private double happiness;
     private double budget;
 
-    public Person(double initialHappiness, double initialBudget, Set<Resource> availableResources) {
+    public Person(Country country, double initialHappiness, double initialBudget,
+                  Set<Resource> availableResources) {
+        this.country = country;
         this.happiness = initialHappiness;
         this.budget = initialBudget;
 
@@ -38,11 +44,40 @@ public class Person {
     public Map<Resource, Double> getPreferences() {
         return preferences;
     }
+
+    public Map<Resource, Integer> getDemand() {
+        return demand;
+    }
     // End of Getters
 
     void updatePerson() {
         adjustPreferences();
         generateDemand();
+    }
+
+    void servePerson() {
+        int totalDemand = demand.size();
+        double currentBudget = budget;
+
+        for (Map.Entry<Resource, Integer> entry : demand.entrySet()) {
+            Resource resource = entry.getKey();
+            int quantity = entry.getValue();
+            double totalCost = quantity * SimulationConfig.getPopulationSegmentSize() * country.getResourcePrice();
+
+            if (country.getResourceStorage().get(resource) >= quantity && currentBudget >= totalCost) {
+                country.removeResources(resource, quantity);
+                country.addMoney(totalCost);
+                currentBudget -= totalCost;
+            }
+        }
+
+        double happinessChange = 0.0;
+        if (totalDemand > 0) {
+            double percentageFilled = (double) (totalDemand - demand.size()) / totalDemand;
+            happinessChange = (percentageFilled * 2 - 1) * MAX_HAPPINESS_CHANGE;
+        }
+
+        happiness = Math.max(-1.0, Math.min(1.0, happiness + happinessChange));
     }
 
     private void adjustPreferences() {
@@ -105,11 +140,4 @@ public class Person {
 
         return weightedProbabilities;
     }
-
-    /*
-    public void consumeResource(Resource resource) {
-        // Simulate resource consumption logic
-        // For example, reduce the quantity of the resource based on demand
-    }
-    */
 }

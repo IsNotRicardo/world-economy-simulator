@@ -48,7 +48,7 @@ public class Country {
         // Create people objects based on the initial population
         int numberOfPeople = (int) Math.ceil((double) initialPopulation / SimulationConfig.getPopulationSegmentSize());
         for (int i = 0; i < numberOfPeople; i++) {
-            peopleObjects.add(new Person(PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, starterResources.keySet()));
+            peopleObjects.add(new Person(this, PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, starterResources.keySet()));
         }
     }
 
@@ -82,6 +82,11 @@ public class Country {
     }
     // End of Getters
 
+    public double getResourcePrice() {
+        // Logic to calculate the price of resources
+        return 0;
+    }
+
     public void obtainResources() {
         for (ResourceNode resourceNode : resourceNodes) {
             resourceNode.collectResources();
@@ -90,7 +95,7 @@ public class Country {
 
     public void servePeople() {
         for (Person person : peopleObjects) {
-            // Logic to serve people based on their needs
+            person.servePerson();
         }
     }
 
@@ -108,8 +113,12 @@ public class Country {
         // Logic to upgrade resource nodes if needed
     }
 
-    void updateResourceStorage(Resource resource, int quantity) {
+    void addResources(Resource resource, int quantity) {
         this.resourceStorage.put(resource, this.resourceStorage.get(resource) + quantity);
+    }
+
+    void removeResources(Resource resource, int quantity) {
+        this.resourceStorage.put(resource, this.resourceStorage.get(resource) - quantity);
     }
 
     void addMoney(double amount) {
@@ -125,7 +134,7 @@ public class Country {
 
         if (numberOfPeople > this.peopleObjects.size()) {
             for (int i = this.peopleObjects.size(); i < numberOfPeople; i++) {
-                this.peopleObjects.add(new Person(PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, this.resourceStorage.keySet()));
+                this.peopleObjects.add(new Person(this, PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, this.resourceStorage.keySet()));
             }
         } else if (numberOfPeople < this.peopleObjects.size()) {
             this.peopleObjects.subList(numberOfPeople, this.peopleObjects.size()).clear();
@@ -133,12 +142,6 @@ public class Country {
     }
 
     /*
-    public void allocateResources() {
-        // Allocate money to meet domestic resource demands
-        for (Person person : peopleObjects) {
-            // Logic to allocate resources based on person's demand
-        }
-    }
 
     public void trade(Country other, Resource resource) {
         // Simulate trade with another country
