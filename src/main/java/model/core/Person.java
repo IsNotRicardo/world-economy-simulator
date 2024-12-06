@@ -62,7 +62,7 @@ public class Person {
         for (Map.Entry<Resource, Integer> entry : demand.entrySet()) {
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
-            double totalCost = quantity * SimulationConfig.getPopulationSegmentSize() * country.getResourcePrice();
+            double totalCost = quantity * SimulationConfig.getPopulationSegmentSize() * country.getResourcePrice(resource);
 
             if (country.getResourceQuantity(resource) >= quantity && currentBudget >= totalCost) {
                 country.removeResources(resource, quantity);

@@ -8,6 +8,7 @@ public class Country {
     // Constants
     private static final int PERSON_INITIAL_HAPPINESS = 0;
     private static final int PERSON_INITIAL_BUDGET = 100;
+    private static final double COUNTRY_PROFIT_MARGIN = 0.1;
 
     // Variables immediately initialized
     private final Map<Resource, ResourceInfo> resourceStorage = new HashMap<>();
@@ -80,9 +81,8 @@ public class Country {
     }
     // End of Getters
 
-    public double getResourcePrice() {
-        // Logic to calculate the price of resources
-        return 0;
+    public double getResourcePrice(Resource resource) {
+        return resourceStorage.get(resource).getValuePerUnit() * (1 + COUNTRY_PROFIT_MARGIN);
     }
 
     public void obtainResources() {
@@ -176,6 +176,10 @@ public class Country {
 
         private int[] getSupplyArchive() {
             return supplyArchive;
+        }
+
+        private double getValuePerUnit() {
+            return value / quantity;
         }
 
         private void addQuantity(int quantity) {
