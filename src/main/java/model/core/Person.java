@@ -30,6 +30,7 @@ public class Person {
         for (Resource resource : availableResources) {
             preferences.put(resource, random.nextDouble());
         }
+        generateDemand();
     }
 
     // Start of Getters

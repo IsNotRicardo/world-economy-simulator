@@ -85,6 +85,14 @@ public class Country {
         return resourceStorage.get(resource).getValuePerUnit() * (1 + COUNTRY_PROFIT_MARGIN);
     }
 
+    public void updatePeople() {
+        updateNumberOfPeople();
+
+        for (Person person : peopleObjects) {
+            person.updatePerson();
+        }
+    }
+
     public void obtainResources() {
         for (ResourceNode resourceNode : resourceNodes) {
             resourceNode.collectResources();
@@ -94,14 +102,6 @@ public class Country {
     public void servePeople() {
         for (Person person : peopleObjects) {
             person.servePerson();
-        }
-    }
-
-    public void updatePeople() {
-        updateNumberOfPeople();
-
-        for (Person person : peopleObjects) {
-            person.updatePerson();
         }
     }
 

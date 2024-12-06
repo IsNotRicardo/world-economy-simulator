@@ -50,9 +50,9 @@ public class Simulator {
         // Since all current events happen daily, adding +1 to the current time is sufficient
         int nextEventTime = clock.getTime() + 1;
 
+        eventList.addEvent(new Event(EventType.UPDATE_PEOPLE, nextEventTime));
         eventList.addEvent(new Event(EventType.OBTAIN_RESOURCES, nextEventTime));
         eventList.addEvent(new Event(EventType.SERVE_PEOPLE, nextEventTime));
-        eventList.addEvent(new Event(EventType.UPDATE_PEOPLE, nextEventTime));
         eventList.addEvent(new Event(EventType.REQUEST_RESOURCES, nextEventTime));
     }
 
@@ -61,6 +61,10 @@ public class Simulator {
 
         for (Country country : countries) {
             switch (event.getType()) {
+                case UPDATE_PEOPLE:
+                    country.updatePeople();
+                    eventList.addEvent(new Event(EventType.UPDATE_PEOPLE, nextEventTime));
+                    break;
                 case OBTAIN_RESOURCES:
                     country.obtainResources();
                     eventList.addEvent(new Event(EventType.OBTAIN_RESOURCES, nextEventTime));
@@ -68,10 +72,6 @@ public class Simulator {
                 case SERVE_PEOPLE:
                     country.servePeople();
                     eventList.addEvent(new Event(EventType.SERVE_PEOPLE, nextEventTime));
-                    break;
-                case UPDATE_PEOPLE:
-                    country.updatePeople();
-                    eventList.addEvent(new Event(EventType.UPDATE_PEOPLE, nextEventTime));
                     break;
                 case REQUEST_RESOURCES:
                     country.requestResources();
