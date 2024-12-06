@@ -11,8 +11,6 @@ public class Country {
 
     // Variables immediately initialized
     private final Map<Resource, ResourceInfo> resourceStorage = new HashMap<>();
-    private final Map<Resource, int[]> supplyChanges = new HashMap<>();
-
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
     private final List<Person> peopleObjects = new ArrayList<>();
 
@@ -40,8 +38,8 @@ public class Country {
             int quantity = entry.getValue();
             double baseProductionCost = ownedResources.get(resource).productionCost();
 
-            resourceStorage.put(resource, new ResourceInfo(quantity, quantity * baseProductionCost));
-            supplyChanges.put(resource, new int[SimulationConfig.getSupplyArchiveTime()]);
+            resourceStorage.put(resource, new ResourceInfo(quantity, quantity * baseProductionCost,
+                    SimulationConfig.getSupplyArchiveTime()));
         }
 
         // Create resource nodes based on the owned resources
@@ -80,10 +78,6 @@ public class Country {
     public Map<Resource, ResourceInfo> getResourceStorage() {
         return resourceStorage;
     }
-
-    public Map<Resource, int[]> getSupplyChanges() {
-        return supplyChanges;
-    }
     // End of Getters
 
     public double getResourcePrice() {
@@ -112,6 +106,9 @@ public class Country {
     }
 
     public void requestResources() {
+        for (ResourceInfo resourceInfo : resourceStorage.values()) {
+            resourceInfo.archiveSupply();
+        }
         // Logic to buy or produce resources based on demand
         // Logic to request resources from other countries
         // Logic to upgrade resource nodes if needed
@@ -160,10 +157,13 @@ public class Country {
     private class ResourceInfo {
         private int quantity;
         private double value;
+        private final int[] supplyArchive;
+        private int currentSize = 0;
 
-        public ResourceInfo(int quantity, double value) {
+        public ResourceInfo(int quantity, double value, int archiveTime) {
             this.quantity = quantity;
             this.value = value;
+            this.supplyArchive = new int[archiveTime];
         }
 
         private int getQuantity() {
@@ -172,6 +172,10 @@ public class Country {
 
         private double getValue() {
             return value;
+        }
+
+        private int[] getSupplyArchive() {
+            return supplyArchive;
         }
 
         private void addQuantity(int quantity) {
@@ -188,6 +192,16 @@ public class Country {
 
             this.quantity -= quantity;
             this.value -= valueDifference;
+        }
+
+        private void archiveSupply() {
+            if (currentSize < supplyArchive.length) {
+                currentSize++;
+            }
+            for (int i = currentSize - 1; i > 0; i--) {
+                supplyArchive[i] = supplyArchive[i - 1];
+            }
+            supplyArchive[0] = this.getQuantity();
         }
     }
 }
