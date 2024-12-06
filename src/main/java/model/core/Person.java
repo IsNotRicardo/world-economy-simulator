@@ -9,6 +9,9 @@ public class Person {
     private final static double PREFERENCE_ADJUSTMENT_PROBABILITY = 0.2;
     private final static double PREFERENCE_ADJUSTMENT_RANGE = 0.1;
     private static final double MAX_HAPPINESS_CHANGE = 0.05;
+    private static final double POPULATION_CHANGE_THRESHOLD = 0.6;
+    private static final double POPULATION_CHANGE_PERCENTAGE = 0.01;
+
 
     // Variables immediately initialized
     private final Map<Resource, Double> preferences = new HashMap<>();
@@ -79,6 +82,12 @@ public class Person {
         }
 
         happiness = Math.max(-1.0, Math.min(1.0, happiness + happinessChange));
+
+        if (happiness > POPULATION_CHANGE_THRESHOLD) {
+            country.addPopulation((long) (SimulationConfig.getPopulationSegmentSize() * POPULATION_CHANGE_PERCENTAGE));
+        } else if (happiness < -POPULATION_CHANGE_THRESHOLD) {
+            country.subtractPopulation((long) (SimulationConfig.getPopulationSegmentSize() * POPULATION_CHANGE_PERCENTAGE));
+        }
     }
 
     private void adjustPreferences() {

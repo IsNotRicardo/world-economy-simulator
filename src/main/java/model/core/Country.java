@@ -134,6 +134,18 @@ public class Country {
         this.money -= amount;
     }
 
+    void addPopulation(long population) {
+        this.population += population;
+    }
+
+    void subtractPopulation(long population) {
+        if (this.population < population) {
+            this.population = 1;
+            return;
+        }
+        this.population -= population;
+    }
+
     private void updateNumberOfPeople() {
         int numberOfPeople = (int) Math.ceil((double) this.population / SimulationConfig.getPopulationSegmentSize());
 
