@@ -27,6 +27,10 @@ public class ResourceNode {
     }
 
     // Start of Getters
+    public int getStoredResources() {
+        return storedResources;
+    }
+
     public Country getCountry() {
         return country;
     }

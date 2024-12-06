@@ -12,7 +12,6 @@ public class Person {
     private static final double POPULATION_CHANGE_THRESHOLD = 0.6;
     private static final double POPULATION_CHANGE_PERCENTAGE = 0.01;
 
-
     // Variables immediately initialized
     private final Map<Resource, Double> preferences = new HashMap<>();
     private final Map<Resource, Integer> demand = new HashMap<>();
@@ -20,13 +19,10 @@ public class Person {
     // Variables initialized in the constructor
     private final Country country;
     private double happiness;
-    private double budget;
 
-    public Person(Country country, double initialHappiness, double initialBudget,
-                  Set<Resource> availableResources) {
+    public Person(Country country, double initialHappiness, Set<Resource> availableResources) {
         this.country = country;
         this.happiness = initialHappiness;
-        this.budget = initialBudget;
 
         // Initialize the preferences map with random values
         Random random = new Random();
@@ -39,10 +35,6 @@ public class Person {
     // Start of Getters
     public double getHappiness() {
         return happiness;
-    }
-
-    public double getBudget() {
-        return budget;
     }
 
     public Map<Resource, Double> getPreferences() {
@@ -59,19 +51,18 @@ public class Person {
         generateDemand();
     }
 
-    void servePerson() {
+    void servePerson(double budget) {
         int totalDemand = demand.size();
-        double currentBudget = budget;
 
         for (Map.Entry<Resource, Integer> entry : demand.entrySet()) {
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
-            double totalCost = quantity * SimulationConfig.getPopulationSegmentSize() * country.getResourcePrice(resource);
+            double totalCost = quantity * SimulationConfig.getPopulationSegmentSize() * country.getResourceValue(resource);
 
-            if (country.getResourceQuantity(resource) >= quantity && currentBudget >= totalCost) {
+            if (country.getResourceQuantity(resource) >= quantity && budget >= totalCost) {
                 country.removeResources(resource, quantity);
                 country.addMoney(totalCost);
-                currentBudget -= totalCost;
+                budget -= totalCost;
             }
         }
 

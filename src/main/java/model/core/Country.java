@@ -7,8 +7,9 @@ import java.util.*;
 public class Country {
     // Constants
     private static final int PERSON_INITIAL_HAPPINESS = 0;
-    private static final int PERSON_INITIAL_BUDGET = 100;
+    private static final int PERSON_MINIMUM_BUDGET = 10;
     private static final double COUNTRY_PROFIT_MARGIN = 0.1;
+    private static final double COUNTRY_INDIVIDUAL_TAX = 0.3;
 
     // Variables immediately initialized
     private final Map<Resource, ResourceInfo> resourceStorage = new HashMap<>();
@@ -51,7 +52,7 @@ public class Country {
         // Create people objects based on the initial population
         int numberOfPeople = (int) Math.ceil((double) initialPopulation / SimulationConfig.getPopulationSegmentSize());
         for (int i = 0; i < numberOfPeople; i++) {
-            peopleObjects.add(new Person(this, PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, starterResources.keySet()));
+            peopleObjects.add(new Person(this, PERSON_INITIAL_HAPPINESS, starterResources.keySet()));
         }
     }
 
@@ -81,8 +82,22 @@ public class Country {
     }
     // End of Getters
 
-    public double getResourcePrice(Resource resource) {
+    double getResourceValue(Resource resource) {
         return resourceStorage.get(resource).getValuePerUnit() * (1 + COUNTRY_PROFIT_MARGIN);
+    }
+
+    double getIndividualBudget() {
+        double budget = 0.0;
+
+        for (ResourceNode resourceNode : resourceNodes) {
+            int storedResources = resourceNode.getStoredResources();
+
+            if (storedResources > 0) {
+                budget += storedResources * resourceNode.getProductionCost() * SimulationConfig.getPopulationSegmentSize();
+            }
+        }
+
+        return budget * (1 - COUNTRY_INDIVIDUAL_TAX);
     }
 
     public void updatePeople() {
@@ -100,8 +115,10 @@ public class Country {
     }
 
     public void servePeople() {
+        double budget = this.getIndividualBudget();
+
         for (Person person : peopleObjects) {
-            person.servePerson();
+            person.servePerson(Math.min(budget, PERSON_MINIMUM_BUDGET));
         }
     }
 
@@ -151,7 +168,7 @@ public class Country {
 
         if (numberOfPeople > this.peopleObjects.size()) {
             for (int i = this.peopleObjects.size(); i < numberOfPeople; i++) {
-                this.peopleObjects.add(new Person(this, PERSON_INITIAL_HAPPINESS, PERSON_INITIAL_BUDGET, this.resourceStorage.keySet()));
+                this.peopleObjects.add(new Person(this, PERSON_INITIAL_HAPPINESS, this.resourceStorage.keySet()));
             }
         } else if (numberOfPeople < this.peopleObjects.size()) {
             this.peopleObjects.subList(numberOfPeople, this.peopleObjects.size()).clear();
