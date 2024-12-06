@@ -64,7 +64,7 @@ public class Person {
             int quantity = entry.getValue();
             double totalCost = quantity * SimulationConfig.getPopulationSegmentSize() * country.getResourcePrice();
 
-            if (country.getResourceStorage().get(resource) >= quantity && currentBudget >= totalCost) {
+            if (country.getResourceQuantity(resource) >= quantity && currentBudget >= totalCost) {
                 country.removeResources(resource, quantity);
                 country.addMoney(totalCost);
                 currentBudget -= totalCost;

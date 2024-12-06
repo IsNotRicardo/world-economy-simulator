@@ -10,7 +10,7 @@ public class Country {
     private static final int PERSON_INITIAL_BUDGET = 100;
 
     // Variables immediately initialized
-    private final Map<Resource, Integer> resourceStorage = new HashMap<>();
+    private final Map<Resource, ResourceInfo> resourceStorage = new HashMap<>();
     private final Map<Resource, int[]> supplyChanges = new HashMap<>();
 
     private final List<ResourceNode> resourceNodes = new ArrayList<>();
@@ -35,8 +35,12 @@ public class Country {
         this.population = initialPopulation;
 
         // Initialize the resource storage and supply changes
-        resourceStorage.putAll(starterResources);
-        for (Resource resource : starterResources.keySet()) {
+        for (Map.Entry<Resource, Integer> entry : starterResources.entrySet()) {
+            Resource resource = entry.getKey();
+            int quantity = entry.getValue();
+            double baseProductionCost = ownedResources.get(resource).productionCost();
+
+            resourceStorage.put(resource, new ResourceInfo(quantity, quantity * baseProductionCost));
             supplyChanges.put(resource, new int[SimulationConfig.getSupplyArchiveTime()]);
         }
 
@@ -73,7 +77,7 @@ public class Country {
         return peopleObjects;
     }
 
-    public Map<Resource, Integer> getResourceStorage() {
+    public Map<Resource, ResourceInfo> getResourceStorage() {
         return resourceStorage;
     }
 
@@ -114,11 +118,15 @@ public class Country {
     }
 
     void addResources(Resource resource, int quantity) {
-        this.resourceStorage.put(resource, this.resourceStorage.get(resource) + quantity);
+        this.resourceStorage.get(resource).addQuantity(quantity);
     }
 
     void removeResources(Resource resource, int quantity) {
-        this.resourceStorage.put(resource, this.resourceStorage.get(resource) - quantity);
+        this.resourceStorage.get(resource).subtractQuantityAndValue(quantity);
+    }
+
+    double getResourceQuantity(Resource resource) {
+        return this.resourceStorage.get(resource).getQuantity();
     }
 
     void addMoney(double amount) {
@@ -148,4 +156,38 @@ public class Country {
         // Logic to trade resources with another country
     }
     */
+
+    private class ResourceInfo {
+        private int quantity;
+        private double value;
+
+        public ResourceInfo(int quantity, double value) {
+            this.quantity = quantity;
+            this.value = value;
+        }
+
+        private int getQuantity() {
+            return quantity;
+        }
+
+        private double getValue() {
+            return value;
+        }
+
+        private void addQuantity(int quantity) {
+            this.quantity += quantity;
+        }
+
+        private void addValue(double value) {
+            this.value += value;
+        }
+
+        private void subtractQuantityAndValue(int quantity) {
+            int initialQuantity = this.quantity;
+            double valueDifference = this.value / initialQuantity * quantity;
+
+            this.quantity -= quantity;
+            this.value -= valueDifference;
+        }
+    }
 }
