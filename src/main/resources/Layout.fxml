@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
@@ -18,14 +19,14 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.InitialController">
    <top>
-      <Label text="Economy Simulator" BorderPane.alignment="CENTER">
+      <Label prefHeight="31.0" prefWidth="1137.0" text="Economy Simulator" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="26.0" />
          </font>
       </Label>
    </top>
    <left>
-      <TabPane prefHeight="864.0" prefWidth="398.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane prefHeight="1950.0" prefWidth="848.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
          <Tab text="Settings">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="833.0" prefWidth="394.0">
                <VBox layoutX="-3.0" prefHeight="864.0" prefWidth="361.0" AnchorPane.bottomAnchor="-693.0" AnchorPane.leftAnchor="-3.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0">
@@ -99,29 +100,69 @@
                </VBox>
             </AnchorPane>
          </Tab>
-         <Tab text="Countries">
+         <Tab text="Resources">
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
-               <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <ScrollPane prefHeight="672.0" prefWidth="1293.0" AnchorPane.bottomAnchor="1247.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-445.0" AnchorPane.topAnchor="0.0">
                   <AnchorPane>
                      <VBox prefHeight="52.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   </AnchorPane>
                </ScrollPane>
-               <TitledPane animated="false" layoutX="26.0" layoutY="551.0" prefHeight="251.0" prefWidth="325.0" text="untitled">
-                 <content>
-                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <TitledPane animated="false" layoutX="322.0" layoutY="708.0" prefHeight="251.0" prefWidth="325.0" text="Resources">
+                  <content>
+                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                         <children>
-                           <TextField fx:id="countryNameField" layoutX="128.0" layoutY="46.0" onAction="#getCountryName" />
-                           <TextField fx:id="populationField" layoutX="128.0" layoutY="93.0" onAction="#getPopulation" />
-                           <TextField fx:id="moenyField" layoutX="128.0" layoutY="143.0" onAction="#getMoeny" />
-                           <Text layoutX="20.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Country Name:" />
-                           <Text layoutX="31.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Population:" />
-                           <Text layoutX="41.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Money:" />
-                           <Button fx:id="saveCountry" layoutX="181.0" layoutY="185.0" mnemonicParsing="false" onAction="#saveCountry" text="Save" />
+                           <TextField fx:id="ResourceNameField" layoutX="128.0" layoutY="13.0" onAction="#getCountryName" />
+                           <TextField fx:id="ResourceCategoryField" layoutX="128.0" layoutY="43.0" onAction="#getPopulation" />
+                           <Text layoutX="20.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resources Name:" />
+                           <Text layoutX="15.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resource Category:" />
+                           <Text layoutX="41.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Priority:" />
+                           <Button fx:id="saveResource" layoutX="138.0" layoutY="184.0" mnemonicParsing="false" onAction="#saveCountry" text="Start Simulation" />
+                           <TextField fx:id="ResourceBaseCapacity" layoutX="128.0" layoutY="112.0" onAction="#getMoeny" />
+                           <TextField fx:id="ResourceProductionCost" layoutX="128.0" layoutY="144.0" onAction="#getMoeny" />
+                           <Text layoutX="11.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Base Capacity:" wrappingWidth="99.6708984375" />
+                           <Text layoutX="11.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Production Cost:" wrappingWidth="99.6708984375" />
+                           <Slider fx:id="ResourcePriority" layoutX="138.0" layoutY="82.0" />
                         </children>
                      </AnchorPane>
-                 </content>
+                  </content>
                </TitledPane>
             </AnchorPane>
+         </Tab>
+         <Tab text="Countries">
+            <content>
+               <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                  <children>
+                     <ScrollPane prefHeight="685.0" prefWidth="848.0" AnchorPane.bottomAnchor="1234.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <content>
+                           <AnchorPane>
+                              <children>
+                                 <VBox prefHeight="52.0" prefWidth="398.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              </children>
+                           </AnchorPane>
+                        </content>
+                     </ScrollPane>
+                     <TitledPane animated="false" layoutX="294.0" layoutY="708.0" prefHeight="251.0" prefWidth="325.0" text="Country">
+                        <content>
+                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <children>
+                                 <TextField fx:id="countryNameField1" layoutX="128.0" layoutY="13.0" onAction="#getCountryName" />
+                                 <TextField fx:id="populationField1" layoutX="128.0" layoutY="43.0" onAction="#getPopulation" />
+                                 <TextField fx:id="moenyField1" layoutX="128.0" layoutY="76.0" onAction="#getMoeny" />
+                                 <Text layoutX="20.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Country Name:" />
+                                 <Text layoutX="30.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Population:" />
+                                 <Text layoutX="25.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Initial Money:" />
+                                 <Button fx:id="saveCountry1" layoutX="181.0" layoutY="185.0" mnemonicParsing="false" onAction="#saveCountry" text="Save" />
+                                 <TextField fx:id="moenyField11" layoutX="128.0" layoutY="112.0" onAction="#getMoeny" />
+                                 <TextField fx:id="moenyField111" layoutX="128.0" layoutY="144.0" onAction="#getMoeny" />
+                                 <Text layoutX="11.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Starter Resources:" wrappingWidth="99.6708984375" />
+                                 <Text layoutX="11.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Owned Resources" wrappingWidth="99.6708984375" />
+                              </children>
+                           </AnchorPane>
+                        </content>
+                     </TitledPane>
+                  </children>
+               </AnchorPane>
+            </content>
          </Tab>
       </TabPane>
    </left>

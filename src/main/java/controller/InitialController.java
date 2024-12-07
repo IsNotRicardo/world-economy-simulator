@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,6 +34,19 @@ public class InitialController {
     public TextField moneyField;
     public Button saveCountryButton;
     public TextField moenyField;
+    public ProgressBar Progress;
+    public TextField ResourceNameField;
+    public TextField ResourceCategoryField;
+    public Button saveResource;
+    public TextField ResourceBaseCapacity;
+    public TextField ResourceProductionCost;
+    public Slider ResourcePriority;
+    public TextField CountryName;
+    public TextField CountryPopulation;
+    public TextField CountryMoney;
+    public Button saveCountry1;
+    public TextField CountryStarterResources;
+    public TextField CountryOwnedResources;
 
     public void decreaseDelay(){
 
