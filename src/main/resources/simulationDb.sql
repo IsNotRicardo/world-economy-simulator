@@ -39,11 +39,11 @@ VALUES ('Wood', 'NATURAL', 0.8, 10, 10.0),
        ('Sugar', 'AGRICULTURAL', 0.9, 10, 20.0),
        ('Tobacco', 'AGRICULTURAL', 0.1, 10, 30.0);
 
-CREATE TABLE IF NOT EXISTS resource like default_resource;
+CREATE TABLE IF NOT EXISTS resource LIKE default_resource;
 
 INSERT IGNORE INTO resource
-select *
-from default_resource;
+SELECT *
+FROM default_resource;
 
 CREATE TABLE IF NOT EXISTS default_country
 (
@@ -53,18 +53,18 @@ CREATE TABLE IF NOT EXISTS default_country
     population LONG         NOT NULL
 );
 
-INSERT INTO default_country (name, money, population)
+INSERT IGNORE INTO default_country (name, money, population)
 VALUES ('Finland', 276600000000.00, 5527573),
        ('Sweden', 593300000000.00, 10327589),
        ('Norway', 485500000000.00, 5421241),
        ('Denmark', 404200000000.00, 5831404),
        ('Iceland', 31020000000.00, 388425);
 
-CREATE TABLE IF NOT EXISTS country like default_country;
+CREATE TABLE IF NOT EXISTS country LIKE default_country;
 
 INSERT IGNORE INTO country
-select *
-from default_country;
+SELECT *
+FROM default_country;
 
 CREATE TABLE IF NOT EXISTS country_resource
 (
@@ -109,17 +109,28 @@ VALUES
 ((SELECT id FROM country WHERE name = 'Iceland'), (SELECT id FROM resource WHERE name = 'Uranium'));
 
 /*
-select *
-from default_resource;
+CREATE TABLE IF NOT EXISTS averages
+(
+    country_id  INT,
+    resource_id INT,
+    average     DOUBLE,
+    PRIMARY KEY (country_id, resource_id),
+    FOREIGN KEY (country_id) REFERENCES country (id) ON DELETE CASCADE,
+    FOREIGN KEY (resource_id) REFERENCES resource (id) ON DELETE CASCADE
+);
+*/
+/*
+SELECT *
+FROM default_resource;
 
-select *
-from resource;
+SELECT *
+FROM resource;
 
-select *
-from default_country;
+SELECT *
+FROM default_country;
 
-select *
-from country;
+SELECT *
+FROM country;
 
 SELECT country_id, c.name AS country_name, r.name AS resource_name
 FROM country_resource cr
