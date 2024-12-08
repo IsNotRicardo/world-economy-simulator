@@ -3,7 +3,6 @@ package dao;
 import datasource.MariaDbConnection;
 import model.core.Country;
 import model.core.Resource;
-import model.core.ResourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +91,7 @@ public class CountryDao {
 				int baseCapacity = rs.getInt("base_capacity");
 				double productionCost = rs.getDouble("production_cost");
 				Resource resource =
-						new Resource(name, ResourceCategory.valueOf(category), priority, baseCapacity, productionCost);
+						new Resource(name, priority, baseCapacity, productionCost);
 				resources.add(resource);
 			}
 		} catch (SQLException e) {

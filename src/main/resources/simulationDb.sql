@@ -10,35 +10,34 @@ CREATE TABLE default_resource
 (
     id              INT PRIMARY KEY AUTO_INCREMENT,
     name            VARCHAR(255) NOT NULL UNIQUE,
-    category        VARCHAR(255) NOT NULL,
     priority        DOUBLE       NOT NULL,
     base_capacity   INT          NOT NULL,
     production_cost DOUBLE       NOT NULL
 );
 
-INSERT IGNORE INTO default_resource (name, category, priority, base_capacity, production_cost)
-VALUES ('Wood', 'NATURAL', 0.8, 10, 10.0),
-       ('Iron', 'METAL', 0.9, 10, 50.0),
-       ('Gold', 'METAL', 0.7, 10, 100.0),
-       ('Oil', 'NATURAL', 0.9, 10, 70.0),
-       ('Coal', 'NATURAL', 0.8, 10, 30.0),
-       ('Copper', 'METAL', 0.85, 10, 40.0),
-       ('Aluminium', 'METAL', 0.8, 10, 60.0),
-       ('Uranium', 'METAL', 0.6, 10, 200.0),
-       ('Food', 'AGRICULTURAL', 1.0, 10, 20.0),
-       ('Water', 'AGRICULTURAL', 1.0, 10, 5.0),
-       ('Wheat', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Corn', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Rice', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Soybeans', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Barley', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Oats', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Rye', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Millet', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Sorghum', 'AGRICULTURAL', 0.95, 10, 15.0),
-       ('Cotton', 'AGRICULTURAL', 0.9, 10, 25.0),
-       ('Sugar', 'AGRICULTURAL', 0.9, 10, 20.0),
-       ('Tobacco', 'AGRICULTURAL', 0.1, 10, 30.0);
+INSERT IGNORE INTO default_resource (name, priority, base_capacity, production_cost)
+VALUES ('Wood', 0.8, 10, 10.0),
+       ('Iron', 0.9, 10, 50.0),
+       ('Gold', 0.7, 10, 100.0),
+       ('Oil', 0.9, 10, 70.0),
+       ('Coal', 0.8, 10, 30.0),
+       ('Copper', 0.85, 10, 40.0),
+       ('Aluminium', 0.8, 10, 60.0),
+       ('Uranium', 0.6, 10, 200.0),
+       ('Food', 1.0, 10, 20.0),
+       ('Water', 1.0, 10, 5.0),
+       ('Wheat', 0.95, 10, 15.0),
+       ('Corn', 0.95, 10, 15.0),
+       ('Rice', 0.95, 10, 15.0),
+       ('Soybeans', 0.95, 10, 15.0),
+       ('Barley', 0.95, 10, 15.0),
+       ('Oats', 0.95, 10, 15.0),
+       ('Rye', 0.95, 10, 15.0),
+       ('Millet', 0.95, 10, 15.0),
+       ('Sorghum', 0.95, 10, 15.0),
+       ('Cotton', 0.9, 10, 25.0),
+       ('Sugar', 0.9, 10, 20.0),
+       ('Tobacco', 0.1, 10, 30.0);
 
 CREATE TABLE default_country
 (
