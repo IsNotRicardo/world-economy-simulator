@@ -1,7 +1,7 @@
-import view.InitialView;
+import view.SimulationView;
 
 public class Main {
     public static void main(String[] args) {
-        InitialView.launch(InitialView.class);
+        SimulationView.launch(SimulationView.class);
     }
 }

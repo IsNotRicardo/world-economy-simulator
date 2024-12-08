@@ -4,9 +4,8 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
-import controller.InitialController;
 
-public class InitialView extends Application {
+public class SimulationView extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Layout.fxml"));

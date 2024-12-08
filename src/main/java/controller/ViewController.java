@@ -8,7 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
-public class InitialController {
+public class ViewController {
 
 	@FXML
 	private TextField simTimeField;
