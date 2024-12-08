@@ -121,6 +121,24 @@ public class Simulator {
     }
 
     private void finalizeSimulation() {
-        // Obtain and process the results of the simulation
+        // Save the metrics for each country
+        saveMetrics();
+
+        // Generate a report or summary of the simulation results
+        generateReport();
+
+        System.out.println("Simulation finalized. Results have been saved.");
     }
+
+    private void generateReport() {
+        // Implement logic to generate a report or summary of the simulation results
+        System.out.println("Generating simulation report...");
+        // Example: Print summary statistics
+        for (Country country : countries) {
+            System.out.println("Country: " + country.getName());
+            System.out.println("Population: " + country.getPopulation());
+            System.out.println("Resources: " + country.getResourceStorage());
+        }
+    }
+
 }
