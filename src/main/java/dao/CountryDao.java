@@ -32,8 +32,8 @@ public class CountryDao {
 				String countryName = rs.getString("name");
 				double money = rs.getDouble("money");
 				int population = rs.getInt("population");
-				Country country = new Country(countryName, money, population);
-				countries.add(country);
+//				Country country = new Country(countryName, money, population);
+//				countries.add(country);
 			}
 		} catch (SQLException e) {
 			logger.error("Error fetching countries", e);
@@ -68,7 +68,8 @@ public class CountryDao {
 
 		if (count == 1) {
 			logger.debug("Successfully fetched country: {}", name);
-			return new Country(countryName, money, population);
+//			return new Country(countryName, money, population);
+			return null;
 		} else {
 			logger.error("Country not found: {}", name);
 			throw new RuntimeException("Country not found");

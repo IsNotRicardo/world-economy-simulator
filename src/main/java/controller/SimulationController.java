@@ -7,12 +7,12 @@ import model.simulation.Simulator;
 
 public class SimulationController {
     private final EventList eventList;
-    private final Simulator simulator;
+//    private final Simulator simulator;
     private boolean isRunning;
 
     public SimulationController(SimulationConfig config) {
         this.eventList = new EventList();
-        this.simulator = new Simulator(config, eventList);
+//        this.simulator = new Simulator();
         this.isRunning = false;
     }
 
