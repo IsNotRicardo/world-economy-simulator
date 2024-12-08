@@ -1,46 +1,95 @@
 package model.core;
 
+import model.simulation.SimulationConfig;
+
 public class ResourceNode {
-    private final String name;
-    private final int tier;
+    // Constants
+    private static final double MAX_REDUCTION_PERCENTAGE = 0.5;
+
+    // Variables immediately initialized
+    private int storedResources = 0;
+    private int daysSinceLastProduction = 0;
+
+    // Variables initialized in the constructor
+    private final Country country;
     private final int baseCapacity;
-    private final double productionCost;
+    private final double baseProductionCost;
     private final Resource resource;
 
-    public ResourceNode(String name, int tier, int baseCapacity, double productionCost, Resource resource) {
-        this.name = name;
-        this.tier = tier;
-        this.baseCapacity = baseCapacity;
-        this.productionCost = productionCost;
+    private int tier;
+
+    public ResourceNode(Country country, Resource resource, ResourceNodeDTO resourceNodeDTO) {
+        this.country = country;
+        this.baseCapacity = resourceNodeDTO.baseCapacity();
         this.resource = resource;
+        this.baseProductionCost = resourceNodeDTO.productionCost();
+        this.tier = resourceNodeDTO.tier();
     }
 
     // Start of Getters
-    public String getName() {
-        return name;
+    public int getStoredResources() {
+        return storedResources;
     }
 
-    public int getTier() {
-        return tier;
+    public Country getCountry() {
+        return country;
     }
 
     public int getBaseCapacity() {
         return baseCapacity;
     }
 
-    public double getProductionCost() {
-        return productionCost;
-    }
-
     public Resource getResource() {
         return resource;
     }
+
+    public double getBaseProductionCost() {
+        return baseProductionCost;
+    }
+
+    public int getTier() {
+        return tier;
+    }
     // End of Getters
 
-    public void produce(double budget) {
-        if (budget >= productionCost) {
-            // Logic to produce resources based on the allocated budget
-            // For example, increase the output based on the budget
+    int getMaxCapacity() {
+        return (int) Math.round(baseCapacity * (1 + tier * 0.1));
+    }
+
+    double getUpgradeCost() {
+        return (tier + 1) * baseProductionCost * SimulationConfig.getPopulationSegmentSize();
+    }
+
+    double getProductionCost() {
+        double reductionFactor = Math.min(daysSinceLastProduction * 0.01, MAX_REDUCTION_PERCENTAGE);
+        return baseProductionCost * (1 - reductionFactor);
+    }
+
+    void collectResources() {
+        if (storedResources != 0) {
+            country.addResources(resource, storedResources);
+        } else {
+            daysSinceLastProduction++;
+        }
+    }
+
+    void produceResources(int quantity) {
+        double availableMoney = country.getMoney();
+        double actualProductionCost = getProductionCost();
+        int producedQuantity = (int) Math.min(quantity, Math.min(getMaxCapacity(), availableMoney / actualProductionCost));
+
+        if (quantity > 0) {
+            country.subtractMoney(producedQuantity * actualProductionCost);
+            storedResources += producedQuantity;
+            daysSinceLastProduction = 0;
+        }
+    }
+
+    void upgradeNode() {
+        double upgradeCost = getUpgradeCost();
+        if (country.getMoney() >= upgradeCost) {
+            country.subtractMoney(upgradeCost);
+            tier++;
         }
     }
 }

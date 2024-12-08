@@ -1,7 +1,8 @@
-// EventType.java
 package model.simulation;
 
 public enum EventType {
-    ARRIVAL,
-    // Add other event types as needed
+    UPDATE_PEOPLE,
+    OBTAIN_RESOURCES,
+    SERVE_PEOPLE,
+    REQUEST_RESOURCES
 }
