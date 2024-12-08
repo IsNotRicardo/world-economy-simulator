@@ -28,26 +28,34 @@ public class Simulator {
         initializeSimulation();
         clock.start();
 
-        while (clock.getTime() < SimulationConfig.getSimulationTime()) {
-            // A-phase
-            // Advance the clock to the next event time
-            Event nextEvent = eventList.getNextEvent();
-            if (nextEvent != null) {
-                clock.setTime(nextEvent.getTime());
+        while (clock.isRunning() && clock.getTime() < SimulationConfig.getSimulationTime()) {
+            if (!clock.isPaused()) {
+                // A-phase
+                // Advance the clock to the next event time
+                Event nextEvent = eventList.peekNextEvent();
+                if (nextEvent != null) {
+                    clock.setTime(nextEvent.getTime());
+                }
+
+                // B-phase
+                // Process all events that are scheduled to occur at the current time
+                while (nextEvent != null && nextEvent.getTime() == clock.getTime()) {
+                    processEvent(nextEvent);
+                    nextEvent = eventList.getNextEvent();
+                }
+
+                // C-phase
+                // Process any events that are triggered by the events in the B-phase
+                checkAndAddNewEvents();
             }
 
-            // B-phase
-            // Process all events that are scheduled to occur at the current time
-            while (nextEvent != null && nextEvent.getTime() == clock.getTime()) {
-                processEvent(nextEvent);
-                nextEvent = eventList.getNextEvent();
+            // Simulate delay for each day
+            try {
+                Thread.sleep(SimulationConfig.getSimulationDelay() * 1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Restore interrupted state
+                System.out.println("Simulation interrupted.");
             }
-
-            // C-phase
-            // Create new events based on specific conditions
-            // Currently, there are no available conditions to check
-
-            saveMetrics();
         }
 
         clock.stop();
@@ -91,6 +99,10 @@ public class Simulator {
         }
     }
 
+    private void checkAndAddNewEvents() {
+        // Implement logic to check conditions and add new events if necessary
+    }
+
     private void saveMetrics() {
         for (Country country : countries) {
             // Save the country metrics
@@ -106,11 +118,9 @@ public class Simulator {
                 // Call the DAO here
             }
         }
-
     }
 
     private void finalizeSimulation() {
         // Obtain and process the results of the simulation
     }
 }
-
