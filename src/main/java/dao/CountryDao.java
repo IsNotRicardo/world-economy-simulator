@@ -69,9 +69,6 @@ public class CountryDao {
 		if (count == 1) {
 			logger.debug("Successfully fetched country: {}", name);
 			return new Country(countryName, money, population);
-		} else if (count > 1) {
-			logger.error("More than one country with the same name found");
-			throw new RuntimeException("More than one country with the same name found");
 		} else {
 			logger.error("Country not found: {}", name);
 			throw new RuntimeException("Country not found");
