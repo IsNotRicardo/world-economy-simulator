@@ -2,8 +2,11 @@ package model.simulation;
 
 import model.core.Country;
 import model.core.Resource;
+import model.core.ResourceInfo;
+import model.core.ResourceNode;
 
 import java.util.List;
+import java.util.Map;
 
 public class Simulator {
     private final Clock clock = Clock.getInstance();
@@ -42,12 +45,13 @@ public class Simulator {
 
             // C-phase
             // Create new events based on specific conditions
-
             // Currently, there are no available conditions to check
+
+            saveMetrics();
         }
 
         clock.stop();
-        obtainResults();
+        finalizeSimulation();
     }
 
     private void initializeSimulation() {
@@ -87,7 +91,25 @@ public class Simulator {
         }
     }
 
-    private void obtainResults() {
+    private void saveMetrics() {
+        for (Country country : countries) {
+            // Save the country metrics
+            // Call the DAO here
+
+            // Save the resource metrics per country
+            for (Map.Entry<Resource, ResourceInfo> entry : country.getResourceStorage().entrySet()) {
+                // Call the DAO here
+            }
+
+            // Save the resource node metrics per country
+            for (ResourceNode resourceNode : country.getResourceNodes()) {
+                // Call the DAO here
+            }
+        }
+
+    }
+
+    private void finalizeSimulation() {
         // Obtain and process the results of the simulation
     }
 }

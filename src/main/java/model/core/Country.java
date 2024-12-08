@@ -143,10 +143,10 @@ public class Country {
             ResourceInfo resourceInfo = entry.getValue();
             int[] supplyArchive = resourceInfo.getSupplyArchive();
             double totalChange = 0;
-            for (int i = 1; i < resourceInfo.currentSize; i++) {
+            for (int i = 1; i < resourceInfo.getCurrentSize(); i++) {
                 totalChange += supplyArchive[i] - supplyArchive[i - 1];
             }
-            double averageChange = resourceInfo.currentSize > 1 ? totalChange / (resourceInfo.currentSize - 1) : 0;
+            double averageChange = resourceInfo.getCurrentSize() > 1 ? totalChange / (resourceInfo.getCurrentSize() - 1) : 0;
             totalSupplyChange.put(resource, averageChange);
         }
 
@@ -288,61 +288,6 @@ public class Country {
             addMoney(totalCost);
             requestingCountry.addResources(resource, quantityToTrade);
             requestingCountry.subtractMoney(totalCost);
-        }
-    }
-
-    private class ResourceInfo {
-        private int quantity;
-        private double value;
-        private final int[] supplyArchive;
-        private int currentSize = 0;
-
-        public ResourceInfo(int quantity, double value, int archiveTime) {
-            this.quantity = quantity;
-            this.value = value;
-            this.supplyArchive = new int[archiveTime];
-        }
-
-        private int getQuantity() {
-            return quantity;
-        }
-
-        private double getValue() {
-            return value;
-        }
-
-        private int[] getSupplyArchive() {
-            return supplyArchive;
-        }
-
-        private double getValuePerUnit() {
-            return value / quantity;
-        }
-
-        private void addQuantity(int quantity) {
-            this.quantity += quantity;
-        }
-
-        private void addValue(double value) {
-            this.value += value;
-        }
-
-        private void subtractQuantityAndValue(int quantity) {
-            int initialQuantity = this.quantity;
-            double valueDifference = this.value / initialQuantity * quantity;
-
-            this.quantity -= quantity;
-            this.value -= valueDifference;
-        }
-
-        private void archiveSupply() {
-            if (currentSize < supplyArchive.length) {
-                currentSize++;
-            }
-            for (int i = currentSize - 1; i > 0; i--) {
-                supplyArchive[i] = supplyArchive[i - 1];
-            }
-            supplyArchive[0] = this.getQuantity();
         }
     }
 }
