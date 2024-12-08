@@ -4,10 +4,12 @@ public class Clock {
     private static Clock instance;
     private int time;
     private boolean running;
+    private int delayPerDay;
 
     private Clock() {
         this.time = 0; // Initialize time to zero or any desired default
         this.running = false; // Clock is not running initially
+        this.delayPerDay = SimulationConfig.getSimulationDelay() * 1000; // Default delay of 1 second per day
     }
 
     // Singleton instance
@@ -32,7 +34,6 @@ public class Clock {
     // Clock logic
     private void runClock() {
         int simulationDuration = SimulationConfig.getSimulationTime(); // Total days
-        int delayPerDay = SimulationConfig.getSimulationDelay() * 1000; // Delay in milliseconds (converted from seconds)
 
         while (running && time < simulationDuration) {
             try {
@@ -65,6 +66,14 @@ public class Clock {
     // Set the current time (useful for testing or resetting)
     public void setTime(int time) {
         this.time = time;
+    }
+
+    public int getDelayPerDay() {
+        return delayPerDay;
+    }
+
+    public void setDelayPerDay(int delayPerDay) {
+        this.delayPerDay = delayPerDay;
     }
 }
 
