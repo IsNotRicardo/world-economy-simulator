@@ -15,6 +15,10 @@ public class Simulator {
     public Simulator(List<Resource> resources, List<Country> countries) {
         this.resources = resources;
         this.countries = countries;
+
+        for (Country country : countries) {
+            country.addAllCountries(countries);
+        }
     }
 
     public void runSimulation() {
