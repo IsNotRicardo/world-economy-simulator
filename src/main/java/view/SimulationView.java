@@ -1,4 +1,5 @@
 package view;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.Parent;
@@ -12,13 +13,7 @@ public class SimulationView extends Application {
         Parent root = fxmlLoader.load();
 
         stage.setScene(new Scene(root));
+        stage.setTitle("World Economy Simulator");
         stage.show();
     }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-
-
 }
