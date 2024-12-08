@@ -2,36 +2,36 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import model.simulation.Clock;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ViewController {
 
+	private Map<Integer, ResourceData> resourceMap = new HashMap<>();
+	private Map<Integer, CountryData> countryMap = new HashMap<>();
+
+	@FXML
+	public Label simTimeWarningLabel;
+	@FXML
+	public Label delayWarningLabel;
 	@FXML
 	private TextField simTimeField;
 	@FXML
 	private TextField delayField;
 	@FXML
-	private Button minusDelayButton;
-	@FXML
-	private Button resetDelayButton;
-	@FXML
-	private Button plusDelayButton;
-	@FXML
 	private ProgressBar Progress;
 	@FXML
-	private TextField ResourceNameField;
-	@FXML
-	private TextField ResourceCategoryField;
+	private TextField resourceNameField;
 	@FXML
 	private TextField baseCapacityField;
 	@FXML
 	private TextField productionCostField;
 	@FXML
-	private Slider prioritySlider;
+	private TextField priorityField;
 	@FXML
 	private Button saveResource;
 	@FXML
@@ -48,27 +48,59 @@ public class ViewController {
 	private TextField ownedResourcesField;
 
 	@FXML
-	public void decreaseDelay(ActionEvent actionEvent) {
+	public void initialize() {
+		// Initialize delayField with the current delay value from Clock
+		delayField.setText(
+				String.valueOf(Clock.getInstance().getDelayPerDay() / 1000)); // Convert milliseconds to seconds
 
+		// Add listener to update delay when user changes it
+		delayField.textProperty().addListener((observable, oldValue, newValue) -> {
+			try {
+				int newDelay = Integer.parseInt(newValue) * 1000; // Convert seconds to milliseconds
+				Clock.getInstance().setDelayPerDay(newDelay);
+			} catch (NumberFormatException e) {
+				// Handle invalid input
+				delayWarningLabel.setText("Invalid input");
+				delayField.setText(oldValue); // Revert to old value
+			}
+		});
 	}
 
-	@FXML
-	public void resetDelay(ActionEvent actionEvent) {
-	}
-
-	@FXML
-	public void IncrementDelay(ActionEvent actionEvent) {
-	}
-
-	@FXML
-	public void setPriority(MouseEvent mouseEvent) {
+	private int generateUniqueId(int mapSize) {
+		return mapSize + 1;
 	}
 
 	@FXML
 	public void addResource(ActionEvent actionEvent) {
+		int id = generateUniqueId(resourceMap.size());
+		String name = resourceNameField.getText();
+		int baseCapacity = Integer.parseInt(baseCapacityField.getText());
+		double productionCost = Double.parseDouble(productionCostField.getText());
+		int priority = Integer.parseInt(priorityField.getText());
+
+		ResourceData resourceData = new ResourceData(name, baseCapacity, productionCost, priority);
+		addResourceToMap(id, resourceData);
 	}
+
+	public void addResourceToMap(int id, ResourceData resourceData) {
+		resourceMap.put(id, resourceData);
+	}
+
 
 	@FXML
 	public void addCountry(ActionEvent actionEvent) {
+		int id = generateUniqueId(countryMap.size());
+		String name = countryNameField.getText();
+		long population = Long.parseLong(populationField.getText());
+		double money = Double.parseDouble(moneyField.getText());
+		int starterResources = Integer.parseInt(starterResourcesField.getText());
+		int ownedResources = Integer.parseInt(ownedResourcesField.getText());
+
+		CountryData countryData = new CountryData(name, population, money, starterResources, ownedResources);
+		addCountryToMap(id, countryData);
+	}
+
+	public void addCountryToMap(int id, CountryData countryData) {
+		countryMap.put(id, countryData);
 	}
 }
