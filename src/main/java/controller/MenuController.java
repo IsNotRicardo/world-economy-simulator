@@ -14,8 +14,22 @@ import java.util.Objects;
 
 public class MenuController {
     @FXML
-    public void handleStartSimulation() {
+    public void handleStartSimulation(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layouts/settings-layout.fxml"));
+            Parent root = fxmlLoader.load();
 
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/general-styles.css")).toExternalForm());
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Settings");
+            stage.setFullScreen(true);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -24,19 +38,14 @@ public class MenuController {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layouts/credits-layout.fxml"));
             Parent root = fxmlLoader.load();
 
-            Stage stage = new Stage();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/general-styles.css")).toExternalForm());
 
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
-
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Credits");
             stage.setFullScreen(true);
-            stage.setWidth(900);
-            stage.setHeight(600);
-            stage.showAndWait();
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
