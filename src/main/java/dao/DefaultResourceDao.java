@@ -1,9 +1,6 @@
 package dao;
 
 import entity.Resource;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,9 +63,6 @@ public class DefaultResourceDao {
 		} catch (SQLException e) {
 			logger.error("Error finding resource by name: {}", name, e);
 			throw e;
-		} catch (NoResultException e) {
-			logger.debug("Resource not found: {}", name);
-			return null;
 		}
 		if (count == 1) {
 			return new Resource(resourceName, priority, baseCapacity, productionCost);
