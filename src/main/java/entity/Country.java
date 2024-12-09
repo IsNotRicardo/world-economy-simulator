@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity
@@ -9,34 +10,35 @@ public class Country {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@Column(name = "id")
+	private Long id;
 
-	@Column(name = "name", nullable = false, unique = true)
+	@Column(name = "name", unique = true, nullable = false)
 	private String name;
 
 	@Column(name = "money", nullable = false)
 	private double money;
 
 	@Column(name = "population", nullable = false)
-	private int population;
+	private Long population;
 
-	@OneToMany(mappedBy = "country")
+	@OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<CountryResource> countryResources;
 
 	public Country() {
 	}
 
-	public Country(String name, double money, int population) {
+	public Country(String name, double money, long population) {
 		this.name = name;
 		this.money = money;
 		this.population = population;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -56,11 +58,19 @@ public class Country {
 		this.money = money;
 	}
 
-	public int getPopulation() {
+	public long getPopulation() {
 		return population;
 	}
 
-	public void setPopulation(int population) {
+	public void setPopulation(long population) {
 		this.population = population;
+	}
+
+	public Set<CountryResource> getCountryResources() {
+		return countryResources;
+	}
+
+	public void setCountryResources(Set<CountryResource> countryResources) {
+		this.countryResources = countryResources;
 	}
 }
