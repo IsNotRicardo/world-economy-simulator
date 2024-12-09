@@ -3,16 +3,23 @@ package controller;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import model.core.Resource;
 import model.simulation.SimulationConfig;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class SettingsViewController {
     private static final int TAB_OFFSET_VALUE = 68;
     private static final int TAB_HEIGHT = 48;
+
+    private List<Resource> resourceList = new ArrayList<>();
+    private boolean isResourceEditingMode;
+    private int currentResourceIndex;
 
     @FXML
     private TabPane tabPane;
@@ -34,6 +41,26 @@ public class SettingsViewController {
     private TextField populationSegmentSizeField;
     @FXML
     private Label populationSegmentSizeErrorLabel;
+    @FXML
+    private ListView<String> resourceListView;
+    @FXML
+    private VBox resourceSettingsVBox;
+    @FXML
+    private TextField resourceNameField;
+    @FXML
+    private TextField resourcePriorityField;
+    @FXML
+    private TextField resourceBaseCapacityField;
+    @FXML
+    private TextField resourceProductionCostField;
+    @FXML
+    private Button addResourceButton;
+    @FXML
+    private Button saveResourceButton;
+    @FXML
+    private Region resourceOptionalRegion;
+    @FXML
+    private Button deleteResourceButton;
 
     @FXML
     public void initialize() {
@@ -78,6 +105,11 @@ public class SettingsViewController {
                 validateField(populationSegmentSizeField, populationSegmentSizeErrorLabel, SimulationConfig.getPopulationSegmentSize(), 1, "Population segment size must be positive");
             }
         });
+
+        resourceSettingsVBox.getChildren().forEach(child -> {
+            VBox.setMargin(child, margin);
+        });
+        changeResourceButtonVisibility(false);
     }
 
     private void validateField(TextField textField, Label errorLabel, int defaultValue, int minValue, String errorMessage) {
@@ -94,5 +126,78 @@ public class SettingsViewController {
             textField.setText(Integer.toString(defaultValue));
             errorLabel.setText("Input must be a number");
         }
+    }
+
+    @FXML
+    public void newResource() {
+        if (resolveIsResourceNotSaved()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("New Resource");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to create a new resource?\n" +
+                    "Any unsaved changes will be lost.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isEmpty() || result.get() != ButtonType.OK) {
+                return;
+            }
+        }
+        clearResourceFields();
+        changeResourceButtonVisibility(false);
+        resourceListView.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    public void addResource() {
+
+    }
+
+    @FXML
+    public void saveResource() {
+
+    }
+
+    @FXML
+    public void deleteResource() {
+
+    }
+
+    private void changeResourceButtonVisibility(boolean editingMode) {
+        // In editing mode, the add button is not visible, and the edit and delete buttons are visible
+        isResourceEditingMode = editingMode;
+
+        addResourceButton.setVisible(!editingMode);
+        addResourceButton.setManaged(!editingMode);
+
+        saveResourceButton.setVisible(editingMode);
+        saveResourceButton.setManaged(editingMode);
+
+        resourceOptionalRegion.setVisible(editingMode);
+        resourceOptionalRegion.setManaged(editingMode);
+
+        deleteResourceButton.setVisible(editingMode);
+        deleteResourceButton.setManaged(editingMode);
+    }
+
+    private boolean resolveIsResourceNotSaved() {
+        if (isResourceEditingMode) {
+            String savedName = resourceList.get(currentResourceIndex).name();
+            String savedPriority = String.valueOf(resourceList.get(currentResourceIndex).priority());
+            String savedBaseCapacity = String.valueOf(resourceList.get(currentResourceIndex).baseCapacity());
+            String savedProductionCost = String.valueOf(resourceList.get(currentResourceIndex).productionCost());
+
+            return !resourceNameField.getText().equals(savedName) || !resourcePriorityField.getText().equals(savedPriority) ||
+                    !resourceBaseCapacityField.getText().equals(savedBaseCapacity) || !resourceProductionCostField.getText().equals(savedProductionCost);
+        } else {
+            return !resourceNameField.getText().isEmpty() || !resourcePriorityField.getText().isEmpty() ||
+                    !resourceBaseCapacityField.getText().isEmpty() || !resourceProductionCostField.getText().isEmpty();
+        }
+    }
+
+    private void clearResourceFields() {
+        resourceNameField.setText("");
+        resourcePriorityField.setText("");
+        resourceBaseCapacityField.setText("");
+        resourceProductionCostField.setText("");
     }
 }
