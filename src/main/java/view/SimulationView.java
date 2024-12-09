@@ -11,11 +11,11 @@ import java.util.Objects;
 public class SimulationView extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/menu-layout.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layouts/menu-layout.fxml"));
         Parent root = fxmlLoader.load();
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/menu-styles.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/general-styles.css")).toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle("World Economy Simulator");
