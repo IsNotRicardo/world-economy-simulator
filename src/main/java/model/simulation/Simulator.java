@@ -26,13 +26,12 @@ public class Simulator {
 
     public void runSimulation() {
         initializeSimulation();
-        clock.start();
 
-        while (clock.isRunning() && clock.getTime() < SimulationConfig.getSimulationTime()) {
+        while (clock.getTime() < SimulationConfig.getSimulationTime()) {
             if (!clock.isPaused()) {
                 // A-phase
                 // Advance the clock to the next event time
-                Event nextEvent = eventList.peekNextEvent();
+                Event nextEvent = eventList.getNextEvent();
                 if (nextEvent != null) {
                     clock.setTime(nextEvent.getTime());
                 }
@@ -45,20 +44,13 @@ public class Simulator {
                 }
 
                 // C-phase
-                // Process any events that are triggered by the events in the B-phase
-                checkAndAddNewEvents();
-            }
+                // Create new events based on specific conditions
+                // Currently, there are no available conditions to check
 
-            // Simulate delay for each day
-            try {
-                Thread.sleep(SimulationConfig.getSimulationDelay() * 1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Restore interrupted state
-                System.out.println("Simulation interrupted.");
+                saveMetrics();
             }
         }
 
-        clock.stop();
         finalizeSimulation();
     }
 
@@ -70,6 +62,8 @@ public class Simulator {
         eventList.addEvent(new Event(EventType.OBTAIN_RESOURCES, nextEventTime));
         eventList.addEvent(new Event(EventType.SERVE_PEOPLE, nextEventTime));
         eventList.addEvent(new Event(EventType.REQUEST_RESOURCES, nextEventTime));
+
+        System.out.println("Simulation initialized.");
     }
 
     private void processEvent(Event event) {
@@ -99,10 +93,6 @@ public class Simulator {
         }
     }
 
-    private void checkAndAddNewEvents() {
-        // Implement logic to check conditions and add new events if necessary
-    }
-
     private void saveMetrics() {
         for (Country country : countries) {
             // Save the country metrics
@@ -121,13 +111,10 @@ public class Simulator {
     }
 
     private void finalizeSimulation() {
-        // Save the metrics for each country
-        saveMetrics();
-
         // Generate a report or summary of the simulation results
         generateReport();
 
-        System.out.println("Simulation finalized. Results have been saved.");
+        System.out.println("Simulation finalized.");
     }
 
     private void generateReport() {
