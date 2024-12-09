@@ -1,6 +1,7 @@
 package entity;
 
 import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity
@@ -9,9 +10,10 @@ public class Resource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@Column(name = "id")
+	private Long id;
 
-	@Column(name = "name", nullable = false, unique = true)
+	@Column(name = "name", unique = true, nullable = false)
 	private String name;
 
 	@Column(name = "priority", nullable = false)
@@ -23,7 +25,7 @@ public class Resource {
 	@Column(name = "production_cost", nullable = false)
 	private double productionCost;
 
-	@OneToMany(mappedBy = "resource")
+	@OneToMany(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<CountryResource> countryResources;
 
 	public Resource() {
@@ -36,11 +38,11 @@ public class Resource {
 		this.productionCost = productionCost;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -50,6 +52,14 @@ public class Resource {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public double getPriority() {
+		return priority;
+	}
+
+	public void setPriority(double priority) {
+		this.priority = priority;
 	}
 
 	public int getBaseCapacity() {
@@ -68,11 +78,11 @@ public class Resource {
 		this.productionCost = productionCost;
 	}
 
-	public double getPriority() {
-		return priority;
+	public Set<CountryResource> getCountryResources() {
+		return countryResources;
 	}
 
-	public void setPriority(double priority) {
-		this.priority = priority;
+	public void setCountryResources(Set<CountryResource> countryResources) {
+		this.countryResources = countryResources;
 	}
 }
