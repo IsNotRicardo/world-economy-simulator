@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "country")
-public class Country {
+public class CountryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +25,10 @@ public class Country {
 	@OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<CountryResource> countryResources;
 
-	public Country() {
+	public CountryEntity() {
 	}
 
-	public Country(String name, double money, long population) {
+	public CountryEntity(String name, double money, long population) {
 		this.name = name;
 		this.money = money;
 		this.population = population;
