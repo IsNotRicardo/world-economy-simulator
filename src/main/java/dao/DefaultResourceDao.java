@@ -1,6 +1,6 @@
 package dao;
 
-import entity.Resource;
+import entity.ResourceEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,33 +12,33 @@ public class DefaultResourceDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(DefaultResourceDao.class);
 
-	public List<Resource> findAll() throws SQLException {
+	public List<ResourceEntity> findAll() throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_resource";
 		String name = null;
 		double priority = 0;
 		int baseCapacity = 0;
 		double productionCost = 0;
-		List<Resource> resources = new ArrayList<>();
+		List<ResourceEntity> resourceEntities = new ArrayList<>();
 
 		try (Statement stmt = conn.createStatement();
-		     ResultSet rs = stmt.executeQuery(sql);
+		     ResultSet rs = stmt.executeQuery(sql)
 		) {
 			while (rs.next()) {
 				name = rs.getString("name");
 				priority = rs.getDouble("priority");
 				baseCapacity = rs.getInt("base_capacity");
 				productionCost = rs.getDouble("production_cost");
-				resources.add(new Resource(name, priority, baseCapacity, productionCost));
+				resourceEntities.add(new ResourceEntity(name, priority, baseCapacity, productionCost));
 			}
 		} catch (SQLException e) {
 			logger.error("Error finding all resources", e);
 			throw e;
 		}
-		return resources;
+		return resourceEntities;
 	}
 
-	public Resource findByName(String name) throws SQLException {
+	public ResourceEntity findByName(String name) throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_resource where name = ?";
 		String resourceName = null;
@@ -65,7 +65,7 @@ public class DefaultResourceDao {
 			throw e;
 		}
 		if (count == 1) {
-			return new Resource(resourceName, priority, baseCapacity, productionCost);
+			return new ResourceEntity(resourceName, priority, baseCapacity, productionCost);
 		} else {
 			return null;
 		}

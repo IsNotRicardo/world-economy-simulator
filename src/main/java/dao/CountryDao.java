@@ -1,7 +1,7 @@
 package dao;
 
-import entity.Country;
-import entity.Resource;
+import entity.CountryEntity;
+import entity.ResourceEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.slf4j.Logger;
@@ -14,11 +14,11 @@ public class CountryDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(CountryDao.class);
 
-	public void persist(Country country) {
+	public void persist(CountryEntity country) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			Country existingCountry = findByName(country.getName());
+			CountryEntity existingCountry = findByName(country.getName());
 			if (existingCountry != null && Objects.equals(existingCountry.getName(), country.getName())) {
 				if (existingCountry.getMoney() != country.getMoney()) {
 					existingCountry.setMoney(country.getMoney());
@@ -40,10 +40,10 @@ public class CountryDao {
 		}
 	}
 
-	public Country findByName(String name) {
+	public CountryEntity findByName(String name) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
-			return em.createQuery("SELECT c FROM Country c WHERE c.name = :name", Country.class)
+			return em.createQuery("SELECT c FROM CountryEntity c WHERE c.name = :name", CountryEntity.class)
 			         .setParameter("name", name).getSingleResult();
 		} catch (NoResultException e) {
 			logger.debug("Country not found: {}", name);
@@ -54,20 +54,20 @@ public class CountryDao {
 		}
 	}
 
-	public List<Country> findAll() {
+	public List<CountryEntity> findAll() {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
-			return em.createQuery("SELECT c FROM Country c", Country.class).getResultList();
+			return em.createQuery("SELECT c FROM CountryEntity c", CountryEntity.class).getResultList();
 		} catch (Exception e) {
 			logger.error("Error finding all countries", e);
 			throw e;
 		}
 	}
 
-	public List<Resource> findResourcesByCountryName(String countryName) {
+	public List<ResourceEntity> findResourcesByCountryName(String countryName) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
-			return em.createQuery("SELECT r FROM Country c JOIN c.resources r WHERE c.name = :name", Resource.class)
+			return em.createQuery("SELECT r FROM CountryEntity c JOIN c.resources r WHERE c.name = :name", ResourceEntity.class)
 			         .setParameter("name", countryName)
 			         .getResultList();
 		} catch (Exception e) {
@@ -76,7 +76,7 @@ public class CountryDao {
 		}
 	}
 
-	public void delete(Country country) {
+	public void delete(CountryEntity country) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
@@ -94,7 +94,7 @@ public class CountryDao {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			em.createQuery("DELETE FROM Country c WHERE c.name = :name").setParameter("name", name).executeUpdate();
+			em.createQuery("DELETE FROM CountryEntity c WHERE c.name = :name").setParameter("name", name).executeUpdate();
 			em.getTransaction().commit();
 			logger.debug("Deleted country by name: {}", name);
 		} catch (Exception e) {
@@ -108,7 +108,7 @@ public class CountryDao {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			em.createQuery("DELETE FROM Country").executeUpdate();
+			em.createQuery("DELETE FROM CountryEntity").executeUpdate();
 			em.getTransaction().commit();
 			logger.debug("Deleted all countries");
 		} catch (Exception e) {

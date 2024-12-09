@@ -1,6 +1,6 @@
 package dao;
 
-import entity.Resource;
+import entity.ResourceEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceException;
@@ -11,39 +11,39 @@ public class ResourceDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);
 
-	public void persist(Resource resource) {
+	public void persist(ResourceEntity resourceEntity) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			Resource existingResource = findByName(resource.getName());
-			if (existingResource != null) {
-				if (existingResource.getPriority() != resource.getPriority()) {
-					existingResource.setPriority(resource.getPriority());
+			ResourceEntity existingResourceEntity = findByName(resourceEntity.getName());
+			if (existingResourceEntity != null) {
+				if (existingResourceEntity.getPriority() != resourceEntity.getPriority()) {
+					existingResourceEntity.setPriority(resourceEntity.getPriority());
 				}
-				if (existingResource.getBaseCapacity() != resource.getBaseCapacity()) {
-					existingResource.setBaseCapacity(resource.getBaseCapacity());
+				if (existingResourceEntity.getBaseCapacity() != resourceEntity.getBaseCapacity()) {
+					existingResourceEntity.setBaseCapacity(resourceEntity.getBaseCapacity());
 				}
-				if (existingResource.getProductionCost() != resource.getProductionCost()) {
-					existingResource.setProductionCost(resource.getProductionCost());
+				if (existingResourceEntity.getProductionCost() != resourceEntity.getProductionCost()) {
+					existingResourceEntity.setProductionCost(resourceEntity.getProductionCost());
 				}
-				em.merge(existingResource);
-				logger.debug("Updated existing resource: {}", resource.getName());
+				em.merge(existingResourceEntity);
+				logger.debug("Updated existing resource: {}", resourceEntity.getName());
 			} else {
-				em.persist(resource);
-				logger.debug("Persisted new resource: {}", resource.getName());
+				em.persist(resourceEntity);
+				logger.debug("Persisted new resource: {}", resourceEntity.getName());
 			}
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
-			logger.error("Error persisting resource: {}", resource.getName(), e);
+			logger.error("Error persisting resource: {}", resourceEntity.getName(), e);
 			throw e;
 		}
 	}
 
-	public Resource findByName(String name) {
+	public ResourceEntity findByName(String name) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
-			return em.createQuery("SELECT r FROM Resource r WHERE r.name = :name", Resource.class)
+			return em.createQuery("SELECT r FROM ResourceEntity r WHERE r.name = :name", ResourceEntity.class)
 			         .setParameter("name", name)
 			         .getSingleResult();
 		} catch (NoResultException e) {
@@ -58,7 +58,7 @@ public class ResourceDao {
 	public void deleteByName(String name) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
-			em.createQuery("DELETE FROM Resource r WHERE r.name = :name")
+			em.createQuery("DELETE FROM ResourceEntity r WHERE r.name = :name")
 			  .setParameter("name", name)
 			  .executeUpdate();
 			em.getTransaction().commit();

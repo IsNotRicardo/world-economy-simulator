@@ -1,9 +1,9 @@
 import dao.CountryDao;
 import dao.ResourceDao;
 import datasource.MariaDbConnection;
-import entity.Country;
+import entity.CountryEntity;
 import entity.CountryResource;
-import entity.Resource;
+import entity.ResourceEntity;
 
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -21,9 +21,9 @@ public class DatabaseTestMain {
 			ResourceDao resourceDao = new ResourceDao();
 
 			// Create Resources
-			Resource silver = new Resource("Silver", 1, 100, 10);
-			Resource platinum = new Resource("Platinum", 0.8, 200, 20);
-			Resource maplesyrup = new Resource("Maple Syrup", 0.2, 300, 30);
+			ResourceEntity silver = new ResourceEntity("Silver", 1, 100, 10);
+			ResourceEntity platinum = new ResourceEntity("Platinum", 0.8, 200, 20);
+			ResourceEntity maplesyrup = new ResourceEntity("Maple Syrup", 0.2, 300, 30);
 
 			// Persist Resources
 			resourceDao.persist(silver);
@@ -31,8 +31,8 @@ public class DatabaseTestMain {
 			resourceDao.persist(maplesyrup);
 
 			// Create Countries
-			Country usa = new Country("USA", 1000, 100000);
-			Country canada = new Country("Canada", 2000, 200000);
+			CountryEntity usa = new CountryEntity("USA", 1000, 100000);
+			CountryEntity canada = new CountryEntity("Canada", 2000, 200000);
 
 			// Create CountryResource relations
 			CountryResource usaSilver = new CountryResource(usa, silver, 50);

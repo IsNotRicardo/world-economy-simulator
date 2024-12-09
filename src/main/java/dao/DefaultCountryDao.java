@@ -1,6 +1,6 @@
 package dao;
 
-import entity.Country;
+import entity.CountryEntity;
 import jakarta.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,23 +13,23 @@ public class DefaultCountryDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(DefaultCountryDao.class);
 
-	public List<Country> findAll() throws SQLException {
+	public List<CountryEntity> findAll() throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_country";
 		String countryName = null;
 		double money = 0;
 		long population = 0;
-		List<Country> countries = new ArrayList<>();
+		List<CountryEntity> countries = new ArrayList<>();
 
 		try (
 				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql);
+				ResultSet rs = stmt.executeQuery(sql)
 		) {
 			while (rs.next()) {
 				countryName = rs.getString("name");
 				money = rs.getDouble("money");
 				population = rs.getLong("population");
-				countries.add(new Country(countryName, money, population));
+				countries.add(new CountryEntity(countryName, money, population));
 			}
 		} catch (SQLException e) {
 			logger.error("Error finding all countries", e);
@@ -38,7 +38,7 @@ public class DefaultCountryDao {
 		return countries;
 	}
 
-	public Country findByName(String name) throws SQLException {
+	public CountryEntity findByName(String name) throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_country where name = ?";
 
@@ -68,7 +68,7 @@ public class DefaultCountryDao {
 			return null;
 		}
 		if (count == 1) {
-			return new Country(countryName, money, population);
+			return new CountryEntity(countryName, money, population);
 		} else {
 			return null;
 		}

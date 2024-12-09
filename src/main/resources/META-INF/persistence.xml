@@ -1,7 +1,7 @@
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.2">
     <persistence-unit name="Simulation">
-        <class>entity.Country</class>
-        <class>entity.Resource</class>
+        <class>entity.CountryEntity</class>
+        <class>entity.ResourceEntity</class>
         <class>entity.CountryResource</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/simulation"/>
