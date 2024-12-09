@@ -3,9 +3,10 @@ package dao;
 import entity.ResourceEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class ResourceDao {
 
@@ -55,17 +56,28 @@ public class ResourceDao {
 		}
 	}
 
-	public void deleteByName(String name) {
+	public void deleteResourceByName(String resourceName) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		em.getTransaction().begin();
 		try {
-			em.createQuery("DELETE FROM ResourceEntity r WHERE r.name = :name")
-			  .setParameter("name", name)
+			em.createQuery("DELETE FROM ResourceEntity c WHERE c.name = :name")
+			  .setParameter("name", resourceName)
 			  .executeUpdate();
 			em.getTransaction().commit();
-			logger.debug("Deleted resource by name: {}", name);
-			} catch (PersistenceException e) {
+			logger.debug("Deleted country: {}", resourceName);
+		} catch (Exception e) {
 			em.getTransaction().rollback();
-			logger.error("Error deleting resource by name: {}", name, e);
+			logger.error("Error deleting country: {}", resourceName, e);
+			throw e;
+		}
+	}
+
+	public List<ResourceEntity> findAll() {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		try {
+			return em.createQuery("SELECT r FROM ResourceEntity r", ResourceEntity.class).getResultList();
+		} catch (Exception e) {
+			logger.error("Error finding all resources", e);
 			throw e;
 		}
 	}
