@@ -2,7 +2,7 @@ package model.simulation;
 
 public class SimulationConfig {
     private static int simulationTime = 100;
-    private static int simulationDelay = 1;
+    private static int simulationDelay = 100;
     private static int supplyArchiveTime = 128;
     private static int populationSegmentSize = 100_000;
 
