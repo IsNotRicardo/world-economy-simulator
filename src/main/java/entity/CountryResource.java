@@ -8,15 +8,16 @@ public class CountryResource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "country_id", nullable = false)
-	private Country country;
+	private CountryEntity country;
 
 	@ManyToOne
 	@JoinColumn(name = "resource_id", nullable = false)
-	private Resource resource;
+	private ResourceEntity resource;
 
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
@@ -24,7 +25,7 @@ public class CountryResource {
 	public CountryResource() {
 	}
 
-	public CountryResource(Country country, Resource resource, int quantity) {
+	public CountryResource(CountryEntity country, ResourceEntity resource, int quantity) {
 		this.country = country;
 		this.resource = resource;
 		this.quantity = quantity;
@@ -38,19 +39,19 @@ public class CountryResource {
 		this.id = id;
 	}
 
-	public Country getCountry() {
+	public CountryEntity getCountry() {
 		return country;
 	}
 
-	public void setCountry(Country country) {
+	public void setCountry(CountryEntity country) {
 		this.country = country;
 	}
 
-	public Resource getResource() {
+	public ResourceEntity getResource() {
 		return resource;
 	}
 
-	public void setResource(Resource resource) {
+	public void setResource(ResourceEntity resource) {
 		this.resource = resource;
 	}
 
@@ -60,11 +61,5 @@ public class CountryResource {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
-	}
-
-	@Override
-	public String toString() {
-		return "CountryResource [id=" + id + ", country=" + country + ", resource=" + resource + ", quantity=" + quantity
-				+ "]";
 	}
 }
