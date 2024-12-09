@@ -26,12 +26,6 @@ public class Clock {
     // Set the current time
     public void setTime(int time) {
         this.time = time;
-        try {
-            Thread.sleep(SimulationConfig.getSimulationDelay());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Restore interrupted state
-            System.out.println("Simulation interrupted.");
-        }
     }
 
     // Check if the clock is paused
