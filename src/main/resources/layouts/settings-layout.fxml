@@ -22,9 +22,17 @@
                             <children>
                                 <VBox fx:id="simulationSettingsVBox" prefHeight="218.0" prefWidth="600.0" HBox.hgrow="ALWAYS">
                                     <children>
+                              <Label prefHeight="17.0" prefWidth="601.0" text="General Configurations">
+                                 <font>
+                                    <Font name="Bell MT Bold" size="32.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="40.0" />
+                                 </VBox.margin>
+                              </Label>
                                         <HBox>
                                             <children>
-                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="❓">
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="tooltipLabel" text="❓">
                                        <font>
                                           <Font name="Georgia" size="24.0" />
                                        </font>
@@ -45,9 +53,9 @@
                                                         <Font name="Georgia" size="20.0" />
                                                     </font>
                                                 </TextField>
-                                                <Label maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="#ed0505" HBox.hgrow="ALWAYS">
+                                                <Label fx:id="simulationTimeErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
                                                     <font>
-                                                        <Font name="Georgia" size="16.0" />
+                                                        <Font name="Georgia Bold" size="16.0" />
                                                     </font>
                                        <HBox.margin>
                                           <Insets left="30.0" />
@@ -57,7 +65,7 @@
                                         </HBox>
                               <HBox>
                                  <children>
-                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="❓">
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="tooltipLabel" text="❓">
                                        <font>
                                           <Font name="Georgia" size="24.0" />
                                        </font>
@@ -78,9 +86,9 @@
                                           <Font name="Georgia" size="20.0" />
                                        </font>
                                     </TextField>
-                                    <Label maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="#ed0505" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="simulationDelayErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
                                        <font>
-                                          <Font name="Georgia" size="16.0" />
+                                          <Font name="Georgia Bold" size="16.0" />
                                        </font>
                                        <HBox.margin>
                                           <Insets left="30.0" />
@@ -90,7 +98,7 @@
                               </HBox>
                               <HBox>
                                  <children>
-                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="❓">
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="tooltipLabel" text="❓">
                                        <font>
                                           <Font name="Georgia" size="24.0" />
                                        </font>
@@ -111,9 +119,9 @@
                                           <Font name="Georgia" size="20.0" />
                                        </font>
                                     </TextField>
-                                    <Label maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="#ed0505" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="countrySupplySampleErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
                                        <font>
-                                          <Font name="Georgia" size="16.0" />
+                                          <Font name="Georgia Bold" size="16.0" />
                                        </font>
                                        <HBox.margin>
                                           <Insets left="30.0" />
@@ -123,7 +131,7 @@
                               </HBox>
                               <HBox layoutX="10.0" layoutY="70.0">
                                  <children>
-                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="❓">
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="tooltipLabel" text="❓">
                                        <font>
                                           <Font name="Georgia" size="24.0" />
                                        </font>
@@ -144,9 +152,9 @@
                                           <Font name="Georgia" size="20.0" />
                                        </font>
                                     </TextField>
-                                    <Label maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="#ed0505" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="populationSegmentSizeErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
                                        <font>
-                                          <Font name="Georgia" size="16.0" />
+                                          <Font name="Georgia Bold" size="16.0" />
                                        </font>
                                        <HBox.margin>
                                           <Insets left="30.0" />
@@ -181,7 +189,7 @@
     <top>
         <Label text="World Economy Simulator Settings" BorderPane.alignment="CENTER">
             <font>
-                <Font name="Bell MT" size="32.0" />
+                <Font name="Bell MT Bold" size="48.0" />
             </font>
             <padding>
                 <Insets bottom="10.0" top="10.0" />
