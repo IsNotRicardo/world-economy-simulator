@@ -70,6 +70,31 @@ public class DatabaseTestMain {
 				});
 			});
 
+			// Print all resources for a specific country
+			countryDao.findResourcesByCountryName("Canada").forEach(resource -> {
+				System.out.println("Resource: " + resource.getName());
+			});
+
+			// Delete a country
+			CountryEntity country = countryDao.findByName("USA");
+			countryDao.delete(country);
+			System.out.println("Deleted country: " + country.getName());
+
+			// Print all countries
+			countryDao.findAll().forEach(c -> {
+				System.out.println("Country: " + c.getName());
+			});
+
+			// Print all resources
+			resourceDao.findAll().forEach(r -> {
+				System.out.println("Resource: " + r.getName());
+			});
+
+			// Delete a resource
+			ResourceEntity resource = resourceDao.findByName("Silver");
+			resourceDao.deleteResourceByName(resource.getName());
+			System.out.println("Deleted resource: " + resource.getName());
+
 			// Close EntityManager
 			try {
 				MariaDbConnection.terminate();
