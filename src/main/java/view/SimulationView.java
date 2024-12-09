@@ -20,6 +20,7 @@ public class SimulationView extends Application {
         stage.setScene(scene);
         stage.setTitle("World Economy Simulator");
         stage.setFullScreen(true);
+        stage.setFullScreenExitHint("");
         stage.setWidth(900);
         stage.setHeight(600);
         stage.show();
