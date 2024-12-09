@@ -7,12 +7,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class MenuController {
+public class MenuViewController {
     @FXML
     public void handleStartSimulation(ActionEvent event) {
         try {
@@ -20,7 +19,6 @@ public class MenuController {
             Parent root = fxmlLoader.load();
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/general-styles.css")).toExternalForm());
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);

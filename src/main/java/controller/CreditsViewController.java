@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class CreditsController {
+public class CreditsViewController {
     @FXML
     public void handleGoBack(ActionEvent event) {
         try {

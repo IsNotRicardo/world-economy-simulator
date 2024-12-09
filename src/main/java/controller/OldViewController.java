@@ -3,13 +3,12 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import model.simulation.Clock;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ViewController {
+public class OldViewController {
 
 	private Map<Integer, ResourceData> resourceMap = new HashMap<>();
 	private Map<Integer, CountryData> countryMap = new HashMap<>();
