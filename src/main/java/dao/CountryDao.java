@@ -67,7 +67,9 @@ public class CountryDao {
 	public List<ResourceEntity> findResourcesByCountryName(String countryName) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
-			return em.createQuery("SELECT r FROM CountryEntity c JOIN c.resources r WHERE c.name = :name", ResourceEntity.class)
+			return em.createQuery(
+					         "SELECT cr.resource FROM CountryEntity c JOIN c.countryResources cr WHERE c.name = :name",
+					         ResourceEntity.class)
 			         .setParameter("name", countryName)
 			         .getResultList();
 		} catch (Exception e) {
@@ -80,6 +82,9 @@ public class CountryDao {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
+			if (!em.contains(country)) {
+				country = em.merge(country);
+			}
 			em.remove(country);
 			em.getTransaction().commit();
 			logger.debug("Deleted country: {}", country.getName());
@@ -94,7 +99,8 @@ public class CountryDao {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			em.createQuery("DELETE FROM CountryEntity c WHERE c.name = :name").setParameter("name", name).executeUpdate();
+			em.createQuery("DELETE FROM CountryEntity c WHERE c.name = :name").setParameter("name", name)
+			  .executeUpdate();
 			em.getTransaction().commit();
 			logger.debug("Deleted country by name: {}", name);
 		} catch (Exception e) {
