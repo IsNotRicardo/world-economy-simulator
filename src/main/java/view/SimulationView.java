@@ -15,7 +15,6 @@ public class SimulationView extends Application {
         Parent root = fxmlLoader.load();
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/general-styles.css")).toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle("World Economy Simulator");
