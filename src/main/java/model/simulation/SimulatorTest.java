@@ -23,11 +23,11 @@ public class SimulatorTest {
         ownedResources.put(water, new ResourceNodeDTO(1, 100, 5.0, water));
         ownedResources.put(energy, new ResourceNodeDTO(1, 100, 15.0, energy));
 
-        Country country1 = new Country("Country1", 100_000_000, 1000000, starterResources, ownedResources);
-        Country country2 = new Country("Country2", 100_000_000, 1000000, starterResources, ownedResources);
+        Country country1 = new Country("Country1", 100_000_000, 1_000_000, starterResources, ownedResources);
+        Country country2 = new Country("Country2", 100_000_000, 1_000_000, starterResources, ownedResources);
         List<Country> countries = Arrays.asList(country1, country2);
 
-        SimulationConfig.setSimulationTime(200);
+        SimulationConfig.setSimulationTime(20);
         SimulationConfig.setSimulationDelay(1);
 
         // Create and run the simulator
