@@ -16,9 +16,9 @@ public class DefaultCountryDao {
 	public List<CountryEntity> findAll() throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_country";
-		String countryName = null;
-		double money = 0;
-		long population = 0;
+		String countryName;
+		double money;
+		long population;
 		List<CountryEntity> countries = new ArrayList<>();
 
 		try (

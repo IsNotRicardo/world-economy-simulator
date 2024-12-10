@@ -52,7 +52,7 @@ public class ResourceNode {
     }
     // End of Getters
 
-    int getMaxCapacity() {
+    public int getMaxCapacity() {
         return (int) Math.round(baseCapacity * (1 + tier * 0.1));
     }
 
@@ -60,7 +60,7 @@ public class ResourceNode {
         return (tier + 1) * baseProductionCost * SimulationConfig.getPopulationSegmentSize();
     }
 
-    double getProductionCost() {
+    public double getProductionCost() {
         double reductionFactor = Math.min(daysSinceLastProduction * 0.01, MAX_REDUCTION_PERCENTAGE);
         return baseProductionCost * (1 - reductionFactor);
     }

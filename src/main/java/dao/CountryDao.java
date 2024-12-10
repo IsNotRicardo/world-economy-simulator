@@ -78,6 +78,20 @@ public class CountryDao {
 		}
 	}
 
+	public long findCountryIdByName(String countryName) {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		try {
+			return em.createQuery("SELECT c.id FROM CountryEntity c WHERE c.name = :name", Long.class)
+			         .setParameter("name", countryName).getSingleResult();
+		} catch (NoResultException e) {
+			logger.debug("Country not found: {}", countryName);
+			return 0;
+		} catch (Exception e) {
+			logger.error("Error finding country by name: {}", countryName, e);
+			throw e;
+		}
+	}
+
 	public void delete(CountryEntity country) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();

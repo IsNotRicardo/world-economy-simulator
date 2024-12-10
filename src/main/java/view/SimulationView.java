@@ -6,8 +6,6 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
-import java.util.Objects;
-
 public class SimulationView extends Application {
     @Override
     public void start(Stage stage) throws Exception {

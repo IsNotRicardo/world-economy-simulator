@@ -56,6 +56,20 @@ public class ResourceDao {
 		}
 	}
 
+	public long findResourceIdByName(String resourceName) {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		try {
+			return em.createQuery("SELECT r.id FROM ResourceEntity r WHERE r.name = :name", Long.class)
+			         .setParameter("name", resourceName).getSingleResult();
+		} catch (NoResultException e) {
+			logger.debug("Resource not found: {}", resourceName);
+			return -1;
+		} catch (Exception e) {
+			logger.error("Error finding resource by name: {}", resourceName, e);
+			throw e;
+		}
+	}
+
 	public void deleteResourceByName(String resourceName) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
