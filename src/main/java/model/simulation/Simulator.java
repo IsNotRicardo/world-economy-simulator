@@ -1,5 +1,6 @@
 package model.simulation;
 
+import controller.SimulationController;
 import model.core.*;
 
 import java.util.List;
@@ -9,10 +10,12 @@ public class Simulator {
     private final Clock clock = Clock.getInstance();
     private final EventList eventList = new EventList();
 
+    private final SimulationController simulationController;
     private final List<Resource> resources;
     private final List<Country> countries;
 
-    public Simulator(List<Resource> resources, List<Country> countries) {
+    public Simulator(SimulationController simulationController, List<Resource> resources, List<Country> countries) {
+        this.simulationController = simulationController;
         this.resources = resources;
         this.countries = countries;
 
@@ -45,6 +48,7 @@ public class Simulator {
                 // Currently, there are no available conditions to check
 
                 saveMetrics();
+                updateController();
                 System.out.println("\nDay " + clock.getTime() + " completed.");
             }
             try {
@@ -136,6 +140,10 @@ public class Simulator {
 //                System.out.println("Demand: " + person.getDemand());
 //            }
         }
+    }
+
+    private void updateController() {
+        simulationController.updateData();
     }
 
     private void finalizeSimulation() {
