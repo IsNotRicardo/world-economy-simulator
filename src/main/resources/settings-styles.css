@@ -6,3 +6,8 @@
 .tooltipLabel:hover {
     -fx-cursor: hand;
 }
+
+.list-cell {
+    -fx-font-family: "Verdana";
+    -fx-font-size: 20px;
+}

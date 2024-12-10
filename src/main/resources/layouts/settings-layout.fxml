@@ -171,7 +171,7 @@
                     <content>
                         <BorderPane prefHeight="267.0" prefWidth="600.0">
                            <left>
-                              <ListView fx:id="resourceListView" maxHeight="1.7976931348623157E308" minHeight="100.0" prefWidth="250.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+                              <ListView fx:id="resourceListView" maxHeight="1.7976931348623157E308" minHeight="100.0" onMouseClicked="#handleResourceSelection" prefWidth="250.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
                            <BorderPane.margin>
                               <Insets right="30.0" />
                            </BorderPane.margin></ListView>
@@ -192,7 +192,7 @@
                      <center>
                         <VBox fx:id="resourceSettingsVBox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Label text="Add Resource">
+                              <Label fx:id="resourceItemsLabel" text="Insert Resource">
                                  <font>
                                     <Font name="Georgia" size="28.0" />
                                  </font>
@@ -253,7 +253,7 @@
                                           <Font name="Georgia" size="20.0" />
                                        </font>
                                     </TextField>
-                                    <Label fx:id="resourceNameErrorLabel1" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="resourcePriorityErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font name="Georgia Bold" size="16.0" />
                                        </font>
@@ -286,7 +286,7 @@
                                           <Font name="Georgia" size="20.0" />
                                        </font>
                                     </TextField>
-                                    <Label fx:id="resourceNameErrorLabel11" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="resourceBaseCapacityErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font name="Georgia Bold" size="16.0" />
                                        </font>
@@ -319,7 +319,7 @@
                                           <Font name="Georgia" size="20.0" />
                                        </font>
                                     </TextField>
-                                    <Label fx:id="resourceNameErrorLabel111" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="resourceProductionCostErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
                                        <font>
                                           <Font name="Georgia Bold" size="16.0" />
                                        </font>
