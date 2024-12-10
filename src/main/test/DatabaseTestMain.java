@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class DatabaseTestMain {
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) {
 		try {
 			// Initialize database and run SQL files
 			MariaDbConnection.executeSqlFile("simulationDb.sql");
@@ -24,12 +24,12 @@ public class DatabaseTestMain {
 			// Create Resources
 			ResourceEntity silver = new ResourceEntity("Silver", 1, 100, 10);
 			ResourceEntity platinum = new ResourceEntity("Platinum", 0.8, 200, 20);
-			ResourceEntity maplesyrup = new ResourceEntity("Maple Syrup", 0.2, 300, 30);
+			ResourceEntity mapleSyrup = new ResourceEntity("Maple Syrup", 0.2, 300, 30);
 
 			// Persist Resources
 			resourceDao.persist(silver);
 			resourceDao.persist(platinum);
-			resourceDao.persist(maplesyrup);
+			resourceDao.persist(mapleSyrup);
 
 			// Create Countries
 			CountryEntity usa = new CountryEntity("USA", 1000, 100000);
@@ -40,7 +40,7 @@ public class DatabaseTestMain {
 			CountryResource usaPlatinum = new CountryResource(usa, platinum, 30);
 			CountryResource canadaSilver = new CountryResource(canada, silver, 20);
 			CountryResource canadaPlatinum = new CountryResource(canada, platinum, 10);
-			CountryResource canadaMapleSyrup = new CountryResource(canada, maplesyrup, 5);
+			CountryResource canadaMapleSyrup = new CountryResource(canada, mapleSyrup, 5);
 
 			// Add CountryResource to countries
 			Set<CountryResource> usaResources = new HashSet<>();
@@ -72,7 +72,8 @@ public class DatabaseTestMain {
 
 			// Create and Persist Resource Node Metrics
 			ResourceNodeMetricsEntity usaSilverNodeMetrics = new ResourceNodeMetricsEntity(1, usa, silver, 10, 100, 1);
-			ResourceNodeMetricsEntity canadaMapleSyrupNodeMetrics = new ResourceNodeMetricsEntity(1, canada, maplesyrup, 5, 50, 1);
+			ResourceNodeMetricsEntity canadaMapleSyrupNodeMetrics =
+					new ResourceNodeMetricsEntity(1, canada, mapleSyrup, 5, 50, 1);
 			resourceNodeMetricsDao.persist(usaSilverNodeMetrics);
 			resourceNodeMetricsDao.persist(canadaMapleSyrupNodeMetrics);
 
