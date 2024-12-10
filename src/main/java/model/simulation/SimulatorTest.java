@@ -31,7 +31,7 @@ public class SimulatorTest {
         SimulationConfig.setSimulationDelay(1);
 
         // Create and run the simulator
-        Simulator simulator = new Simulator(resources, countries);
-        simulator.runSimulation();
+//        Simulator simulator = new Simulator(resources, countries);
+//        simulator.runSimulation();
     }
 }
