@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import entity.CountryEntity;
 import model.core.Country;
 import model.core.Resource;
 import model.core.ResourceNodeDTO;
@@ -18,8 +19,8 @@ public class SettingsViewController {
     private static final int TAB_HEIGHT = 48;
 
     private List<Resource> resourceList = new ArrayList<>();
-    private List<Country> countryList = new ArrayList<>();
-    private Map<Country, Map<Resource, ResourceNodeDTO>> countryResourceNodes = new HashMap<>();
+    private List<CountryEntity> countryList = new ArrayList<>();
+    private Map<CountryEntity, Map<Resource, ResourceNodeDTO>> countryResourceNodes = new HashMap<>();
 
     private boolean isResourceEditingMode;
     private boolean isCountryEditingMode;
@@ -27,7 +28,7 @@ public class SettingsViewController {
 
     private int currentResourceIndex;
     private int currentCountryIndex;
-    private Country selectedCountry;
+    private CountryEntity selectedCountry;
     private Resource selectedResource;
 
     @FXML
@@ -199,13 +200,6 @@ public class SettingsViewController {
         });
         changeCountryButtonVisibility(false);
 
-        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
-            if (newTab.getText().equals("Resource Nodes")) {
-                populateCountryComboBox();
-                populateResourceComboBox();
-            }
-        });
-
         resourceNodeSettingsVBox.getChildren().forEach(child -> {
             if (child instanceof Label) {
                 VBox.setMargin(child, titleMargin);
@@ -214,6 +208,43 @@ public class SettingsViewController {
             }
         });
         changeResourceNodeButtonVisibility(false);
+
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab.getText().equals("Resource Nodes")) {
+                populateCountryComboBox();
+                resourceNodeListView.getItems().clear();
+                resourceComboBox.getItems().clear();
+                clearResourceNodeFields();
+            }
+        });
+
+        resourceComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedResource = resourceList.stream()
+                        .filter(resource -> resource.name().equals(newValue))
+                        .findFirst()
+                        .orElse(null);
+
+                if (selectedCountry != null && selectedResource != null) {
+                    Map<Resource, ResourceNodeDTO> resourceNodes = countryResourceNodes.get(selectedCountry);
+                    if (resourceNodes != null && resourceNodes.containsKey(selectedResource)) {
+                        changeResourceNodeButtonVisibility(false);
+                    }
+                }
+            }
+        });
+
+        countryComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedCountry = countryList.stream()
+                        .filter(country -> country.getName().equals(newValue))
+                        .findFirst()
+                        .orElse(null);
+                populateResourceNodeListView();
+                populateResourceComboBox();
+                clearResourceNodeFields();
+            }
+        });
     }
 
     private void validateGeneralField(TextField textField, Label errorLabel, int defaultValue, int minValue, String errorMessage) {
@@ -423,13 +454,6 @@ public class SettingsViewController {
         countryListView.getSelectionModel().clearSelection();
     }
 
-    private void populateResourceComboBox() {
-        resourceComboBox.getItems().clear();
-        for (Resource resource : resourceList) {
-            resourceComboBox.getItems().add(resource.name());
-        }
-    }
-
     @FXML
     public void addCountry() {
         if (validateCountryFields()) {
@@ -437,7 +461,7 @@ public class SettingsViewController {
             double initialMoney = Double.parseDouble(countryInitialMoneyField.getText());
             int initialPopulation = Integer.parseInt(countryInitialPopulationField.getText());
 
-            Country newCountry = new Country(name, initialMoney, initialPopulation, new HashMap<>(), new HashMap<>());
+            CountryEntity newCountry = new CountryEntity(name, initialMoney, initialPopulation);
             countryList.add(newCountry);
             countryListView.getItems().add(name);
             clearCountryFields();
@@ -461,7 +485,7 @@ public class SettingsViewController {
         int selectedIndex = countryListView.getSelectionModel().getSelectedIndex();
 
         if (selectedIndex != -1) {
-            Country selectedCountry = countryList.get(selectedIndex);
+            CountryEntity selectedCountry = countryList.get(selectedIndex);
             countryNameField.setText(selectedCountry.getName());
             countryInitialMoneyField.setText(String.valueOf(selectedCountry.getMoney()));
             countryInitialPopulationField.setText(String.valueOf(selectedCountry.getPopulation()));
@@ -479,7 +503,7 @@ public class SettingsViewController {
                 double initialMoney = Double.parseDouble(countryInitialMoneyField.getText());
                 int initialPopulation = Integer.parseInt(countryInitialPopulationField.getText());
 
-                Country updatedCountry = new Country(name, initialMoney, initialPopulation, new HashMap<>(), new HashMap<>());
+                CountryEntity updatedCountry = new CountryEntity(name, initialMoney, initialPopulation);
                 countryList.set(selectedIndex, updatedCountry);
                 countryListView.getItems().set(selectedIndex, name);
                 countryListView.getSelectionModel().select(selectedIndex);
@@ -505,13 +529,6 @@ public class SettingsViewController {
                 clearCountryFields();
                 changeCountryButtonVisibility(false);
             }
-        }
-    }
-
-    private void populateCountryComboBox() {
-        countryComboBox.getItems().clear();
-        for (Country country : countryList) {
-            countryComboBox.getItems().add(country.getName());
         }
     }
 
@@ -544,6 +561,9 @@ public class SettingsViewController {
             ResourceNodeDTO newResourceNode = new ResourceNodeDTO(tier, baseCapacity, productionCost, selectedResource);
             countryResourceNodes.computeIfAbsent(selectedCountry, k -> new HashMap<>()).put(selectedResource, newResourceNode);
             resourceNodeListView.getItems().add(selectedResource.name());
+
+            populateResourceComboBox();
+            selectedResource = null;
             clearResourceNodeFields();
         }
     }
@@ -559,18 +579,28 @@ public class SettingsViewController {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isEmpty() || result.get() != ButtonType.OK) {
-                resourceNodeListView.getSelectionModel().select(selectedResource.name());
                 return;
             }
         }
         int selectedIndex = resourceNodeListView.getSelectionModel().getSelectedIndex();
 
         if (selectedIndex != -1) {
-            ResourceNodeDTO selectedNode = countryResourceNodes.get(selectedCountry).get(selectedResource);
-            resourceNodeTierField.setText(String.valueOf(selectedNode.tier()));
-            resourceNodeBaseCapacityField.setText(String.valueOf(selectedNode.baseCapacity()));
-            resourceNodeProductionCostField.setText(String.valueOf(selectedNode.productionCost()));
-            changeResourceNodeButtonVisibility(true);
+            String selectedResourceName = resourceNodeListView.getItems().get(selectedIndex);
+            selectedResource = resourceList.stream()
+                    .filter(resource -> resource.name().equals(selectedResourceName))
+                    .findFirst()
+                    .orElse(null);
+
+            if (selectedResource != null) {
+                ResourceNodeDTO selectedNode = countryResourceNodes.get(selectedCountry).get(selectedResource);
+
+                resourceNodeTierField.setText(String.valueOf(selectedNode.tier()));
+                resourceNodeBaseCapacityField.setText(String.valueOf(selectedNode.baseCapacity()));
+                resourceNodeProductionCostField.setText(String.valueOf(selectedNode.productionCost()));
+
+                resourceComboBox.getSelectionModel().select(selectedResource.name());
+                changeResourceNodeButtonVisibility(true);
+            }
         }
     }
 
@@ -583,7 +613,6 @@ public class SettingsViewController {
 
             ResourceNodeDTO updatedResourceNode = new ResourceNodeDTO(tier, baseCapacity, productionCost, selectedResource);
             countryResourceNodes.get(selectedCountry).put(selectedResource, updatedResourceNode);
-            clearResourceNodeFields();
         }
     }
 
@@ -594,6 +623,35 @@ public class SettingsViewController {
             countryResourceNodes.get(selectedCountry).remove(selectedResource);
             resourceNodeListView.getItems().remove(selectedIndex);
             clearResourceNodeFields();
+        }
+    }
+
+    private void populateResourceNodeListView() {
+        resourceNodeListView.getItems().clear();
+        if (selectedCountry != null) {
+            Map<Resource, ResourceNodeDTO> resourceNodes = countryResourceNodes.get(selectedCountry);
+            if (resourceNodes != null) {
+                resourceNodes.forEach((resource, resourceNode) -> resourceNodeListView.getItems().add(resource.name()));
+            }
+        }
+    }
+
+    private void populateResourceComboBox() {
+        resourceComboBox.getItems().clear();
+        if (selectedCountry != null) {
+            Map<Resource, ResourceNodeDTO> resourceNodes = countryResourceNodes.get(selectedCountry);
+            for (Resource resource : resourceList) {
+                if (resourceNodes == null || !resourceNodes.containsKey(resource)) {
+                    resourceComboBox.getItems().add(resource.name());
+                }
+            }
+        }
+    }
+
+    private void populateCountryComboBox() {
+        countryComboBox.getItems().clear();
+        for (CountryEntity country : countryList) {
+            countryComboBox.getItems().add(country.getName());
         }
     }
 
@@ -671,7 +729,7 @@ public class SettingsViewController {
 
     private boolean resolveIsCountryNotSaved() {
         if (isCountryEditingMode) {
-            Country savedCountry = countryList.get(currentCountryIndex);
+            CountryEntity savedCountry = countryList.get(currentCountryIndex);
             String savedName = savedCountry.getName();
             String savedInitialMoney = String.valueOf(savedCountry.getMoney());
             String savedInitialPopulation = String.valueOf(savedCountry.getPopulation());
@@ -718,8 +776,28 @@ public class SettingsViewController {
 
     private boolean resolveIsResourceNodeNotSaved() {
         if (isResourceNodeEditingMode) {
-            // Handle unsaved changes
-            return true;
+            int selectedIndex = resourceNodeListView.getSelectionModel().getSelectedIndex();
+            if (selectedIndex != -1) {
+                ResourceNodeDTO currentResourceNode = countryResourceNodes.get(selectedCountry).get(selectedResource);
+                if (currentResourceNode != null) {
+                    int tier = Integer.parseInt(resourceNodeTierField.getText());
+                    int baseCapacity = Integer.parseInt(resourceNodeBaseCapacityField.getText());
+                    double productionCost = Double.parseDouble(resourceNodeProductionCostField.getText());
+
+                    if (currentResourceNode.tier() != tier ||
+                            currentResourceNode.baseCapacity() != baseCapacity ||
+                            currentResourceNode.productionCost() != productionCost) {
+                        return true;
+                    }
+                }
+            }
+        } else {
+            if (!resourceNodeTierField.getText().isEmpty() ||
+                    !resourceNodeBaseCapacityField.getText().isEmpty() ||
+                    !resourceNodeProductionCostField.getText().isEmpty() ||
+                    resourceComboBox.getSelectionModel().getSelectedItem() != null) {
+                return true;
+            }
         }
         return false;
     }
@@ -728,6 +806,8 @@ public class SettingsViewController {
         resourceNodeTierField.setText("");
         resourceNodeBaseCapacityField.setText("");
         resourceNodeProductionCostField.setText("");
+        resourceComboBox.getSelectionModel().clearSelection();
+        selectedResource = null;
 
         resourceNodeTierErrorLabel.setText("");
         resourceNodeBaseCapacityErrorLabel.setText("");
