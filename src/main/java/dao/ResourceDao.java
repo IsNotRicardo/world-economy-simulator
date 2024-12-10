@@ -1,132 +1,84 @@
 package dao;
 
-import datasource.MariaDbConnection;
-import model.core.Resource;
-import model.core.ResourceCategory;
+import entity.ResourceEntity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);
 
-	String name;
-	String category;
-	double priority;
-	int baseCapacity;
-	double productionCost;
-	int count;
-
-	public void createResource(String name, int category, double priority, int baseCapacity, double productionCost)
-			throws SQLException {
-		logger.debug("Creating resource: {}", name);
-		Connection conn = MariaDbConnection.getConnection();
-		String sql = String.format(
-				"INSERT INTO resource (name, category, priority, base_capacity, production_cost) VALUES ('%s', %d, %f, %d, %f)",
-				name, category, priority, baseCapacity, productionCost);
+	public void persist(ResourceEntity resourceEntity) {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		em.getTransaction().begin();
 		try {
-			conn.createStatement().executeUpdate(sql);
-			logger.debug("Successfully created resource: {}", name);
-		} catch (SQLException e) {
-			logger.error("Failed to create resource: {}", name, e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	public void updateResource(String name, int category, double priority, int baseCapacity, double productionCost)
-			throws SQLException {
-		logger.debug("Updating resource: {}", name);
-		Connection conn = MariaDbConnection.getConnection();
-		String sql = String.format(
-				"UPDATE resource SET category = %d, priority = %f, base_capacity = %d, production_cost = %f WHERE name = '%s'",
-				category, priority, baseCapacity, productionCost, name);
-		try {
-			conn.createStatement().executeUpdate(sql);
-			logger.debug("Successfully updated resource: {}", name);
-		} catch (SQLException e) {
-			logger.error("Failed to update resource: {}", name, e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	public void deleteResource(String name) throws SQLException {
-		logger.debug("Deleting resource: {}", name);
-		Connection conn = MariaDbConnection.getConnection();
-		String sql = String.format("DELETE FROM resource WHERE name = '%s'", name);
-		try {
-			conn.createStatement().executeUpdate(sql);
-			logger.debug("Successfully deleted resource: {}", name);
-		} catch (SQLException e) {
-			logger.error("Failed to delete resource: {}", name, e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	public Resource getResource(String name) throws SQLException {
-		logger.debug("Fetching resource: {}", name);
-		Connection conn = MariaDbConnection.getConnection();
-		String sql = String.format("SELECT * FROM resource WHERE name = '%s'", name);
-		int count = 0;
-		String category = null;
-		double priority = 0;
-		int baseCapacity = 0;
-		double productionCost = 0;
-
-		try {
-			Statement s = conn.createStatement();
-			ResultSet rs = s.executeQuery(sql);
-			if (rs.next()) {
-				count++;
-				category = rs.getString("category").toUpperCase();
-				priority = rs.getDouble("priority");
-				baseCapacity = rs.getInt("base_capacity");
-				productionCost = rs.getDouble("production_cost");
+			ResourceEntity existingResourceEntity = findByName(resourceEntity.getName());
+			if (existingResourceEntity != null) {
+				if (existingResourceEntity.getPriority() != resourceEntity.getPriority()) {
+					existingResourceEntity.setPriority(resourceEntity.getPriority());
+				}
+				if (existingResourceEntity.getBaseCapacity() != resourceEntity.getBaseCapacity()) {
+					existingResourceEntity.setBaseCapacity(resourceEntity.getBaseCapacity());
+				}
+				if (existingResourceEntity.getProductionCost() != resourceEntity.getProductionCost()) {
+					existingResourceEntity.setProductionCost(resourceEntity.getProductionCost());
+				}
+				em.merge(existingResourceEntity);
+				logger.debug("Updated existing resource: {}", resourceEntity.getName());
+			} else {
+				em.persist(resourceEntity);
+				logger.debug("Persisted new resource: {}", resourceEntity.getName());
 			}
-		} catch (SQLException e) {
-			logger.error("Failed to get resource: {}", name, e);
-			throw new RuntimeException(e);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			logger.error("Error persisting resource: {}", resourceEntity.getName(), e);
+			throw e;
 		}
+	}
 
-		if (count == 1) {
-			logger.debug("Resource found: {}", name);
-			return new Resource(name, ResourceCategory.valueOf(category), priority, baseCapacity, productionCost);
-		} else {
+	public ResourceEntity findByName(String name) {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		try {
+			return em.createQuery("SELECT r FROM ResourceEntity r WHERE r.name = :name", ResourceEntity.class)
+			         .setParameter("name", name)
+			         .getSingleResult();
+		} catch (NoResultException e) {
 			logger.debug("Resource not found: {}", name);
 			return null;
+		} catch (Exception e) {
+			logger.error("Error finding resource by name: {}", name, e);
+			throw e;
 		}
 	}
 
-	public List<Resource> getAllResources() throws SQLException {
-		logger.debug("Fetching all resources");
-		Connection conn = MariaDbConnection.getConnection();
-		String sql = "SELECT * FROM resource";
-		List<Resource> resources = new ArrayList<>();
-
+	public void deleteResourceByName(String resourceName) {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		em.getTransaction().begin();
 		try {
-			Statement s = conn.createStatement();
-			ResultSet rs = s.executeQuery(sql);
-			while (rs.next()) {
-				String name = rs.getString("name");
-				String category = rs.getString("category").toUpperCase();
-				double priority = rs.getDouble("priority");
-				int baseCapacity = rs.getInt("base_capacity");
-				double productionCost = rs.getDouble("production_cost");
-				Resource resource = new Resource(name, ResourceCategory.valueOf(category), priority, baseCapacity,
-				                                 productionCost);
-				resources.add(resource);
-			}
-		} catch (SQLException e) {
-			logger.error("Failed to get all resources", e);
-			throw new RuntimeException(e);
+			em.createQuery("DELETE FROM ResourceEntity c WHERE c.name = :name")
+			  .setParameter("name", resourceName)
+			  .executeUpdate();
+			em.getTransaction().commit();
+			logger.debug("Deleted country: {}", resourceName);
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			logger.error("Error deleting country: {}", resourceName, e);
+			throw e;
 		}
-		logger.debug("Successfully fetched {} resources", resources.size());
-		return resources;
+	}
+
+	public List<ResourceEntity> findAll() {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		try {
+			return em.createQuery("SELECT r FROM ResourceEntity r", ResourceEntity.class).getResultList();
+		} catch (Exception e) {
+			logger.error("Error finding all resources", e);
+			throw e;
+		}
 	}
 }

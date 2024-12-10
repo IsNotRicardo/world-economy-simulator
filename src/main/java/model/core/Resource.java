@@ -1,6 +1,6 @@
 package model.core;
 
-public record Resource (String name, ResourceCategory category, double priority, int baseCapacity,
+public record Resource (String name, double priority, int baseCapacity,
                         double productionCost) {
 
     public Resource {
