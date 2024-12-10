@@ -7,9 +7,9 @@ import java.util.*;
 public class SimulatorTest {
     public static void main(String[] args) {
         // Create resources
-        Resource food = new Resource("Food", ResourceCategory.FOOD, 0.8, 100, 10.0);
-        Resource water = new Resource("Water", ResourceCategory.WATER, 0.9, 100, 5.0);
-        Resource energy = new Resource("Energy", ResourceCategory.ENERGY, 0.7, 100, 15.0);
+        Resource food = new Resource("Food", 0.8, 100, 10.0);
+        Resource water = new Resource("Water", 0.9, 100, 5.0);
+        Resource energy = new Resource("Energy", 0.7, 100, 15.0);
         List<Resource> resources = Arrays.asList(food, water, energy);
 
         // Create countries
