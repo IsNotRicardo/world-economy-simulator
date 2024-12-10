@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS country_resource
 
 DELIMITER //
 
-CREATE PROCEDURE insert_country_resource()
+CREATE PROCEDURE IF NOT EXISTS insert_country_resource()
 BEGIN
     IF (
         (SELECT COUNT(*) FROM country) = (SELECT COUNT(*) FROM default_country) AND
