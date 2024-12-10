@@ -3,7 +3,6 @@ config.properties
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-config.properties
 
 ### IntelliJ IDEA ###
 .idea/
