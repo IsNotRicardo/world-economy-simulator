@@ -40,10 +40,25 @@ public class CountryMetricsDao {
 		}
 	}
 
+	public CountryMetricsEntity findByCountryAndDay(CountryEntity country, int day) {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+
+		try {
+			return em.createQuery(
+					         "SELECT c FROM CountryMetricsEntity c WHERE c.country.id = :countryId AND c.day = :day",
+					         CountryMetricsEntity.class).setParameter("countryId", country.getId())
+			         .setParameter("day", day).getSingleResult();
+		} catch (Exception e) {
+			logger.error("Error finding country metrics by country and day", e);
+			throw e;
+		}
+	}
+
 	public List<CountryMetricsEntity> findAll() {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
-			return em.createQuery("SELECT c FROM CountryMetricsEntity c", CountryMetricsEntity.class).getResultList();
+			return em.createQuery("SELECT c FROM CountryMetricsEntity c", CountryMetricsEntity.class)
+			         .getResultList();
 		} catch (Exception e) {
 			logger.error("Error finding all country metrics", e);
 			throw e;
