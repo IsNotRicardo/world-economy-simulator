@@ -19,6 +19,10 @@ public class Event implements Comparable<Event> {
 
     @Override
     public int compareTo(Event other) {
-        return Double.compare(this.time, other.time);
+        int timeComparison = Integer.compare(this.time, other.time);
+        if (timeComparison != 0) {
+            return timeComparison;
+        }
+        return Integer.compare(this.type.ordinal(), other.type.ordinal());
     }
 }

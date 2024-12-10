@@ -12,7 +12,7 @@ public class SimulationController {
 
     public SimulationController(SimulationConfig config) {
         this.eventList = new EventList();
-//        this.simulator = new Simulator();
+//        this.simulator = new Simulator(config, eventList);
         this.isRunning = false;
     }
 
