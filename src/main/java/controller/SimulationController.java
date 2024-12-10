@@ -1,70 +1,69 @@
 package controller;
 
-import model.simulation.Event;
-import model.simulation.EventList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import model.core.Country;
+import model.core.Resource;
+import model.simulation.Clock;
 import model.simulation.SimulationConfig;
 import model.simulation.Simulator;
 
+import java.util.List;
+
 public class SimulationController {
-    private final EventList eventList;
-//    private final Simulator simulator;
-    private boolean isRunning;
+	private Country selectedCountry;
+	private Resource selectedResource;
+	private Resource selectedResourceNode;
 
-    public SimulationController(SimulationConfig config) {
-        this.eventList = new EventList();
-//        this.simulator = new Simulator(config, eventList);
-        this.isRunning = false;
-    }
+	@FXML
+	private Button toggleSimulationButton;
+	@FXML
+	private TextField daysTextField;
+	@FXML
+	private Label delayWarningLabel;
+	@FXML
+	private TextField delayTextField;
 
-	public void startSimulation() {
-		isRunning = true;
-		while (isRunning && eventList.hasMoreEvents()) {
-			Event event = eventList.getNextEvent();
-			processEvent(event);
+	@FXML
+	private void initialize() {
+		delayWarningLabel.setVisible(false);
+		delayWarningLabel.setManaged(false);
+	}
+
+	public void initialize(List<Resource> resources, List<Country> countries) {
+		Simulator simulator = new Simulator(this, resources, countries);
+		simulator.runSimulation();
+	}
+
+	public void updateData() {
+		int currentDay = Clock.getInstance().getTime();
+		daysTextField.setText(String.valueOf(currentDay));
+	}
+
+	@FXML
+	public void toggleSimulation() {
+		if (Clock.getInstance().isPaused()) {
+			Clock.getInstance().resume();
+			toggleSimulationButton.setText("Pause");
+		} else {
+			Clock.getInstance().pause();
+			toggleSimulationButton.setText("Resume");
 		}
 	}
 
-	public void pauseSimulation() {
-		isRunning = false;
-	}
-
-	public void resumeSimulation() {
-		isRunning = true;
-		startSimulation();
-	}
-
-	public void stopSimulation() {
-		isRunning = false;
-		eventList.getEventQueue().clear();
-	}
-
-	private void processEvent(Event event) {
-		switch (event.getType()) {
-			case OBTAIN_RESOURCES:
-				handleObtainResourcesEvent(event);
-				break;
-			case SERVE_PEOPLE:
-				handleServePeopleEvent(event);
-				break;
-			case REQUEST_RESOURCES:
-				handleRequestResourcesEvent(event);
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown event type: " + event.getType());
+	@FXML
+	public void updateDelay() {
+		try {
+			int newDelay = Integer.parseInt(delayTextField.getText());
+			SimulationConfig.setSimulationDelay(newDelay);
+			delayWarningLabel.setVisible(false);
+			delayWarningLabel.setManaged(false);
+		} catch (IllegalArgumentException e) {
+			delayWarningLabel.setVisible(true);
+			delayWarningLabel.setManaged(true);
+			delayTextField.setText(String.valueOf(SimulationConfig.getSimulationDelay()));
 		}
-	}
-
-	private void handleObtainResourcesEvent(Event event) {
-		// Implement obtain resources event handling logic
-	}
-
-	private void handleServePeopleEvent(Event event) {
-		// Implement serve people event handling logic
-	}
-
-	private void handleRequestResourcesEvent(Event event) {
-		// Implement request resources event handling logic
 	}
 }
-
-// the controller should get the simulation configuration from the view, bacically the user input and pass it to the model
