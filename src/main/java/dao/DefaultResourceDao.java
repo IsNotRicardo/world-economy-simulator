@@ -15,10 +15,10 @@ public class DefaultResourceDao {
 	public List<ResourceEntity> findAll() throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_resource";
-		String name = null;
-		double priority = 0;
-		int baseCapacity = 0;
-		double productionCost = 0;
+		String name;
+		double priority;
+		int baseCapacity;
+		double productionCost;
 		List<ResourceEntity> resourceEntities = new ArrayList<>();
 
 		try (Statement stmt = conn.createStatement();
