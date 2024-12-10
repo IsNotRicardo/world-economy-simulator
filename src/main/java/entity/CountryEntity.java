@@ -73,4 +73,10 @@ public class CountryEntity {
 	public void setCountryResources(Set<CountryResource> countryResources) {
 		this.countryResources = countryResources;
 	}
+
+	@Override
+	public String toString() {
+		return "CountryEntity [" + "id=" + id + ", name='" + name + '\'' + ", money=" + money + ", population=" +
+		       population + ']';
+	}
 }
