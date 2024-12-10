@@ -3,7 +3,6 @@ package controller;
 import model.simulation.Event;
 import model.simulation.EventList;
 import model.simulation.SimulationConfig;
-import model.simulation.Simulator;
 
 public class SimulationController {
     private final EventList eventList;
@@ -67,4 +66,5 @@ public class SimulationController {
 	}
 }
 
-// the controller should get the simulation configuration from the view, bacically the user input and pass it to the model
+// the controller should get the simulation configuration from the view, basically the user input and pass it to the
+// model
