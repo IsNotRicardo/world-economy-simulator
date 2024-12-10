@@ -23,7 +23,7 @@ public class Country {
     private double money;
     private long population;
 
-    public Country(String name, double initialMoney, int initialPopulation,
+    public Country(String name, double initialMoney, long initialPopulation,
                    Map<Resource, Integer> starterResources, Map<Resource, ResourceNodeDTO> ownedResources) {
         if (initialMoney < 0) {
             throw new IllegalArgumentException("Initial money cannot be negative.");
