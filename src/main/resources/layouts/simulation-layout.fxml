@@ -15,7 +15,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SimulationController">
    <center>
-      <LineChart BorderPane.alignment="CENTER">
+      <LineChart fx:id="lineChart" BorderPane.alignment="CENTER">
         <xAxis>
           <CategoryAxis side="BOTTOM" />
         </xAxis>
@@ -27,11 +27,11 @@
    <left>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <ComboBox prefWidth="150.0" />
-            <Button layoutX="15.0" layoutY="170.0" mnemonicParsing="false" text="Population" />
-            <Button mnemonicParsing="false" text="Money" />
-            <Button layoutX="15.0" layoutY="183.0" mnemonicParsing="false" text="Average Happiness" />
-            <Button mnemonicParsing="false" text="Individual Budget" />
+            <ComboBox fx:id="countryComboBox" prefWidth="150.0" />
+            <Button layoutX="15.0" layoutY="170.0" mnemonicParsing="false" text="Population" onAction="#handlePopulationButton" />
+            <Button mnemonicParsing="false" text="Money" onAction="#handleMoneyButton" />
+            <Button layoutX="15.0" layoutY="183.0" mnemonicParsing="false" text="Average Happiness" onAction="#handleAverageHappinessButton" />
+            <Button mnemonicParsing="false" text="Individual Budget" onAction="#handleIndividualBudgetButton" />
          </children>
          <BorderPane.margin>
             <Insets left="20.0" />
@@ -41,13 +41,13 @@
    <right>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <ComboBox prefWidth="150.0" />
-            <Button mnemonicParsing="false" text="Quantity" />
-            <Button layoutX="29.0" layoutY="157.0" mnemonicParsing="false" text="Value" />
-            <ComboBox layoutX="10.0" layoutY="157.0" prefWidth="150.0" />
-            <Button layoutX="37.0" layoutY="170.0" mnemonicParsing="false" text="Production Cost" />
-            <Button layoutX="10.0" layoutY="208.0" mnemonicParsing="false" text="Max Capacity" />
-            <Button layoutX="10.0" layoutY="221.0" mnemonicParsing="false" text="Tier" />
+            <ComboBox fx:id="resourceComboBox" prefWidth="150.0" />
+            <Button mnemonicParsing="false" text="Quantity" onAction="#handleQuantityButton" />
+            <Button layoutX="29.0" layoutY="157.0" mnemonicParsing="false" text="Value" onAction="#handleValueButton" />
+            <ComboBox fx:id="resourceNodeComboBox" layoutX="10.0" layoutY="157.0" prefWidth="150.0" />
+            <Button layoutX="37.0" layoutY="170.0" mnemonicParsing="false" text="Production Cost" onAction="#handleProductionCostButton" />
+            <Button layoutX="10.0" layoutY="208.0" mnemonicParsing="false" text="Max Capacity" onAction="#handleMaxCapacityButton" />
+            <Button layoutX="10.0" layoutY="221.0" mnemonicParsing="false" text="Tier" onAction="#handleTierButton" />
          </children>
          <BorderPane.margin>
             <Insets right="20.0" />
