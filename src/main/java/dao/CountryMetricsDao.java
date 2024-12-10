@@ -3,12 +3,9 @@ package dao;
 import entity.CountryEntity;
 import entity.CountryMetricsEntity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Persistence;
-import model.core.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CountryMetricsDao {
