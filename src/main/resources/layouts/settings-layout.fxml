@@ -361,12 +361,163 @@
                         </BorderPane>
                     </content>
                 </Tab>
-                <Tab text="Countries">
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
-                </Tab>
-                <Tab text="Confirm">
+               <Tab text="Countries">
+                  <content>
+                     <BorderPane prefHeight="267.0" prefWidth="600.0">
+                        <left>
+                           <ListView fx:id="countryListView" maxHeight="1.7976931348623157E308" minHeight="100.0" onMouseClicked="#handleCountrySelection" prefWidth="250.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+                              <BorderPane.margin>
+                                 <Insets right="30.0" />
+                              </BorderPane.margin>
+                           </ListView>
+                        </left>
+                        <top>
+                           <Label prefHeight="17.0" prefWidth="601.0" text="Country Configurations" BorderPane.alignment="CENTER_LEFT">
+                              <font>
+                                 <Font name="Bell MT Bold" size="32.0" />
+                              </font>
+                              <padding>
+                                 <Insets bottom="30.0" />
+                              </padding>
+                           </Label>
+                        </top>
+                        <padding>
+                           <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                        </padding>
+                        <center>
+                           <VBox fx:id="countrySettingsVBox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                              <children>
+                                 <Label fx:id="countryItemsLabel" text="Insert Country">
+                                    <font>
+                                       <Font name="Georgia" size="28.0" />
+                                    </font>
+                                    <VBox.margin>
+                                       <Insets />
+                                    </VBox.margin>
+                                 </Label>
+                                 <HBox>
+                                    <children>
+                                       <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="•">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets right="10.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                       <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Name:">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <TextField fx:id="countryNameField" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0">
+                                          <font>
+                                             <Font name="Georgia" size="20.0" />
+                                          </font>
+                                       </TextField>
+                                       <Label fx:id="countryNameErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font name="Georgia Bold" size="16.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets left="30.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                    </children>
+                                 </HBox>
+                                 <HBox>
+                                    <children>
+                                       <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="•">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets right="10.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                       <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Initial Money:">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <TextField fx:id="countryInitialMoneyField" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0">
+                                          <font>
+                                             <Font name="Georgia" size="20.0" />
+                                          </font>
+                                       </TextField>
+                                       <Label fx:id="countryInitialMoneyErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font name="Georgia Bold" size="16.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets left="30.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                    </children>
+                                 </HBox>
+                                 <HBox>
+                                    <children>
+                                       <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="•">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets right="10.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                       <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Initial Population:">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <TextField fx:id="countryInitialPopulationField" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0">
+                                          <font>
+                                             <Font name="Georgia" size="20.0" />
+                                          </font>
+                                       </TextField>
+                                       <Label fx:id="countryInitialPopulationErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font name="Georgia Bold" size="16.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets left="30.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                    </children>
+                                 </HBox>
+                                 <HBox maxWidth="400.0" prefHeight="100.0" prefWidth="200.0">
+                                    <children>
+                                       <Button minWidth="70.0" mnemonicParsing="false" onAction="#newCountry" text="New">
+                                          <font>
+                                             <Font name="Bell MT Bold" size="20.0" />
+                                          </font>
+                                       </Button>
+                                       <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                                       <Button fx:id="addCountryButton" layoutX="10.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" onAction="#addCountry" text="Add">
+                                          <font>
+                                             <Font name="Bell MT Bold" size="20.0" />
+                                          </font>
+                                       </Button>
+                                       <Button fx:id="saveCountryButton" layoutX="50.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" onAction="#saveCountry" text="Save">
+                                          <font>
+                                             <Font name="Bell MT Bold" size="20.0" />
+                                          </font>
+                                       </Button>
+                                       <Region fx:id="countryOptionalRegion" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                                       <Button fx:id="deleteCountryButton" layoutX="88.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" onAction="#deleteCountry" text="Delete">
+                                          <font>
+                                             <Font name="Bell MT Bold" size="20.0" />
+                                          </font>
+                                       </Button>
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                        </center>
+                     </BorderPane>
+                  </content>
+               </Tab>
+                <Tab text="Resource Nodes">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                     </content>
