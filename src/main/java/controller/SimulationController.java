@@ -1,70 +1,233 @@
 package controller;
 
-import model.simulation.Event;
-import model.simulation.EventList;
+import javafx.fxml.FXML;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import model.core.Country;
+import model.core.Resource;
+import model.simulation.Clock;
 import model.simulation.SimulationConfig;
+import model.simulation.Simulator;
+
+import java.util.List;
 
 public class SimulationController {
-    private final EventList eventList;
-//    private final Simulator simulator;
-    private boolean isRunning;
+	private Country selectedCountry;
+	private Resource selectedResource;
+	private Resource selectedResourceNode;
+	private String currentSeriesName;
 
-    public SimulationController(SimulationConfig config) {
-        this.eventList = new EventList();
-//        this.simulator = new Simulator(config, eventList);
-        this.isRunning = false;
-    }
+	@FXML
+	private Button toggleSimulationButton;
+	@FXML
+	private TextField daysTextField;
+	@FXML
+	private Label delayWarningLabel;
+	@FXML
+	private TextField delayTextField;
+	@FXML
+	private ComboBox<String> countryComboBox;
+	@FXML
+	private ComboBox<String> resourceComboBox;
+	@FXML
+	private ComboBox<String> resourceNodeComboBox;
+	@FXML
+	private LineChart<String, Number> lineChart;
 
-	public void startSimulation() {
-		isRunning = true;
-		while (isRunning && eventList.hasMoreEvents()) {
-			Event event = eventList.getNextEvent();
-			processEvent(event);
+	@FXML
+	private void initialize() {
+		delayWarningLabel.setVisible(false);
+		delayWarningLabel.setManaged(false);
+	}
+
+	public void initialize(List<Resource> resources, List<Country> countries) {
+		countryComboBox.getItems().addAll(countries.stream().map(Country::getName).toList());
+		resourceComboBox.getItems().addAll(resources.stream().map(Resource::name).toList());
+
+		Simulator simulator = new Simulator(this, resources, countries);
+		simulator.runSimulation();
+	}
+
+	public void updateData() {
+		int currentDay = Clock.getInstance().getTime();
+		daysTextField.setText(String.valueOf(currentDay));
+
+		switch (currentSeriesName) {
+			case "Population/Day":
+				updatePopulationGraph();
+				break;
+			case "Money/Day":
+				updateMoneyGraph();
+				break;
+			case "Average Happiness/Day":
+				updateAverageHappinessGraph();
+				break;
+			case "Individual Budget/Day":
+				updateIndividualBudgetGraph();
+				break;
+			case "Quantity/Day":
+				updateQuantityGraph();
+				break;
+			case "Value/Day":
+				updateValueGraph();
+				break;
+			case "Production Cost/Day":
+				updateProductionCostGraph();
+				break;
+			case "Max Capacity/Day":
+				updateMaxCapacityGraph();
+				break;
+			case "Tier/Day":
+				updateTierGraph();
+				break;
 		}
 	}
 
-	public void pauseSimulation() {
-		isRunning = false;
+	private void drawLineGraph(String seriesName, List<Integer> xData, List<Number> yData) {
+		XYChart.Series<String, Number> series = new XYChart.Series<>();
+		series.setName(seriesName);
+		currentSeriesName = seriesName;
+
+		for (int i = 0; i < xData.size(); i++) {
+			series.getData().add(new XYChart.Data<>(String.valueOf(xData.get(i)), yData.get(i)));
+		}
+
+		lineChart.getData().clear();
+		lineChart.getData().add(series);
 	}
 
-	public void resumeSimulation() {
-		isRunning = true;
-		startSimulation();
-	}
+	private void updateLineGraph(String seriesName, List<Integer> xData, List<Number> yData) {
+		XYChart.Series<String, Number> series = null;
 
-	public void stopSimulation() {
-		isRunning = false;
-		eventList.getEventQueue().clear();
-	}
+		// Check if the series already exists
+		for (XYChart.Series<String, Number> existingSeries : lineChart.getData()) {
+			if (existingSeries.getName().equals(seriesName)) {
+				series = existingSeries;
+				break;
+			}
+		}
 
-	private void processEvent(Event event) {
-		switch (event.getType()) {
-			case OBTAIN_RESOURCES:
-				handleObtainResourcesEvent(event);
-				break;
-			case SERVE_PEOPLE:
-				handleServePeopleEvent(event);
-				break;
-			case REQUEST_RESOURCES:
-				handleRequestResourcesEvent(event);
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown event type: " + event.getType());
+		// If the series doesn't exist, create a new one
+		if (series == null) {
+			series = new XYChart.Series<>();
+			series.setName(seriesName);
+			lineChart.getData().add(series);
+		}
+
+		// Update the series with new data
+		series.getData().clear();
+		for (int i = 0; i < xData.size(); i++) {
+			series.getData().add(new XYChart.Data<>(String.valueOf(xData.get(i)), yData.get(i)));
 		}
 	}
 
-	private void handleObtainResourcesEvent(Event event) {
-		// Implement obtain resources event handling logic
+	@FXML
+	public void toggleSimulation() {
+		if (Clock.getInstance().isPaused()) {
+			Clock.getInstance().resume();
+			toggleSimulationButton.setText("Pause");
+		} else {
+			Clock.getInstance().pause();
+			toggleSimulationButton.setText("Resume");
+		}
 	}
 
-	private void handleServePeopleEvent(Event event) {
-		// Implement serve people event handling logic
+	@FXML
+	public void updateDelay() {
+		try {
+			int newDelay = Integer.parseInt(delayTextField.getText());
+			SimulationConfig.setSimulationDelay(newDelay);
+			delayWarningLabel.setVisible(false);
+			delayWarningLabel.setManaged(false);
+		} catch (IllegalArgumentException e) {
+			delayWarningLabel.setVisible(true);
+			delayWarningLabel.setManaged(true);
+			delayTextField.setText(String.valueOf(SimulationConfig.getSimulationDelay()));
+		}
 	}
 
-	private void handleRequestResourcesEvent(Event event) {
-		// Implement request resources event handling logic
+	@FXML
+	private void handlePopulationButton() {
+		// TODO: Add database call fetchAll
+	}
+
+	private void updatePopulationGraph() {
+		// TODO: Add database call fetch for this day only
+	}
+
+	@FXML
+	private void handleMoneyButton() {
+		// TODO: Add database call
+	}
+
+	private void updateMoneyGraph() {
+		// TODO: Add database call fetch for this day only
+	}
+
+	@FXML
+	private void handleAverageHappinessButton() {
+		// TODO: Add database call
+	}
+
+	private void updateAverageHappinessGraph() {
+		// TODO: Add database call fetch for this day only
+	}
+
+	@FXML
+	private void handleIndividualBudgetButton() {
+		// TODO: Add database call
+	}
+
+	private void updateIndividualBudgetGraph() {
+		// TODO: Add database call fetch for this day only
+	}
+
+	@FXML
+	private void handleQuantityButton() {
+		// TODO: Add database call
+	}
+
+	private void updateQuantityGraph() {
+		// TODO: Add database call fetch for this day only
+	}
+
+	@FXML
+	private void handleValueButton() {
+		// TODO: Add database call
+	}
+
+	private void updateValueGraph() {
+		// TODO: Add database call fetch for this day only
+	}
+
+	@FXML
+	private void handleProductionCostButton() {
+		// TODO: Add database call
+	}
+
+	private void updateProductionCostGraph() {
+		// TODO: Add database call fetch for this day only
+	}
+
+	@FXML
+	private void handleMaxCapacityButton() {
+		// TODO: Add database call
+	}
+
+	private void updateMaxCapacityGraph() {
+		// TODO: Add database call fetch for this day only
+	}
+
+	@FXML
+	private void handleTierButton() {
+		// TODO: Add database call
+	}
+
+	private void updateTierGraph() {
+		// TODO: Add database call fetch for this day only
 	}
 }
-
-// the controller should get the simulation configuration from the view, basically the user input and pass it to the
-// model

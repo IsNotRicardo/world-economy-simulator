@@ -2,6 +2,7 @@ package model.simulation;
 
 import dao.*;
 import entity.*;
+import controller.SimulationController;
 import model.core.*;
 
 import java.util.List;
@@ -11,8 +12,15 @@ public class Simulator {
 	private final Clock clock = Clock.getInstance();
 	private final EventList eventList = new EventList();
 
+	private final SimulationController simulationController;
 	private final List<Resource> resources;
 	private final List<Country> countries;
+
+	public Simulator(SimulationController simulationController, List<Resource> resources, List<Country> countries) {
+		this.simulationController = simulationController;
+		this.resources = resources;
+		this.countries = countries;
+	}
 
 	private final ResourceDao resourceDao = new ResourceDao();
 	private final CountryDao countryDao = new CountryDao();
@@ -52,16 +60,17 @@ public class Simulator {
 				// Create new events based on specific conditions
 				// Currently, there are no available conditions to check
 
-				saveMetricsToDb();
-				System.out.println("\nDay " + clock.getTime() + " completed.");
-			}
-			try {
-				Thread.sleep(SimulationConfig.getSimulationDelay());
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-				System.out.println("Simulation interrupted.");
-			}
-		}
+                saveMetrics();
+                updateController();
+                System.out.println("\nDay " + clock.getTime() + " completed.");
+            }
+            try {
+                Thread.sleep(SimulationConfig.getSimulationDelay());
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Simulation interrupted.");
+            }
+        }
 
 		finalizeSimulation();
 	}
@@ -111,7 +120,7 @@ public class Simulator {
 		}
 	}
 
-	private void saveMetricsToDb() {
+	private void saveMetrics() {
 
 		for (Country country : countries) {
 			System.out.println("\nSaving metrics for " + country.getName());
@@ -178,9 +187,13 @@ public class Simulator {
 		}
 	}
 
-	private void finalizeSimulation() {
-		// Generate a report or summary of the simulation results
-		generateReport();
+    private void updateController() {
+        simulationController.updateData();
+    }
+
+    private void finalizeSimulation() {
+        // Generate a report or summary of the simulation results
+        generateReport();
 
 		System.out.println("\nSimulation finalized.");
 	}
