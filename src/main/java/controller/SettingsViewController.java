@@ -331,7 +331,7 @@ public class SettingsViewController {
             double productionCost = Double.parseDouble(resourceProductionCostField.getText());
 
             // Category needs to be removed later
-            Resource newResource = new Resource(name, null, priority, baseCapacity, productionCost);
+            Resource newResource = new Resource(name, priority, baseCapacity, productionCost);
             resourceList.add(newResource);
             resourceListView.getItems().add(name);
             clearResourceFields();
@@ -376,7 +376,7 @@ public class SettingsViewController {
                 double productionCost = Double.parseDouble(resourceProductionCostField.getText());
 
                 // Category needs to be removed later
-                Resource updatedResource = new Resource(name, null, priority, baseCapacity, productionCost);
+                Resource updatedResource = new Resource(name, priority, baseCapacity, productionCost);
                 resourceList.set(selectedIndex, updatedResource);
                 resourceListView.getItems().set(selectedIndex, name);
                 resourceListView.getSelectionModel().select(selectedIndex);
