@@ -13,6 +13,17 @@ public class SimulatorTest {
         List<Resource> resources = Arrays.asList(food, water, energy);
 
         // Create countries
+        List<Country> countries = getCountries(food, water, energy);
+
+        SimulationConfig.setSimulationTime(20);
+        SimulationConfig.setSimulationDelay(1);
+
+        // Create and run the simulator
+        Simulator simulator = new Simulator(resources, countries);
+        simulator.runSimulation();
+    }
+
+    private static List<Country> getCountries(Resource food, Resource water, Resource energy) {
         Map<Resource, Integer> starterResources = new HashMap<>();
         starterResources.put(food, 100);
         starterResources.put(water, 100);
@@ -26,12 +37,6 @@ public class SimulatorTest {
         Country country1 = new Country("Country1", 100_000_000, 1_000_000, starterResources, ownedResources);
         Country country2 = new Country("Country2", 100_000_000, 1_000_000, starterResources, ownedResources);
         List<Country> countries = Arrays.asList(country1, country2);
-
-        SimulationConfig.setSimulationTime(20);
-        SimulationConfig.setSimulationDelay(1);
-
-        // Create and run the simulator
-        Simulator simulator = new Simulator(resources, countries);
-        simulator.runSimulation();
+        return countries;
     }
 }
