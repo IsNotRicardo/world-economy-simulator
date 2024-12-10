@@ -54,7 +54,9 @@ public class Person {
     void servePerson(double budget) {
         int totalDemand = demand.size();
 
-        for (Map.Entry<Resource, Integer> entry : demand.entrySet()) {
+        Iterator<Map.Entry<Resource, Integer>> demandIterator = demand.entrySet().iterator();
+        while (demandIterator.hasNext()) {
+            Map.Entry<Resource, Integer> entry = demandIterator.next();
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
             double totalCost = quantity * SimulationConfig.getPopulationSegmentSize() * country.getResourceValue(resource);
@@ -63,6 +65,8 @@ public class Person {
                 country.removeResources(resource, quantity);
                 country.addMoney(totalCost);
                 budget -= totalCost;
+
+                demandIterator.remove();
             }
         }
 
