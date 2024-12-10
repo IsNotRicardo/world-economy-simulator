@@ -53,41 +53,44 @@ public class MariaDbConnection {
 
 	public static void executeSqlFile(String filePath) throws SQLException {
 		Connection conn = getConnection();
-		try (InputStream input = MariaDbConnection.class.getClassLoader().getResourceAsStream(filePath);
-		     BufferedReader br = new BufferedReader(new InputStreamReader(input))
+		try (InputStream input = MariaDbConnection.class.getClassLoader().getResourceAsStream(filePath)
 		) {
-			StringBuilder sb = new StringBuilder();
-			String line;
-			boolean inProcedure = false;
-			while ((line = br.readLine()) != null) {
-				if (line.trim().equalsIgnoreCase("DELIMITER //")) {
-					inProcedure = true;
-					continue;
-				} else if (line.trim().equalsIgnoreCase("DELIMITER ;")) {
-					inProcedure = false;
-					continue;
-				}
-				if (inProcedure) {
-					if (line.trim().endsWith("//")) {
-						sb.append(line, 0, line.length() - 2).append("\n");
-						try (Statement stmt = conn.createStatement()) {
-							stmt.execute(sb.toString());
+			assert input != null;
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(input))
+			) {
+				StringBuilder sb = new StringBuilder();
+				String line;
+				boolean inProcedure = false;
+				while ((line = br.readLine()) != null) {
+					if (line.trim().equalsIgnoreCase("DELIMITER //")) {
+						inProcedure = true;
+						continue;
+					} else if (line.trim().equalsIgnoreCase("DELIMITER ;")) {
+						inProcedure = false;
+						continue;
+					}
+					if (inProcedure) {
+						if (line.trim().endsWith("//")) {
+							sb.append(line, 0, line.length() - 2).append("\n");
+							try (Statement stmt = conn.createStatement()) {
+								stmt.execute(sb.toString());
+							}
+							sb.setLength(0);
+						} else {
+							sb.append(line).append("\n");
 						}
-						sb.setLength(0);
 					} else {
 						sb.append(line).append("\n");
-					}
-				} else {
-					sb.append(line).append("\n");
-					if (line.trim().endsWith(";")) {
-						try (Statement stmt = conn.createStatement()) {
-							stmt.execute(sb.toString());
+						if (line.trim().endsWith(";")) {
+							try (Statement stmt = conn.createStatement()) {
+								stmt.execute(sb.toString());
+							}
+							sb.setLength(0);
 						}
-						sb.setLength(0);
 					}
 				}
+				logger.debug("Executed SQL file: {}", filePath);
 			}
-			logger.debug("Executed SQL file: {}", filePath);
 		} catch (SQLException | IOException ex) {
 			logger.error("Failed to execute SQL file!", ex);
 			throw new SQLException(ex);
