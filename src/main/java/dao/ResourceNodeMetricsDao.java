@@ -40,6 +40,23 @@ public class ResourceNodeMetricsDao {
 		}
 	}
 
+	public ResourceNodeMetricsEntity findByResourceNodeAndDay(CountryEntity countryEntity,
+	                                                          ResourceEntity resourceEntity, int day) {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		try {
+			return em.createQuery(
+					         "SELECT r FROM ResourceNodeMetricsEntity r WHERE r.country.id = :country AND r.resource.id = :resource AND r.day = :day",
+					         ResourceNodeMetricsEntity.class)
+			         .setParameter("country", countryEntity.getId())
+			         .setParameter("resource", resourceEntity.getId())
+			         .setParameter("day", day)
+			         .getSingleResult();
+		} catch (Exception e) {
+			logger.error("Error finding resource node metrics by resource node and day", e);
+			throw e;
+		}
+	}
+
 	public List<ResourceNodeMetricsEntity> findAll() {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
