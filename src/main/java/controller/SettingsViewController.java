@@ -8,12 +8,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import model.core.Country;
 import model.core.Resource;
+import model.core.ResourceNodeDTO;
 import model.simulation.SimulationConfig;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class SettingsViewController {
     private static final int TAB_OFFSET_VALUE = 68;
@@ -21,12 +19,16 @@ public class SettingsViewController {
 
     private List<Resource> resourceList = new ArrayList<>();
     private List<Country> countryList = new ArrayList<>();
+    private Map<Country, Map<Resource, ResourceNodeDTO>> countryResourceNodes = new HashMap<>();
 
     private boolean isResourceEditingMode;
-    private int currentResourceIndex;
-
     private boolean isCountryEditingMode;
+    private boolean isResourceNodeEditingMode;
+
+    private int currentResourceIndex;
     private int currentCountryIndex;
+    private Country selectedCountry;
+    private Resource selectedResource;
 
     @FXML
     private TabPane tabPane;
@@ -104,6 +106,36 @@ public class SettingsViewController {
     private Region countryOptionalRegion;
     @FXML
     private Button deleteCountryButton;
+    @FXML
+    private ListView<String> resourceNodeListView;
+    @FXML
+    private VBox resourceNodeSettingsVBox;
+    @FXML
+    private Label resourceNodeItemsLabel;
+    @FXML
+    private ComboBox<String> countryComboBox;
+    @FXML
+    private ComboBox<String> resourceComboBox;
+    @FXML
+    private TextField resourceNodeTierField;
+    @FXML
+    private TextField resourceNodeBaseCapacityField;
+    @FXML
+    private TextField resourceNodeProductionCostField;
+    @FXML
+    private Label resourceNodeTierErrorLabel;
+    @FXML
+    private Label resourceNodeBaseCapacityErrorLabel;
+    @FXML
+    private Label resourceNodeProductionCostErrorLabel;
+    @FXML
+    private Button addResourceNodeButton;
+    @FXML
+    private Button saveResourceNodeButton;
+    @FXML
+    private Region resourceNodeOptionalRegion;
+    @FXML
+    private Button deleteResourceNodeButton;
 
     @FXML
     public void initialize() {
@@ -166,6 +198,22 @@ public class SettingsViewController {
             }
         });
         changeCountryButtonVisibility(false);
+
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab.getText().equals("Resource Nodes")) {
+                populateCountryComboBox();
+                populateResourceComboBox();
+            }
+        });
+
+        resourceNodeSettingsVBox.getChildren().forEach(child -> {
+            if (child instanceof Label) {
+                VBox.setMargin(child, titleMargin);
+            } else {
+                VBox.setMargin(child, margin);
+            }
+        });
+        changeResourceNodeButtonVisibility(false);
     }
 
     private void validateGeneralField(TextField textField, Label errorLabel, int defaultValue, int minValue, String errorMessage) {
@@ -245,6 +293,14 @@ public class SettingsViewController {
         boolean isInitialPopulationValid = validateIntField(countryInitialPopulationField, countryInitialPopulationErrorLabel, 1, "Initial population must be positive");
 
         return isNameValid && isInitialMoneyValid && isInitialPopulationValid;
+    }
+
+    private boolean validateResourceNodeFields() {
+        boolean isTierValid = validateIntField(resourceNodeTierField, resourceNodeTierErrorLabel, 0, "Tier cannot be negative");
+        boolean isBaseCapacityValid = validateIntField(resourceNodeBaseCapacityField, resourceNodeBaseCapacityErrorLabel, 1, "Base capacity must be positive");
+        boolean isProductionCostValid = validateDoubleField(resourceNodeProductionCostField, resourceNodeProductionCostErrorLabel, 0.0, Double.MAX_VALUE, "Production cost cannot be negative");
+
+        return isTierValid && isBaseCapacityValid && isProductionCostValid;
     }
 
     @FXML
@@ -367,6 +423,13 @@ public class SettingsViewController {
         countryListView.getSelectionModel().clearSelection();
     }
 
+    private void populateResourceComboBox() {
+        resourceComboBox.getItems().clear();
+        for (Resource resource : resourceList) {
+            resourceComboBox.getItems().add(resource.name());
+        }
+    }
+
     @FXML
     public void addCountry() {
         if (validateCountryFields()) {
@@ -442,6 +505,95 @@ public class SettingsViewController {
                 clearCountryFields();
                 changeCountryButtonVisibility(false);
             }
+        }
+    }
+
+    private void populateCountryComboBox() {
+        countryComboBox.getItems().clear();
+        for (Country country : countryList) {
+            countryComboBox.getItems().add(country.getName());
+        }
+    }
+
+    @FXML
+    public void newResourceNode() {
+        if (resolveIsResourceNodeNotSaved()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("New Resource Node");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to create a new resource node?\n" +
+                    "Any unsaved changes will be lost.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isEmpty() || result.get() != ButtonType.OK) {
+                return;
+            }
+        }
+        clearResourceNodeFields();
+        changeResourceNodeButtonVisibility(false);
+        resourceNodeListView.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    public void addResourceNode() {
+        if (validateResourceNodeFields()) {
+            int tier = Integer.parseInt(resourceNodeTierField.getText());
+            int baseCapacity = Integer.parseInt(resourceNodeBaseCapacityField.getText());
+            double productionCost = Double.parseDouble(resourceNodeProductionCostField.getText());
+
+            ResourceNodeDTO newResourceNode = new ResourceNodeDTO(tier, baseCapacity, productionCost, selectedResource);
+            countryResourceNodes.computeIfAbsent(selectedCountry, k -> new HashMap<>()).put(selectedResource, newResourceNode);
+            resourceNodeListView.getItems().add(selectedResource.name());
+            clearResourceNodeFields();
+        }
+    }
+
+    @FXML
+    public void handleResourceNodeSelection() {
+        if (resolveIsResourceNodeNotSaved()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Select Resource Node");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to change resource nodes?\n" +
+                    "Any unsaved changes will be lost.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isEmpty() || result.get() != ButtonType.OK) {
+                resourceNodeListView.getSelectionModel().select(selectedResource.name());
+                return;
+            }
+        }
+        int selectedIndex = resourceNodeListView.getSelectionModel().getSelectedIndex();
+
+        if (selectedIndex != -1) {
+            ResourceNodeDTO selectedNode = countryResourceNodes.get(selectedCountry).get(selectedResource);
+            resourceNodeTierField.setText(String.valueOf(selectedNode.tier()));
+            resourceNodeBaseCapacityField.setText(String.valueOf(selectedNode.baseCapacity()));
+            resourceNodeProductionCostField.setText(String.valueOf(selectedNode.productionCost()));
+            changeResourceNodeButtonVisibility(true);
+        }
+    }
+
+    @FXML
+    public void saveResourceNode() {
+        if (validateResourceNodeFields()) {
+            int tier = Integer.parseInt(resourceNodeTierField.getText());
+            int baseCapacity = Integer.parseInt(resourceNodeBaseCapacityField.getText());
+            double productionCost = Double.parseDouble(resourceNodeProductionCostField.getText());
+
+            ResourceNodeDTO updatedResourceNode = new ResourceNodeDTO(tier, baseCapacity, productionCost, selectedResource);
+            countryResourceNodes.get(selectedCountry).put(selectedResource, updatedResourceNode);
+            clearResourceNodeFields();
+        }
+    }
+
+    @FXML
+    public void deleteResourceNode() {
+        int selectedIndex = resourceNodeListView.getSelectionModel().getSelectedIndex();
+        if (selectedIndex != -1) {
+            countryResourceNodes.get(selectedCountry).remove(selectedResource);
+            resourceNodeListView.getItems().remove(selectedIndex);
+            clearResourceNodeFields();
         }
     }
 
@@ -540,5 +692,45 @@ public class SettingsViewController {
         countryNameErrorLabel.setText("");
         countryInitialMoneyErrorLabel.setText("");
         countryInitialPopulationErrorLabel.setText("");
+    }
+
+    private void changeResourceNodeButtonVisibility(boolean editingMode) {
+        isResourceNodeEditingMode = editingMode;
+
+        if (editingMode) {
+            resourceNodeItemsLabel.setText("Modify Resource Node");
+        } else {
+            resourceNodeItemsLabel.setText("Insert Resource Node");
+        }
+
+        addResourceNodeButton.setVisible(!editingMode);
+        addResourceNodeButton.setManaged(!editingMode);
+
+        saveResourceNodeButton.setVisible(editingMode);
+        saveResourceNodeButton.setManaged(editingMode);
+
+        resourceNodeOptionalRegion.setVisible(editingMode);
+        resourceNodeOptionalRegion.setManaged(editingMode);
+
+        deleteResourceNodeButton.setVisible(editingMode);
+        deleteResourceNodeButton.setManaged(editingMode);
+    }
+
+    private boolean resolveIsResourceNodeNotSaved() {
+        if (isResourceNodeEditingMode) {
+            // Handle unsaved changes
+            return true;
+        }
+        return false;
+    }
+
+    private void clearResourceNodeFields() {
+        resourceNodeTierField.setText("");
+        resourceNodeBaseCapacityField.setText("");
+        resourceNodeProductionCostField.setText("");
+
+        resourceNodeTierErrorLabel.setText("");
+        resourceNodeBaseCapacityErrorLabel.setText("");
+        resourceNodeProductionCostErrorLabel.setText("");
     }
 }

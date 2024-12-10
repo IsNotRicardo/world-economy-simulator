@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.ComboBox?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../settings-styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SettingsViewController">
     <center>
         <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="48.0" tabMinHeight="48.0" BorderPane.alignment="CENTER">
@@ -517,11 +518,158 @@
                      </BorderPane>
                   </content>
                </Tab>
-                <Tab text="Resource Nodes">
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
-                </Tab>
+               <Tab text="Resource Nodes">
+                  <content>
+                     <BorderPane prefHeight="267.0" prefWidth="600.0">
+                        <left>
+                           <ListView fx:id="resourceNodeListView" maxHeight="1.7976931348623157E308" minHeight="100.0" onMouseClicked="#handleResourceNodeSelection" prefWidth="250.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+                              <BorderPane.margin>
+                                 <Insets right="30.0" />
+                              </BorderPane.margin>
+                           </ListView>
+                        </left>
+                        <top>
+                           <Label prefHeight="17.0" prefWidth="601.0" text="Resource Node Configurations" BorderPane.alignment="CENTER_LEFT">
+                              <font>
+                                 <Font name="Bell MT Bold" size="32.0" />
+                              </font>
+                              <padding>
+                                 <Insets bottom="30.0" />
+                              </padding>
+                           </Label>
+                        </top>
+                        <padding>
+                           <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                        </padding>
+                        <center>
+                           <VBox fx:id="resourceNodeSettingsVBox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                              <children>
+                                 <Label fx:id="resourceNodeItemsLabel" text="Insert Resource Node">
+                                    <font>
+                                       <Font name="Georgia" size="28.0" />
+                                    </font>
+                                    <VBox.margin>
+                                       <Insets />
+                                    </VBox.margin>
+                                 </Label>
+                                 <HBox>
+                                    <children>
+                                       <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Country:">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <ComboBox fx:id="countryComboBox" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0" />
+                                    </children>
+                                 </HBox>
+                                 <HBox>
+                                    <children>
+                                       <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Resource:">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <ComboBox fx:id="resourceComboBox" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0" />
+                                    </children>
+                                 </HBox>
+                                 <HBox>
+                                    <children>
+                                       <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Tier:">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <TextField fx:id="resourceNodeTierField" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0">
+                                          <font>
+                                             <Font name="Georgia" size="20.0" />
+                                          </font>
+                                       </TextField>
+                                       <Label fx:id="resourceNodeTierErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font name="Georgia Bold" size="16.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets left="30.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                    </children>
+                                 </HBox>
+                                 <HBox>
+                                    <children>
+                                       <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Base Capacity:">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <TextField fx:id="resourceNodeBaseCapacityField" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0">
+                                          <font>
+                                             <Font name="Georgia" size="20.0" />
+                                          </font>
+                                       </TextField>
+                                       <Label fx:id="resourceNodeBaseCapacityErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font name="Georgia Bold" size="16.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets left="30.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                    </children>
+                                 </HBox>
+                                 <HBox>
+                                    <children>
+                                       <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Production Cost:">
+                                          <font>
+                                             <Font name="Georgia" size="24.0" />
+                                          </font>
+                                       </Label>
+                                       <TextField fx:id="resourceNodeProductionCostField" maxHeight="30.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0">
+                                          <font>
+                                             <Font name="Georgia" size="20.0" />
+                                          </font>
+                                       </TextField>
+                                       <Label fx:id="resourceNodeProductionCostErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED" HBox.hgrow="ALWAYS">
+                                          <font>
+                                             <Font name="Georgia Bold" size="16.0" />
+                                          </font>
+                                          <HBox.margin>
+                                             <Insets left="30.0" />
+                                          </HBox.margin>
+                                       </Label>
+                                    </children>
+                                 </HBox>
+                                 <HBox maxWidth="400.0" prefHeight="100.0" prefWidth="200.0">
+                                    <children>
+                                       <Button minWidth="70.0" mnemonicParsing="false" onAction="#newResourceNode" text="New">
+                                          <font>
+                                             <Font name="Bell MT Bold" size="20.0" />
+                                          </font>
+                                       </Button>
+                                       <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                                       <Button fx:id="addResourceNodeButton" layoutX="10.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" onAction="#addResourceNode" text="Add">
+                                          <font>
+                                             <Font name="Bell MT Bold" size="20.0" />
+                                          </font>
+                                       </Button>
+                                       <Button fx:id="saveResourceNodeButton" layoutX="50.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" onAction="#saveResourceNode" text="Save">
+                                          <font>
+                                             <Font name="Bell MT Bold" size="20.0" />
+                                          </font>
+                                       </Button>
+                                       <Region fx:id="resourceNodeOptionalRegion" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                                       <Button fx:id="deleteResourceNodeButton" layoutX="88.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" onAction="#deleteResourceNode" text="Delete">
+                                          <font>
+                                             <Font name="Bell MT Bold" size="20.0" />
+                                          </font>
+                                       </Button>
+                                    </children>
+                                 </HBox>
+                              </children>
+                           </VBox>
+                        </center>
+                     </BorderPane>
+                  </content>
+               </Tab>
             </tabs>
         </TabPane>
     </center>
