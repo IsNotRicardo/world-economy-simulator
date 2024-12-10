@@ -1,9 +1,6 @@
-import dao.CountryDao;
-import dao.ResourceDao;
+import dao.*;
 import datasource.MariaDbConnection;
-import entity.CountryEntity;
-import entity.CountryResource;
-import entity.ResourceEntity;
+import entity.*;
 
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -13,12 +10,16 @@ public class DatabaseTestMain {
 
 	public static void main(String[] args) throws SQLException {
 		try {
-			// Initialize database and run SQL file
+			// Initialize database and run SQL files
 			MariaDbConnection.executeSqlFile("simulationDb.sql");
+			MariaDbConnection.executeSqlFile("simulationMetrics.sql");
 
 			// Create DAOs
 			CountryDao countryDao = new CountryDao();
 			ResourceDao resourceDao = new ResourceDao();
+			CountryMetricsDao countryMetricsDao = new CountryMetricsDao();
+			ResourceMetricsDao resourceMetricsDao = new ResourceMetricsDao();
+			ResourceNodeMetricsDao resourceNodeMetricsDao = new ResourceNodeMetricsDao();
 
 			// Create Resources
 			ResourceEntity silver = new ResourceEntity("Silver", 1, 100, 10);
@@ -57,43 +58,32 @@ public class DatabaseTestMain {
 			countryDao.persist(usa);
 			countryDao.persist(canada);
 
-			// Print all countries
-			countryDao.findAll().forEach(country -> {
-				System.out.println("Country: " + country.getName());
-			});
+			// Create and Persist Country Metrics
+			CountryMetricsEntity usaMetrics = new CountryMetricsEntity(1, usa, 100000, 1000, 75.5, 500);
+			CountryMetricsEntity canadaMetrics = new CountryMetricsEntity(1, canada, 200000, 2000, 80.0, 1000);
+			countryMetricsDao.persist(usaMetrics);
+			countryMetricsDao.persist(canadaMetrics);
 
-			// Print all resources for each country
-			countryDao.findAll().forEach(country -> {
-				System.out.println("Country: " + country.getName());
-				country.getCountryResources().forEach(countryResource -> {
-					System.out.println("Resource: " + countryResource.getResource().getName());
-				});
-			});
+			// Create and Persist Resource Metrics
+			ResourceMetricsEntity usaSilverMetrics = new ResourceMetricsEntity(1, usa, silver, 50, 500);
+			ResourceMetricsEntity canadaPlatinumMetrics = new ResourceMetricsEntity(1, canada, platinum, 10, 200);
+			resourceMetricsDao.persist(usaSilverMetrics);
+			resourceMetricsDao.persist(canadaPlatinumMetrics);
 
-			// Print all resources for a specific country
-			countryDao.findResourcesByCountryName("Canada").forEach(resource -> {
-				System.out.println("Resource: " + resource.getName());
-			});
+			// Create and Persist Resource Node Metrics
+			ResourceNodeMetricsEntity usaSilverNodeMetrics = new ResourceNodeMetricsEntity(1, usa, silver, 10, 100, 1);
+			ResourceNodeMetricsEntity canadaMapleSyrupNodeMetrics = new ResourceNodeMetricsEntity(1, canada, maplesyrup, 5, 50, 1);
+			resourceNodeMetricsDao.persist(usaSilverNodeMetrics);
+			resourceNodeMetricsDao.persist(canadaMapleSyrupNodeMetrics);
 
-			// Delete a country
-			CountryEntity country = countryDao.findByName("USA");
-			countryDao.delete(country);
-			System.out.println("Deleted country: " + country.getName());
+			// Print all country metrics
+			countryMetricsDao.findAll().forEach(System.out::println);
 
-			// Print all countries
-			countryDao.findAll().forEach(c -> {
-				System.out.println("Country: " + c.getName());
-			});
+			// Print all resource metrics
+			resourceMetricsDao.findAll().forEach(System.out::println);
 
-			// Print all resources
-			resourceDao.findAll().forEach(r -> {
-				System.out.println("Resource: " + r.getName());
-			});
-
-			// Delete a resource
-			ResourceEntity resource = resourceDao.findByName("Silver");
-			resourceDao.deleteResourceByName(resource.getName());
-			System.out.println("Deleted resource: " + resource.getName());
+			// Print all resource node metrics
+			resourceNodeMetricsDao.findAll().forEach(System.out::println);
 
 			// Close EntityManager
 			try {
