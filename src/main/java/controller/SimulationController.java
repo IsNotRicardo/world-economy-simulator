@@ -21,7 +21,9 @@ public class SimulationController {
 	private CountryEntity selectedCountry;
 	private ResourceEntity selectedResource;
 	private Resource selectedResourceNode;
+
 	private String currentSeriesName;
+	private int currentDay = 0;
 
 	private final CountryDao countryDao = new CountryDao();
 	private final ResourceDao resourceDao = new ResourceDao();
@@ -62,6 +64,7 @@ public class SimulationController {
 
 	public void updateData() {
 		int currentDay = Clock.getInstance().getTime();
+		this.currentDay = currentDay;
 		daysTextField.setText(String.valueOf(currentDay));
 
 		if (currentSeriesName == null) {
@@ -160,10 +163,6 @@ public class SimulationController {
 		}
 	}
 
-	/*
-	 *TODO: Make an actual variable for day to fetch the data for the selected day
-	 */
-
 	@FXML
 	private void handlePopulationButton() {
 
@@ -184,7 +183,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
 		int xData = countryMetricsEntity.getDay();
 		long yData = countryMetricsEntity.getPopulation();
@@ -198,7 +197,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
 		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
 		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getMoney).toList();
@@ -211,7 +210,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
 		int xData = countryMetricsEntity.getDay();
 		double yData = countryMetricsEntity.getMoney();
@@ -225,7 +224,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
 		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
 		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getAverageHappiness).toList();
@@ -238,7 +237,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
 		int xData = countryMetricsEntity.getDay();
 		double yData = countryMetricsEntity.getAverageHappiness();
@@ -252,7 +251,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
 		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
 		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getIndividualBudget).toList();
@@ -265,7 +264,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
 		int xData = countryMetricsEntity.getDay();
 		double yData = countryMetricsEntity.getIndividualBudget();
@@ -294,7 +293,7 @@ public class SimulationController {
 			return;
 		}
 		ResourceMetricsEntity resourceMetricsEntity =
-				resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, day);
+				resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, currentDay);
 
 		int xData = resourceMetricsEntity.getDay();
 		int yData = resourceMetricsEntity.getQuantity();
@@ -324,7 +323,7 @@ public class SimulationController {
 			return;
 		}
 		ResourceMetricsEntity resourceMetricsEntity =
-				resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, day);
+				resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, currentDay);
 
 		int xData = resourceMetricsEntity.getDay();
 		double yData = resourceMetricsEntity.getValue();
@@ -354,7 +353,7 @@ public class SimulationController {
 			return;
 		}
 		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
-				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, day);
+				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
 
 		int xData = resourceNodeMetricsEntity.getDay();
 		double yData = resourceNodeMetricsEntity.getProductionCost();
@@ -384,7 +383,7 @@ public class SimulationController {
 			return;
 		}
 		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
-				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, day);
+				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
 
 		int xData = resourceNodeMetricsEntity.getDay();
 		int yData = resourceNodeMetricsEntity.getMaxCapacity();
@@ -413,7 +412,7 @@ public class SimulationController {
 			return;
 		}
 		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
-				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, day);
+				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
 
 		int xData = resourceNodeMetricsEntity.getDay();
 		int yData = resourceNodeMetricsEntity.getTier();
