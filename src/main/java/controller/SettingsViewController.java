@@ -2,7 +2,9 @@ package controller;
 
 import dao.CountryDao;
 import dao.ResourceDao;
+import dao.ResourceNodeDao;
 import entity.ResourceEntity;
+import entity.ResourceNodeEntity;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -276,6 +278,7 @@ public class SettingsViewController {
 
 		fetchCountriesFromDatabase();
 		fetchResourcesFromDatabase();
+		fetchResourceNodesFromDatabase();
 	}
 
 	private void validateGeneralField(TextField textField, Label errorLabel, int defaultValue, int minValue,
@@ -740,7 +743,8 @@ public class SettingsViewController {
 		if (selectedCountry != null) {
 			Map<Resource, ResourceNodeDTO> resourceNodes = countryResourceNodes.get(selectedCountry);
 			if (resourceNodes != null) {
-				resourceNodes.forEach((resource, resourceNode) -> resourceNodeListView.getItems().add(resource.name()));
+				resourceNodes.forEach((resource, resourceNode) ->
+						                      resourceNodeListView.getItems().add(resource.name()));
 			}
 		}
 	}
@@ -942,8 +946,6 @@ public class SettingsViewController {
 
 		countryList.addAll(countries);
 		countryList.forEach(country -> countryListView.getItems().add(country.getName()));
-
-		countryList.forEach(country -> countryResourceNodes.put(country, new HashMap<>()));
 	}
 
 	private void fetchResourcesFromDatabase() {
@@ -959,6 +961,41 @@ public class SettingsViewController {
 		resourceList.forEach(resource -> resourceListView.getItems().add(resource.name()));
 	}
 
+	private void fetchResourceNodesFromDatabase() {
+		ResourceNodeDao resourceNodeDao = new ResourceNodeDao();
+		List<ResourceNodeEntity> resourceNodes = resourceNodeDao.findAll();
+
+		resourceNodes.forEach(resourceNodeEntity -> {
+			CountryEntity countryEntity = resourceNodeEntity.getCountry();
+			ResourceEntity resourceEntity = resourceNodeEntity.getResource();
+
+			if (countryEntity != null && resourceEntity != null) {
+				Resource resource = new Resource(
+						resourceEntity.getName(),
+						resourceEntity.getPriority(),
+						resourceEntity.getBaseCapacity(),
+						resourceEntity.getProductionCost()
+				);
+
+				ResourceNodeDTO resourceNode = new ResourceNodeDTO(
+						resourceNodeEntity.getTier(),
+						resourceNodeEntity.getBaseCapacity(),
+						resourceNodeEntity.getBaseProductionCost(),
+						resource
+				);
+
+				countryResourceNodes.computeIfAbsent(countryEntity, k -> new HashMap<>())
+				                    .put(resource, resourceNode);
+			}
+		});
+
+		countryResourceNodes.forEach(
+				(countryEntity, resourceNodeEntities) -> resourceNodeEntities.forEach((resource, resourceNode) ->
+						                                                                      resourceNodeListView
+								                                                                      .getItems()
+								                                                                      .add(resource.name())));
+	}
+
 	@FXML
 	public void handleStartSimulation(ActionEvent event) {
 		saveSimulationConfigs();
@@ -966,6 +1003,7 @@ public class SettingsViewController {
 		try {
 			CountryDao countryDao = new CountryDao();
 			ResourceDao resourceDao = new ResourceDao();
+			ResourceNodeDao resourceNodeDao = new ResourceNodeDao();
 
 			countryList.forEach(countryDao::persist);
 
@@ -979,6 +1017,22 @@ public class SettingsViewController {
 						);
 				resourceDao.persist(resourceEntity);
 			});
+
+			countryResourceNodes.forEach(
+					(countryEntity, resourceNodes) -> resourceNodes.forEach((resource, resourceNode) -> {
+
+						ResourceEntity resourceEntity = resourceDao.findByName(resource.name());
+						ResourceNodeEntity resourceNodeEntity =
+								new ResourceNodeEntity(
+										countryEntity,
+										resourceEntity,
+										0,
+										resourceNode.tier(),
+										resourceNode.baseCapacity(),
+										resourceNode.productionCost()
+								);
+						resourceNodeDao.persist(resourceNodeEntity);
+					}));
 
 			List<Country> countries = new ArrayList<>();
 			countryList.forEach(country -> {
@@ -997,6 +1051,7 @@ public class SettingsViewController {
 						);
 				countries.add(newCountry);
 			});
+
 
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layouts/simulation-layout.fxml"));
 			Parent root = fxmlLoader.load();
