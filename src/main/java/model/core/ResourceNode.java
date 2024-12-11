@@ -5,6 +5,7 @@ import model.simulation.SimulationConfig;
 public class ResourceNode {
     // Constants
     private static final double MAX_REDUCTION_PERCENTAGE = 0.5;
+    private static final double TIER_UPGRADE_MULTIPLIER = 0.1;
 
     // Variables immediately initialized
     private int storedResources = 0;
@@ -53,7 +54,7 @@ public class ResourceNode {
     // End of Getters
 
     public int getMaxCapacity() {
-        return (int) Math.round(baseCapacity * (1 + tier * 0.1));
+        return (int) Math.round(baseCapacity * (1 + tier * TIER_UPGRADE_MULTIPLIER));
     }
 
     double getUpgradeCost() {
