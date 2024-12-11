@@ -52,7 +52,6 @@ public class MariaDbConnection {
 	}
 
 	public static void executeSqlFile(String filePath) throws SQLException {
-		Connection conn = getConnection();
 		try (InputStream input = MariaDbConnection.class.getClassLoader().getResourceAsStream(filePath)
 		) {
 			assert input != null;
