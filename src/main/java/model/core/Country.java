@@ -174,27 +174,36 @@ public class Country {
             }
         }
 
-        // Decide on production, upgrades, and trading
+        // Periodic production based on supply change
+        for (ResourceNode resourceNode : resourceNodes) {
+            Resource resource = resourceNode.getResource();
+            double supplyChange = totalSupplyChange.getOrDefault(resource, 0.0);
+
+            int maxCapacity = resourceNode.getMaxCapacity();
+            int quantityToProduce = (int) Math.ceil(supplyChange);
+
+            if (quantityToProduce <= maxCapacity) {
+                resourceNode.produceResources(quantityToProduce);
+            } else {
+                resourceNode.produceResources(maxCapacity);
+                if (this.money >= resourceNode.getUpgradeCost() && !upgradedNodes.contains(resourceNode)) {
+                    resourceNode.upgradeNode();
+                    upgradedNodes.add(resourceNode);
+                }
+            }
+        }
+
+
+        // Decide on production, upgrades, and trading based on demand
         for (Map.Entry<Resource, Integer> demandEntry : totalDemand.entrySet()) {
             Resource resource = demandEntry.getKey();
             int demand = demandEntry.getValue();
-            double supplyChange = totalSupplyChange.getOrDefault(resource, 0.0);
 
             if (resourceStorage.get(resource).getQuantity() == 0) {
                 // Resource is not in storage, try to produce it
                 ResourceNode resourceNode = getNodeFromResource(resource);
                 if (resourceNode != null) {
-                    int maxCapacity = resourceNode.getMaxCapacity();
-                    int quantityToProduce = (int) Math.ceil(supplyChange);
-                    if (quantityToProduce <= maxCapacity) {
-                        resourceNode.produceResources(quantityToProduce);
-                    } else {
-                        resourceNode.produceResources(maxCapacity);
-                        if (this.money >= resourceNode.getUpgradeCost() && !upgradedNodes.contains(resourceNode)) {
-                            resourceNode.upgradeNode();
-                            upgradedNodes.add(resourceNode);
-                        }
-                    }
+                    resourceNode.produceResources(resourceNode.getMaxCapacity());
                 } else {
                     // Resource node not available, trade for the resource
                     int currentQuantity = resourceStorage.get(resource).getQuantity();
