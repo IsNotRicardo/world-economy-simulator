@@ -152,6 +152,12 @@ public class SettingsViewController {
 	private Region resourceNodeOptionalRegion;
 	@FXML
 	private Button deleteResourceNodeButton;
+	@FXML
+	private Label confirmResourcesLabel;
+	@FXML
+	private Label confirmCountriesLabel;
+	@FXML
+	private Label confirmResourceNodesLabel;
 
 	@FXML
 	public void initialize() {
@@ -259,6 +265,12 @@ public class SettingsViewController {
 				populateResourceNodeListView();
 				populateResourceComboBox();
 				clearResourceNodeFields();
+			}
+		});
+
+		tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+			if (newTab.getText().equals("Confirm")) {
+				displayGeneralData();
 			}
 		});
 
@@ -950,7 +962,6 @@ public class SettingsViewController {
 	@FXML
 	public void handleStartSimulation(ActionEvent event) {
 		saveSimulationConfigs();
-		displayGeneralData();
 
 		try {
 			CountryDao countryDao = new CountryDao();
@@ -1015,6 +1026,14 @@ public class SettingsViewController {
 	}
 
 	private void displayGeneralData() {
-		// TODO: Update the labels with general data
+		int resourceCount = resourceList.size();
+		int countryCount = countryList.size();
+		int resourceNodeCount = countryResourceNodes.values().stream()
+				.mapToInt(Map::size)
+				.sum();
+
+		confirmResourcesLabel.setText(resourceCount + " Resources");
+		confirmCountriesLabel.setText(countryCount + " Countries");
+		confirmResourceNodesLabel.setText(resourceNodeCount + " Resource Nodes");
 	}
 }
