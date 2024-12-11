@@ -937,11 +937,13 @@ public class SettingsViewController {
 				resourceDao.persist(resourceEntity);
 			});
 
-			//TODO: fix starter resources
 			List<Country> countries = new ArrayList<>();
 			countryList.forEach(country -> {
+				//TODO: TEMPORARY SOLUTION resourceList should have actual values in the future
 				Map<Resource, Integer> starterResources = new HashMap<>();
+				resourceList.forEach(resource -> starterResources.put(resource, 0));
 				Map<Resource, ResourceNodeDTO> ownedResources = new HashMap<>(countryResourceNodes.get(country));
+
 				Country newCountry =
 						new Country(
 								country.getName(),
