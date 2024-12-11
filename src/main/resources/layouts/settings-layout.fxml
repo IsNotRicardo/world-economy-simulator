@@ -241,7 +241,7 @@
                                                         <Insets right="10.0" />
                                                     </HBox.margin>
                                                     <tooltip>
-                                                        <Tooltip text="Defines how important for survival this resource is. Must be any number between 0 and 1." />
+                                                        <Tooltip text="The level of important of the resource, either for survival or development. Must be any number between 0 and 1." />
                                                     </tooltip>
                                                 </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Priority:">
@@ -274,7 +274,7 @@
                                                         <Insets right="10.0" />
                                                     </HBox.margin>
                                                     <tooltip>
-                                                        <Tooltip text="Defines the general base production capacity of this resource. Must be an integer greater than 0" />
+                                                        <Tooltip text="The base amount of resources that resource nodes of this type can produce. Must be an integer greater than 0." />
                                                     </tooltip>
                                                 </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Base Capacity:">
@@ -307,7 +307,7 @@
                                                         <Insets right="10.0" />
                                                     </HBox.margin>
                                                     <tooltip>
-                                                        <Tooltip text="Defines the general production cost of this resource per unit. Must be a positive number." />
+                                                        <Tooltip text="The general production cost of this resource per unit. Must be a positive number." />
                                                     </tooltip>
                                                 </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Production Cost:">
@@ -554,6 +554,11 @@
                                         </Label>
                                         <HBox>
                                             <children>
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="•">
+                                       <font>
+                                          <Font name="Georgia" size="24.0" />
+                                       </font>
+                                    </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Country:">
                                                     <font>
                                                         <Font name="Georgia" size="24.0" />
@@ -564,6 +569,11 @@
                                         </HBox>
                                         <HBox>
                                             <children>
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" text="•">
+                                       <font>
+                                          <Font name="Georgia" size="24.0" />
+                                       </font>
+                                    </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Resource:">
                                                     <font>
                                                         <Font name="Georgia" size="24.0" />
@@ -574,6 +584,14 @@
                                         </HBox>
                                         <HBox>
                                             <children>
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="tooltipLabel" text="❓">
+                                       <font>
+                                          <Font name="Georgia" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="Each tier will increase the base capacity of the resource node by 10%. Must be a positive integer." />
+                                       </tooltip>
+                                    </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Tier:">
                                                     <font>
                                                         <Font name="Georgia" size="24.0" />
@@ -596,6 +614,14 @@
                                         </HBox>
                                         <HBox>
                                             <children>
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="tooltipLabel" text="❓">
+                                       <font>
+                                          <Font name="Georgia" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="The base amount of resources that this resource node can produce. Must be an integer greater than 0." />
+                                       </tooltip>
+                                    </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Base Capacity:">
                                                     <font>
                                                         <Font name="Georgia" size="24.0" />
@@ -618,6 +644,14 @@
                                         </HBox>
                                         <HBox>
                                             <children>
+                                    <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="tooltipLabel" text="❓">
+                                       <font>
+                                          <Font name="Georgia" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="The production cost of this resource node per unit. Must be a positive number." />
+                                       </tooltip>
+                                    </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Production Cost:">
                                                     <font>
                                                         <Font name="Georgia" size="24.0" />
