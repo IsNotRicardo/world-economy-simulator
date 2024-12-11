@@ -67,7 +67,7 @@ SELECT *
 FROM default_country
 WHERE (SELECT COUNT(*) FROM country) = 0;
 
-CREATE TABLE IF NOT EXISTS country_resource
+CREATE TABLE IF NOT EXISTS resource_node
 (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
     country_id  BIGINT,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS country_resource
 
 DELIMITER //
 
-CREATE PROCEDURE IF NOT EXISTS insert_country_resource()
+CREATE PROCEDURE IF NOT EXISTS insert_resource_nodes()
 BEGIN
     IF (
         (SELECT COUNT(*) FROM country) = (SELECT COUNT(*) FROM default_country) AND
@@ -93,7 +93,7 @@ BEGIN
                              LEFT JOIN default_resource dr ON r.id = dr.id
                     WHERE dr.id IS NULL)
         ) THEN
-        INSERT IGNORE INTO country_resource (country_id, resource_id, quantity)
+        INSERT IGNORE INTO resource_node (country_id, resource_id, quantity)
         VALUES
             -- Finland
             ((SELECT id FROM country WHERE name = 'Finland'), (SELECT id FROM resource WHERE name = 'Copper'), 100),
@@ -130,4 +130,4 @@ END //
 
 DELIMITER ;
 
-CALL insert_country_resource();
+CALL insert_resource_nodes();
