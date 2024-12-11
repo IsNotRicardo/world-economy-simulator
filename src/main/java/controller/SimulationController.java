@@ -145,7 +145,6 @@ public class SimulationController {
             }
 
             // Update the series with new data
-            series.getData().clear();
             series.getData().add(new XYChart.Data<>(String.valueOf(xData), yData));
         });
     }
