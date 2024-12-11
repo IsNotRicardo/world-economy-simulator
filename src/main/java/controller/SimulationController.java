@@ -50,6 +50,8 @@ public class SimulationController {
     private ComboBox<String> resourceNodeComboBox;
     @FXML
     private LineChart<String, Number> lineChart;
+    @FXML
+    private Label informationLabel;
 
     @FXML
     private void initialize() {
@@ -72,10 +74,16 @@ public class SimulationController {
         simulationThread.start();
     }
 
-    public void updateData() {
-        int currentDay = Clock.getInstance().getTime();
-        this.currentDay = currentDay;
-        daysTextField.setText(String.valueOf(currentDay));
+    public void endSimulation() {
+        Platform.runLater(() -> informationLabel.setText("Simulation has ended."));
+    }
+
+    public synchronized void updateData() {
+        Platform.runLater(() -> {
+            int currentDay = Clock.getInstance().getTime();
+            this.currentDay = currentDay;
+            daysTextField.setText(String.valueOf(currentDay));
+        });
 
         if (currentSeriesName == null) {
             return;
@@ -190,10 +198,10 @@ public class SimulationController {
         }
     }
 
-	@FXML
-	private void handleResourceNodeSelection() {
-		// Cannot be implemented yet
-	}
+    @FXML
+    private void handleResourceNodeSelection() {
+        // Cannot be implemented yet
+    }
 
     @FXML
     private void handlePopulationButton() {

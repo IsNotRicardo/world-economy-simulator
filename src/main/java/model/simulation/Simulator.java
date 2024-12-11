@@ -186,36 +186,7 @@ public class Simulator {
     }
 
     private void finalizeSimulation() {
-        // Generate a report or summary of the simulation results
-        generateReport();
-
-		System.out.println("\nSimulation finalized.");
-	}
-
-	private void generateReport() {
-		// Implement logic to generate a report or summary of the simulation results
-		System.out.println("\nGenerating simulation report...");
-		// Example: Print summary statistics
-		for (Country country : countries) {
-			System.out.println("Country: " + country.getName());
-			System.out.println("Population: " + country.getPopulation());
-			System.out.println("Money: " + country.getMoney());
-
-			for (Map.Entry<Resource, ResourceInfo> entry : country.getResourceStorage().entrySet()) {
-				Resource resource = entry.getKey();
-				ResourceInfo resourceInfo = entry.getValue();
-				System.out.println("Resource: " + resource.name());
-				System.out.println("--- Quantity: " + resourceInfo.getQuantity());
-				System.out.println("--- Value: " + resourceInfo.getValue());
-			}
-
-			for (ResourceNode resourceNode : country.getResourceNodes()) {
-				System.out.println("Resource Node: " + resourceNode.getResource().name());
-				System.out.println("--- Stored Resources: " + resourceNode.getStoredResources());
-				System.out.println("--- Base Capacity: " + resourceNode.getBaseCapacity());
-				System.out.println("--- Tier: " + resourceNode.getTier());
-			}
-		}
+        simulationController.endSimulation();
 	}
 
 	private ResourceEntity getResourceEntity(Resource resource, ResourceNode resourceNode) {
