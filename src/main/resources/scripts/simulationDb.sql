@@ -69,17 +69,21 @@ WHERE (SELECT COUNT(*) FROM country) = 0;
 
 CREATE TABLE IF NOT EXISTS resource_node
 (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    country_id  BIGINT,
-    resource_id BIGINT,
-    quantity    INT NOT NULL,
+    id                   BIGINT PRIMARY KEY AUTO_INCREMENT,
+    country_id           BIGINT,
+    resource_id          BIGINT,
+    quantity             INT    NOT NULL,
+    tier                 INT    NOT NULL DEFAULT 0,
+    base_capacity        INT    NOT NULL,
+    base_production_cost DOUBLE NOT NULL,
     FOREIGN KEY (country_id) REFERENCES country (id) ON DELETE CASCADE,
     FOREIGN KEY (resource_id) REFERENCES resource (id) ON DELETE CASCADE
 );
 
-DELIMITER //
+-- Insert data into resource_node table
 
-CREATE PROCEDURE IF NOT EXISTS insert_resource_nodes()
+DELIMITER //
+CREATE PROCEDURE IF NOT EXISTS insert_resource_node()
 BEGIN
     IF (
         (SELECT COUNT(*) FROM country) = (SELECT COUNT(*) FROM default_country) AND
@@ -93,41 +97,160 @@ BEGIN
                              LEFT JOIN default_resource dr ON r.id = dr.id
                     WHERE dr.id IS NULL)
         ) THEN
-        INSERT IGNORE INTO resource_node (country_id, resource_id, quantity)
-        VALUES
-            -- Finland
-            ((SELECT id FROM country WHERE name = 'Finland'), (SELECT id FROM resource WHERE name = 'Copper'), 100),
-            ((SELECT id FROM country WHERE name = 'Finland'), (SELECT id FROM resource WHERE name = 'Iron'), 200),
-            ((SELECT id FROM country WHERE name = 'Finland'), (SELECT id FROM resource WHERE name = 'Food'), 300),
-            ((SELECT id FROM country WHERE name = 'Finland'), (SELECT id FROM resource WHERE name = 'Wood'), 400),
-            ((SELECT id FROM country WHERE name = 'Finland'), (SELECT id FROM resource WHERE name = 'Water'), 500),
-            -- Sweden
-            ((SELECT id FROM country WHERE name = 'Sweden'), (SELECT id FROM resource WHERE name = 'Gold'), 100),
-            ((SELECT id FROM country WHERE name = 'Sweden'), (SELECT id FROM resource WHERE name = 'Iron'), 200),
-            ((SELECT id FROM country WHERE name = 'Sweden'), (SELECT id FROM resource WHERE name = 'Wood'), 300),
-            ((SELECT id FROM country WHERE name = 'Sweden'), (SELECT id FROM resource WHERE name = 'Water'), 400),
-            ((SELECT id FROM country WHERE name = 'Sweden'), (SELECT id FROM resource WHERE name = 'Food'), 500),
-            -- Norway
-            ((SELECT id FROM country WHERE name = 'Norway'), (SELECT id FROM resource WHERE name = 'Aluminium'), 100),
-            ((SELECT id FROM country WHERE name = 'Norway'), (SELECT id FROM resource WHERE name = 'Coal'), 200),
-            ((SELECT id FROM country WHERE name = 'Norway'), (SELECT id FROM resource WHERE name = 'Oil'), 300),
-            ((SELECT id FROM country WHERE name = 'Norway'), (SELECT id FROM resource WHERE name = 'Water'), 400),
-            ((SELECT id FROM country WHERE name = 'Norway'), (SELECT id FROM resource WHERE name = 'Food'), 500),
-            -- Denmark
-            ((SELECT id FROM country WHERE name = 'Denmark'), (SELECT id FROM resource WHERE name = 'Coal'), 100),
-            ((SELECT id FROM country WHERE name = 'Denmark'), (SELECT id FROM resource WHERE name = 'Iron'), 200),
-            ((SELECT id FROM country WHERE name = 'Denmark'), (SELECT id FROM resource WHERE name = 'Wood'), 300),
-            ((SELECT id FROM country WHERE name = 'Denmark'), (SELECT id FROM resource WHERE name = 'Water'), 400),
-            ((SELECT id FROM country WHERE name = 'Denmark'), (SELECT id FROM resource WHERE name = 'Food'), 500),
-            -- Iceland
-            ((SELECT id FROM country WHERE name = 'Iceland'), (SELECT id FROM resource WHERE name = 'Uranium'), 100),
-            ((SELECT id FROM country WHERE name = 'Iceland'), (SELECT id FROM resource WHERE name = 'Iron'), 200),
-            ((SELECT id FROM country WHERE name = 'Iceland'), (SELECT id FROM resource WHERE name = 'Wood'), 300),
-            ((SELECT id FROM country WHERE name = 'Iceland'), (SELECT id FROM resource WHERE name = 'Water'), 400),
-            ((SELECT id FROM country WHERE name = 'Iceland'), (SELECT id FROM resource WHERE name = 'Food'), 500);
+        INSERT IGNORE INTO resource_node (country_id, resource_id, quantity, tier, base_capacity, base_production_cost)
+        VALUES ((SELECT id FROM country WHERE name = 'Finland'),
+                (SELECT id FROM resource WHERE name = 'Copper'),
+                100, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Copper'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Copper')),
+
+               ((SELECT id FROM country WHERE name = 'Finland'),
+                (SELECT id FROM resource WHERE name = 'Iron'),
+                200, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Iron'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Iron')),
+
+               ((SELECT id FROM country WHERE name = 'Finland'),
+                (SELECT id FROM resource WHERE name = 'Food'),
+                300, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Food'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Food')),
+
+               ((SELECT id FROM country WHERE name = 'Finland'),
+                (SELECT id FROM resource WHERE name = 'Wood'),
+                400, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Wood'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Wood')),
+
+               ((SELECT id FROM country WHERE name = 'Finland'),
+                (SELECT id FROM resource WHERE name = 'Water'),
+                500, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Water'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Water')),
+
+               ((SELECT id FROM country WHERE name = 'Sweden'),
+                (SELECT id FROM resource WHERE name = 'Copper'),
+                100, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Copper'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Copper')),
+
+               ((SELECT id FROM country WHERE name = 'Sweden'),
+                (SELECT id FROM resource WHERE name = 'Iron'),
+                200, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Iron'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Iron')),
+
+               ((SELECT id FROM country WHERE name = 'Sweden'),
+                (SELECT id FROM resource WHERE name = 'Food'),
+                300, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Food'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Food')),
+
+               ((SELECT id FROM country WHERE name = 'Sweden'),
+                (SELECT id FROM resource WHERE name = 'Wood'),
+                400, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Wood'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Wood')),
+
+               ((SELECT id FROM country WHERE name = 'Sweden'),
+                (SELECT id FROM resource WHERE name = 'Water'),
+                500, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Water'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Water')),
+
+               ((SELECT id FROM country WHERE name = 'Norway'),
+                (SELECT id FROM resource WHERE name = 'Copper'),
+                100, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Copper'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Copper')),
+
+               ((SELECT id FROM country WHERE name = 'Norway'),
+                (SELECT id FROM resource WHERE name = 'Iron'),
+                200, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Iron'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Iron')),
+
+               ((SELECT id FROM country WHERE name = 'Norway'),
+                (SELECT id FROM resource WHERE name = 'Food'),
+                300, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Food'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Food')),
+
+               ((SELECT id FROM country WHERE name = 'Norway'),
+                (SELECT id FROM resource WHERE name = 'Wood'),
+                400, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Wood'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Wood')),
+
+               ((SELECT id FROM country WHERE name = 'Norway'),
+                (SELECT id FROM resource WHERE name = 'Water'),
+                500, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Water'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Water')),
+
+               ((SELECT id FROM country WHERE name = 'Denmark'),
+                (SELECT id FROM resource WHERE name = 'Copper'),
+                100, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Copper'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Copper')),
+
+               ((SELECT id FROM country WHERE name = 'Denmark'),
+                (SELECT id FROM resource WHERE name = 'Iron'),
+                200, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Iron'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Iron')),
+
+                ((SELECT id FROM country WHERE name = 'Denmark'),
+                (SELECT id FROM resource WHERE name = 'Food'),
+                300, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Food'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Food')),
+
+                    ((SELECT id FROM country WHERE name = 'Denmark'),
+                (SELECT id FROM resource WHERE name = 'Wood'),
+                400, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Wood'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Wood')),
+
+                    ((SELECT id FROM country WHERE name = 'Denmark'),
+                (SELECT id FROM resource WHERE name = 'Water'),
+                500, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Water'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Water')),
+
+                    ((SELECT id FROM country WHERE name = 'Iceland'),
+                (SELECT id FROM resource WHERE name = 'Copper'),
+                100, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Copper'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Copper')),
+
+                    ((SELECT id FROM country WHERE name = 'Iceland'),
+                (SELECT id FROM resource WHERE name = 'Iron'),
+                200, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Iron'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Iron')),
+
+                    ((SELECT id FROM country WHERE name = 'Iceland'),
+                (SELECT id FROM resource WHERE name = 'Food'),
+                300, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Food'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Food')),
+
+                    ((SELECT id FROM country WHERE name = 'Iceland'),
+                (SELECT id FROM resource WHERE name = 'Wood'),
+                400, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Wood'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Wood')),
+
+                    ((SELECT id FROM country WHERE name = 'Iceland'),
+                (SELECT id FROM resource WHERE name = 'Water'),
+                500, 0,
+                (SELECT base_capacity FROM resource WHERE name = 'Water'),
+                (SELECT production_cost AS base_production_cost FROM resource WHERE name = 'Water'));
+
     END IF;
 END //
 
 DELIMITER ;
 
-CALL insert_resource_nodes();
+CALL insert_resource_node();
