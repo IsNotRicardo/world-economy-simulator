@@ -40,7 +40,14 @@ public class Country {
         for (Map.Entry<Resource, Integer> entry : starterResources.entrySet()) {
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
-            double baseProductionCost = ownedResources.get(resource).productionCost();
+            double baseProductionCost;
+
+            if (ownedResources.get(resource) != null) {
+                baseProductionCost = ownedResources.get(resource).productionCost();
+            } else {
+                baseProductionCost = resource.productionCost();
+            }
+
 
             resourceStorage.put(resource, new ResourceInfo(quantity, quantity * baseProductionCost,
                     SimulationConfig.getSupplyArchiveTime()));
