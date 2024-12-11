@@ -16,8 +16,15 @@ public class CountryDao {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			// Use merge for both update and insert scenarios
-			em.merge(country);
+			CountryEntity existingCountry = findByName(country.getName());
+			if (existingCountry != null) {
+				// Update existing country
+				existingCountry.setMoney(country.getMoney());
+				existingCountry.setPopulation(country.getPopulation());
+				em.merge(existingCountry);
+			} else {
+				em.persist(country);
+			}
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
@@ -54,6 +61,26 @@ public class CountryDao {
 			return em.createQuery("SELECT c FROM CountryEntity c", CountryEntity.class).getResultList();
 		} catch (Exception e) {
 			logger.error("Error finding all countries", e);
+			throw e;
+		} finally {
+			if (em.isOpen()) {
+				em.close();
+			}
+		}
+	}
+
+	public void deleteByName (String name) {
+		EntityManager em = datasource.MariaDbConnection.getEntityManager();
+		em.getTransaction().begin();
+		try {
+			CountryEntity countryEntity = findByName(name);
+			if (countryEntity != null) {
+				em.remove(em.contains(countryEntity) ? countryEntity : em.merge(countryEntity));
+			}
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			logger.error("Error deleting country by name: {}", name, e);
 			throw e;
 		} finally {
 			if (em.isOpen()) {
