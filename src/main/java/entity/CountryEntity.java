@@ -79,4 +79,21 @@ public class CountryEntity {
 		return "CountryEntity [" + "id=" + id + ", name='" + name + '\'' + ", money=" + money + ", population=" +
 		       population + ']';
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		CountryEntity country = (CountryEntity) obj;
+		return name != null && name.equals(country.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return name != null ? name.hashCode() : 0;
+	}
 }
