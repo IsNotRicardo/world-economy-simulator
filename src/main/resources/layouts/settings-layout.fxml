@@ -406,7 +406,7 @@
                                                         <Insets right="10.0" />
                                                     </HBox.margin>
                                                 </Label>
-                                                <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Name:">
+                                                <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="220.0" text="Name:">
                                                     <font>
                                                         <Font name="Georgia" size="24.0" />
                                                     </font>
@@ -436,7 +436,7 @@
                                                         <Insets right="10.0" />
                                                     </HBox.margin>
                                                 </Label>
-                                                <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Initial Money:">
+                                                <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="220.0" text="Initial Money:">
                                                     <font>
                                                         <Font name="Georgia" size="24.0" />
                                                     </font>
@@ -466,7 +466,7 @@
                                                         <Insets right="10.0" />
                                                     </HBox.margin>
                                                 </Label>
-                                                <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Initial Population:">
+                                                <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="220.0" text="Initial Population:">
                                                     <font>
                                                         <Font name="Georgia" size="24.0" />
                                                     </font>
@@ -486,7 +486,7 @@
                                                 </Label>
                                             </children>
                                         </HBox>
-                                        <HBox maxWidth="400.0" prefHeight="100.0" prefWidth="200.0">
+                                        <HBox maxWidth="420.0" prefHeight="100.0" prefWidth="200.0">
                                             <children>
                                                 <Button minWidth="70.0" mnemonicParsing="false" onAction="#newCountry" text="New">
                                                     <font>
@@ -558,6 +558,9 @@
                                        <font>
                                           <Font name="Georgia" size="24.0" />
                                        </font>
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
                                     </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Country:">
                                                     <font>
@@ -573,6 +576,9 @@
                                        <font>
                                           <Font name="Georgia" size="24.0" />
                                        </font>
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
                                     </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Resource:">
                                                     <font>
@@ -591,6 +597,9 @@
                                        <tooltip>
                                           <Tooltip text="Each tier will increase the base capacity of the resource node by 10%. Must be a positive integer." />
                                        </tooltip>
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
                                     </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Tier:">
                                                     <font>
@@ -621,6 +630,9 @@
                                        <tooltip>
                                           <Tooltip text="The base amount of resources that this resource node can produce. Must be an integer greater than 0." />
                                        </tooltip>
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
                                     </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Base Capacity:">
                                                     <font>
@@ -651,6 +663,9 @@
                                        <tooltip>
                                           <Tooltip text="The production cost of this resource node per unit. Must be a positive number." />
                                        </tooltip>
+                                       <HBox.margin>
+                                          <Insets right="10.0" />
+                                       </HBox.margin>
                                     </Label>
                                                 <Label maxHeight="30.0" maxWidth="300.0" minHeight="30.0" minWidth="200.0" text="Production Cost:">
                                                     <font>
@@ -706,12 +721,52 @@
                 </Tab>
             <Tab text="Confirm">
                <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Label text="You have:" />
-                        <Label layoutX="10.0" layoutY="10.0" text="x Resources" />
-                        <Label layoutX="10.0" layoutY="27.0" text="x Resources" />
-                        <Button mnemonicParsing="false" onAction="#handleStartSimulation" text="Start" />
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="601.0" text="Confirm Your Settings">
+                           <font>
+                              <Font name="Bell MT Bold" size="32.0" />
+                           </font>
+                           <padding>
+                              <Insets top="30.0" />
+                           </padding>
+                        </Label>
+                        <Label text="Your Simulation Has:">
+                           <font>
+                              <Font name="Georgia" size="28.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin></Label>
+                        <Label fx:id="confirmResourcesLabel" layoutX="10.0" layoutY="10.0" text="Resources">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin></Label>
+                        <Label fx:id="confirmCountriesLabel" layoutX="10.0" layoutY="27.0" text="Countries">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin></Label>
+                        <Label fx:id="confirmResourceNodesLabel" layoutX="259.0" layoutY="140.0" text="Resource Nodes">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Button mnemonicParsing="false" onAction="#handleStartSimulation" text="Start Simulation">
+                           <font>
+                              <Font name="Bell MT Bold" size="20.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin></Button>
                      </children>
                   </VBox>
                </content>
