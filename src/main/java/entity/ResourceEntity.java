@@ -92,4 +92,20 @@ public class ResourceEntity {
 		       ", baseCapacity=" + baseCapacity + ", productionCost=" + productionCost + ']';
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		ResourceEntity that = (ResourceEntity) obj;
+		return name != null && name.equals(that.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return name != null ? name.hashCode() : 0;
+	}
 }
