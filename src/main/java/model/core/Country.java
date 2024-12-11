@@ -179,7 +179,7 @@ public class Country {
                 totalDemand.put(resource, totalDemand.getOrDefault(resource, 0) + demand);
             }
         }
-        System.out.println("Total demand: " + totalDemand);
+//        System.out.println("Total demand: " + totalDemand);
 
 //        System.out.println("Country: " + this.name);
         // Periodic production based on supply change
