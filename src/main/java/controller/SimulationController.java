@@ -1,5 +1,7 @@
 package controller;
 
+import dao.*;
+import entity.*;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -16,10 +18,16 @@ import model.simulation.Simulator;
 import java.util.List;
 
 public class SimulationController {
-	private Country selectedCountry;
-	private Resource selectedResource;
+	private CountryEntity selectedCountry;
+	private ResourceEntity selectedResource;
 	private Resource selectedResourceNode;
 	private String currentSeriesName;
+
+	private final CountryDao countryDao = new CountryDao();
+	private final ResourceDao resourceDao = new ResourceDao();
+	private final CountryMetricsDao countryMetricsDao = new CountryMetricsDao();
+	private final ResourceMetricsDao resourceMetricsDao = new ResourceMetricsDao();
+	private final ResourceNodeMetricsDao resourceNodeMetricsDao = new ResourceNodeMetricsDao();
 
 	@FXML
 	private Button toggleSimulationButton;
@@ -91,7 +99,7 @@ public class SimulationController {
 		}
 	}
 
-	private void drawLineGraph(String seriesName, List<Integer> xData, List<Number> yData) {
+	private void drawLineGraph(String seriesName, List<Integer> xData, List<? extends Number> yData) {
 		XYChart.Series<String, Number> series = new XYChart.Series<>();
 		series.setName(seriesName);
 		currentSeriesName = seriesName;
@@ -104,7 +112,7 @@ public class SimulationController {
 		lineChart.getData().add(series);
 	}
 
-	private void updateLineGraph(String seriesName, List<Integer> xData, List<Number> yData) {
+	private void updateLineGraph(String seriesName, int xData, Number yData) {
 		XYChart.Series<String, Number> series = null;
 
 		// Check if the series already exists
@@ -124,9 +132,7 @@ public class SimulationController {
 
 		// Update the series with new data
 		series.getData().clear();
-		for (int i = 0; i < xData.size(); i++) {
-			series.getData().add(new XYChart.Data<>(String.valueOf(xData.get(i)), yData.get(i)));
-		}
+		series.getData().add(new XYChart.Data<>(String.valueOf(xData), yData));
 	}
 
 	@FXML
@@ -154,84 +160,264 @@ public class SimulationController {
 		}
 	}
 
+	/*
+	 *TODO: Make an actual variable for day to fetch the data for the selected day
+	 */
+
 	@FXML
 	private void handlePopulationButton() {
-		// TODO: Add database call fetchAll
+
+		if (selectedCountry == null) {
+			return;
+		}
+
+		List<CountryMetricsEntity> countryMetricEntities = countryMetricsDao.findByCountry(selectedCountry);
+
+		List<Integer> xData = countryMetricEntities.stream().map(CountryMetricsEntity::getDay).toList();
+		List<Long> yData = countryMetricEntities.stream().map(CountryMetricsEntity::getPopulation).toList();
+
+		drawLineGraph("Population/Day", xData, yData);
 	}
 
 	private void updatePopulationGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedCountry == null) {
+			return;
+		}
+		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+
+		int xData = countryMetricsEntity.getDay();
+		long yData = countryMetricsEntity.getPopulation();
+
+		updateLineGraph("Population/Day", xData, yData);
 	}
 
 	@FXML
 	private void handleMoneyButton() {
-		// TODO: Add database call
+
+		if (selectedCountry == null) {
+			return;
+		}
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+
+		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
+		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getMoney).toList();
+
+		drawLineGraph("Money/Day", xData, yData);
 	}
 
 	private void updateMoneyGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedCountry == null) {
+			return;
+		}
+		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+
+		int xData = countryMetricsEntity.getDay();
+		double yData = countryMetricsEntity.getMoney();
+
+		updateLineGraph("Money/Day", xData, yData);
 	}
 
 	@FXML
 	private void handleAverageHappinessButton() {
-		// TODO: Add database call
+
+		if (selectedCountry == null) {
+			return;
+		}
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+
+		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
+		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getAverageHappiness).toList();
+
+		drawLineGraph("Average Happiness/Day", xData, yData);
 	}
 
 	private void updateAverageHappinessGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedCountry == null) {
+			return;
+		}
+		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+
+		int xData = countryMetricsEntity.getDay();
+		double yData = countryMetricsEntity.getAverageHappiness();
+
+		updateLineGraph("Average Happiness/Day", xData, yData);
 	}
 
 	@FXML
 	private void handleIndividualBudgetButton() {
-		// TODO: Add database call
+
+		if (selectedCountry == null) {
+			return;
+		}
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+
+		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
+		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getIndividualBudget).toList();
+
+		drawLineGraph("Individual Budget/Day", xData, yData);
 	}
 
 	private void updateIndividualBudgetGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedCountry == null) {
+			return;
+		}
+		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, day);
+
+		int xData = countryMetricsEntity.getDay();
+		double yData = countryMetricsEntity.getIndividualBudget();
+
+		updateLineGraph("Individual Budget/Day", xData, yData);
 	}
 
 	@FXML
 	private void handleQuantityButton() {
-		// TODO: Add database call
+
+		if (selectedResource == null) {
+			return;
+		}
+		List<ResourceMetricsEntity> resourceMetricsEntities =
+				resourceMetricsDao.findByResource(selectedCountry, selectedResource);
+
+		List<Integer> xData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getDay).toList();
+		List<Integer> yData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getQuantity).toList();
+
+		drawLineGraph("Quantity/Day", xData, yData);
 	}
 
 	private void updateQuantityGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedResource == null) {
+			return;
+		}
+		ResourceMetricsEntity resourceMetricsEntity =
+				resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, day);
+
+		int xData = resourceMetricsEntity.getDay();
+		int yData = resourceMetricsEntity.getQuantity();
+
+		updateLineGraph("Quantity/Day", xData, yData);
 	}
 
 	@FXML
 	private void handleValueButton() {
-		// TODO: Add database call
+
+		if (selectedResource == null) {
+			return;
+		}
+		List<ResourceMetricsEntity> resourceMetricsEntities =
+				resourceMetricsDao.findByResource(selectedCountry, selectedResource);
+
+		List<Integer> xData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getDay).toList();
+		List<Double> yData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getValue).toList();
+
+		drawLineGraph("Value/Day", xData, yData);
+
 	}
 
 	private void updateValueGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedResource == null) {
+			return;
+		}
+		ResourceMetricsEntity resourceMetricsEntity =
+				resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, day);
+
+		int xData = resourceMetricsEntity.getDay();
+		double yData = resourceMetricsEntity.getValue();
+
+		updateLineGraph("Value/Day", xData, yData);
 	}
 
 	@FXML
 	private void handleProductionCostButton() {
-		// TODO: Add database call
+
+		if (selectedResourceNode == null) {
+			return;
+		}
+		List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
+				resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
+
+		List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
+		List<Double> yData =
+				resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getProductionCost).toList();
+
+		drawLineGraph("Production Cost/Day", xData, yData);
 	}
 
 	private void updateProductionCostGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedResourceNode == null) {
+			return;
+		}
+		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
+				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, day);
+
+		int xData = resourceNodeMetricsEntity.getDay();
+		double yData = resourceNodeMetricsEntity.getProductionCost();
+
+		updateLineGraph("Production Cost/Day", xData, yData);
 	}
 
 	@FXML
 	private void handleMaxCapacityButton() {
-		// TODO: Add database call
+
+		if (selectedResourceNode == null) {
+			return;
+		}
+		List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
+				resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
+
+		List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
+		List<Integer> yData =
+				resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getMaxCapacity).toList();
+
+		drawLineGraph("Max Capacity/Day", xData, yData);
 	}
 
 	private void updateMaxCapacityGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedResourceNode == null) {
+			return;
+		}
+		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
+				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, day);
+
+		int xData = resourceNodeMetricsEntity.getDay();
+		int yData = resourceNodeMetricsEntity.getMaxCapacity();
+
+		updateLineGraph("Max Capacity/Day", xData, yData);
 	}
 
 	@FXML
 	private void handleTierButton() {
-		// TODO: Add database call
+
+		if (selectedResourceNode == null) {
+			return;
+		}
+		List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
+				resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
+
+		List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
+		List<Integer> yData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getTier).toList();
+
+		drawLineGraph("Tier/Day", xData, yData);
 	}
 
 	private void updateTierGraph() {
-		// TODO: Add database call fetch for this day only
+
+		if (selectedResourceNode == null) {
+			return;
+		}
+		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
+				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, day);
+
+		int xData = resourceNodeMetricsEntity.getDay();
+		int yData = resourceNodeMetricsEntity.getTier();
+
+		updateLineGraph("Tier/Day", xData, yData);
 	}
 }

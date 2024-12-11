@@ -16,17 +16,21 @@ public class Simulator {
 	private final List<Resource> resources;
 	private final List<Country> countries;
 
-	public Simulator(SimulationController simulationController, List<Resource> resources, List<Country> countries) {
-		this.simulationController = simulationController;
-		this.resources = resources;
-		this.countries = countries;
-	}
-
 	private final ResourceDao resourceDao = new ResourceDao();
 	private final CountryDao countryDao = new CountryDao();
 	private final CountryMetricsDao countryMetricsDao = new CountryMetricsDao();
 	private final ResourceMetricsDao resourceMetricsDao = new ResourceMetricsDao();
 	private final ResourceNodeMetricsDao resourceNodeMetricsDao = new ResourceNodeMetricsDao();
+
+	public Simulator(SimulationController simulationController, List<Resource> resources, List<Country> countries) {
+		this.simulationController = simulationController;
+		this.resources = resources;
+		this.countries = countries;
+
+		for (Country country : countries) {
+			country.addAllCountries(countries);
+		}
+	}
 
 	public void runSimulation() {
 		initializeSimulation();

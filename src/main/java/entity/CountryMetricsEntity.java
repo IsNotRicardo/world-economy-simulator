@@ -51,6 +51,14 @@ public class CountryMetricsEntity {
 		this.id = id;
 	}
 
+	public int getDay() {
+		return day;
+	}
+
+	public void setDay(int day) {
+		this.day = day;
+	}
+
 	public CountryEntity getCountry() {
 		return country;
 	}
