@@ -336,6 +336,16 @@ public class SettingsViewController {
 				validateDoubleField(resourceProductionCostField, resourceProductionCostErrorLabel, 0.0,
 				                    Double.MAX_VALUE, "Production cost cannot be negative");
 
+		if (isNameValid) {
+			String name = resourceNameField.getText();
+			for (Resource resource : resourceList) {
+				if (resource.name().equals(name)) {
+					resourceNameErrorLabel.setText("Resource name must be unique");
+					return false;
+				}
+			}
+		}
+
 		return isNameValid && isPriorityValid && isBaseCapacityValid && isProductionCostValid;
 	}
 
@@ -347,6 +357,16 @@ public class SettingsViewController {
 		boolean isInitialPopulationValid =
 				validateIntField(countryInitialPopulationField, countryInitialPopulationErrorLabel, 1,
 				                 "Initial population must be positive");
+
+		if (isNameValid) {
+			String name = countryNameField.getText();
+			for (CountryEntity country : countryList) {
+				if (country.getName().equals(name)) {
+					countryNameErrorLabel.setText("Country name must be unique");
+					return false;
+				}
+			}
+		}
 
 		return isNameValid && isInitialMoneyValid && isInitialPopulationValid;
 	}
