@@ -757,18 +757,23 @@ public class SettingsViewController {
 
 	private boolean resolveIsResourceNotSaved() {
 		if (isResourceEditingMode) {
-			String savedName = resourceList.get(currentResourceIndex).name();
-			String savedPriority = String.valueOf(resourceList.get(currentResourceIndex).priority());
-			String savedBaseCapacity = String.valueOf(resourceList.get(currentResourceIndex).baseCapacity());
-			String savedProductionCost = String.valueOf(resourceList.get(currentResourceIndex).productionCost());
+			Resource selectedResource = resourceList.get(currentResourceIndex);
+			String savedName = selectedResource.name();
+			double savedPriority = selectedResource.priority();
+			int savedBaseCapacity = selectedResource.baseCapacity();
+			double savedProductionCost = selectedResource.productionCost();
 
-			return !resourceNameField.getText().equals(savedName) ||
-			       !resourcePriorityField.getText().equals(savedPriority) ||
-			       !resourceBaseCapacityField.getText().equals(savedBaseCapacity) ||
-			       !resourceProductionCostField.getText().equals(savedProductionCost);
+			try {
+				return !resourceNameField.getText().equals(savedName) ||
+						Double.parseDouble(resourcePriorityField.getText()) != savedPriority ||
+						Integer.parseInt(resourceBaseCapacityField.getText()) != savedBaseCapacity ||
+						Double.parseDouble(resourceProductionCostField.getText()) != savedProductionCost;
+			} catch (NumberFormatException e) {
+				return true;
+			}
 		} else {
 			return !resourceNameField.getText().isEmpty() || !resourcePriorityField.getText().isEmpty() ||
-			       !resourceBaseCapacityField.getText().isEmpty() || !resourceProductionCostField.getText().isEmpty();
+					!resourceBaseCapacityField.getText().isEmpty() || !resourceProductionCostField.getText().isEmpty();
 		}
 	}
 
@@ -810,12 +815,16 @@ public class SettingsViewController {
 		if (isCountryEditingMode) {
 			CountryEntity savedCountry = countryList.get(currentCountryIndex);
 			String savedName = savedCountry.getName();
-			String savedInitialMoney = String.valueOf(savedCountry.getMoney());
-			String savedInitialPopulation = String.valueOf(savedCountry.getPopulation());
+			double savedInitialMoney = savedCountry.getMoney();
+			long savedInitialPopulation = savedCountry.getPopulation();
 
-			return !countryNameField.getText().equals(savedName) ||
-			       !countryInitialMoneyField.getText().equals(savedInitialMoney) ||
-			       !countryInitialPopulationField.getText().equals(savedInitialPopulation);
+			try {
+				return !countryNameField.getText().equals(savedName) ||
+						Double.parseDouble(countryInitialMoneyField.getText()) != savedInitialMoney ||
+						Long.parseLong(countryInitialPopulationField.getText()) != savedInitialPopulation;
+			} catch (NumberFormatException e) {
+				return true;
+			}
 		} else {
 			return !countryNameField.getText().isEmpty() || !countryInitialMoneyField.getText().isEmpty() ||
 			       !countryInitialPopulationField.getText().isEmpty();
@@ -862,12 +871,16 @@ public class SettingsViewController {
 			if (selectedIndex != -1) {
 				ResourceNodeDTO currentResourceNode = countryResourceNodes.get(selectedCountry).get(selectedResource);
 				if (currentResourceNode != null) {
-					int tier = Integer.parseInt(resourceNodeTierField.getText());
-					int baseCapacity = Integer.parseInt(resourceNodeBaseCapacityField.getText());
-					double productionCost = Double.parseDouble(resourceNodeProductionCostField.getText());
+					try {
+						int tier = Integer.parseInt(resourceNodeTierField.getText());
+						int baseCapacity = Integer.parseInt(resourceNodeBaseCapacityField.getText());
+						double productionCost = Double.parseDouble(resourceNodeProductionCostField.getText());
 
-					return currentResourceNode.tier() != tier || currentResourceNode.baseCapacity() != baseCapacity ||
-					       currentResourceNode.productionCost() != productionCost;
+						return currentResourceNode.tier() != tier || currentResourceNode.baseCapacity() != baseCapacity ||
+								currentResourceNode.productionCost() != productionCost;
+					} catch (NumberFormatException e) {
+						return true;
+					}
 				}
 			}
 		} else {
