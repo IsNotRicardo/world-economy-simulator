@@ -18,7 +18,7 @@ import datasource.MariaDbConnection;
 public class MenuViewController {
 	@FXML
 	public void handleStartSimulation(ActionEvent event) {
-		try (Connection conn = MariaDbConnection.getConnection();
+		try (Connection ignored = MariaDbConnection.getConnection()
 		) {
 			MariaDbConnection.executeSqlFile("scripts/simulationDb.sql");
 			MariaDbConnection.executeSqlFile("scripts/simulationMetrics.sql");
