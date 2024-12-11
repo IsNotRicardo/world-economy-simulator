@@ -118,7 +118,6 @@ public class Simulator {
 	private void saveMetrics() {
 
 		for (Country country : countries) {
-			System.out.println("\nSaving metrics for " + country.getName());
 
 			CountryEntity countryEntity = countryDao.findByName(country.getName());
 			if (countryEntity == null) {
