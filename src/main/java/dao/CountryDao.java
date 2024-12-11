@@ -64,20 +64,6 @@ public class CountryDao {
 		}
 	}
 
-	public List<ResourceEntity> findResourcesByCountryName(String countryName) {
-		EntityManager em = datasource.MariaDbConnection.getEntityManager();
-		try {
-			return em.createQuery(
-					         "SELECT cr.resource FROM CountryEntity c JOIN c.countryResources cr WHERE c.name = :name",
-					         ResourceEntity.class)
-			         .setParameter("name", countryName)
-			         .getResultList();
-		} catch (Exception e) {
-			logger.error("Error finding resources by country name: {}", countryName, e);
-			throw e;
-		}
-	}
-
 	public long findCountryIdByName(String countryName) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
