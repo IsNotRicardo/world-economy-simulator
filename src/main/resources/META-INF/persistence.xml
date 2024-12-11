@@ -2,7 +2,7 @@
     <persistence-unit name="Simulation">
         <class>entity.CountryEntity</class>
         <class>entity.ResourceEntity</class>
-        <class>entity.CountryResource</class>
+        <class>entity.ResourceNodeEntity</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/simulation"/>
             <property name="jakarta.persistence.jdbc.user" value="simulation_user"/>
@@ -10,10 +10,8 @@
             <property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.import_files"
-                      value="scripts/simulationDb.sql,scripts/simulationMetrics.sql"/>
         </properties>
     </persistence-unit>
 </persistence>
