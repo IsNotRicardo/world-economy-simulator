@@ -26,7 +26,7 @@ public class ResourceEntity {
 	private double productionCost;
 
 	@OneToMany(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<CountryResource> countryResources;
+	private Set<ResourceNodeEntity> resourceNodeEntities;
 
 	public ResourceEntity() {
 	}
@@ -78,12 +78,12 @@ public class ResourceEntity {
 		this.productionCost = productionCost;
 	}
 
-	public Set<CountryResource> getCountryResources() {
-		return countryResources;
+	public Set<ResourceNodeEntity> getResourceNodeEntities() {
+		return resourceNodeEntities;
 	}
 
-	public void setCountryResources(Set<CountryResource> countryResources) {
-		this.countryResources = countryResources;
+	public void setResourceNodeEntities(Set<ResourceNodeEntity> resourceNodeEntities) {
+		this.resourceNodeEntities = resourceNodeEntities;
 	}
 
 	@Override
