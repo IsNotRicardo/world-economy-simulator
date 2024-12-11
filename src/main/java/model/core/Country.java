@@ -156,12 +156,18 @@ public class Country {
         for (Map.Entry<Resource, ResourceInfo> entry : resourceStorage.entrySet()) {
             Resource resource = entry.getKey();
             ResourceInfo resourceInfo = entry.getValue();
+
             int[] supplyArchive = resourceInfo.getSupplyArchive();
+//            System.out.println("Supply archive: " + Arrays.toString(supplyArchive));
             double totalChange = 0;
-            for (int i = 1; i < resourceInfo.getCurrentSize(); i++) {
-                totalChange += supplyArchive[i] - supplyArchive[i - 1];
+
+            if (resourceInfo.getCurrentSize() > 1) {
+                totalChange = supplyArchive[0] - supplyArchive[resourceInfo.getCurrentSize() - 1];
             }
+
+//            System.out.println("Total change: " + totalChange);
             double averageChange = resourceInfo.getCurrentSize() > 1 ? totalChange / (resourceInfo.getCurrentSize() - 1) : 0;
+//            System.out.println("Average change: " + averageChange);
             totalSupplyChange.put(resource, averageChange);
         }
 
@@ -173,28 +179,42 @@ public class Country {
                 totalDemand.put(resource, totalDemand.getOrDefault(resource, 0) + demand);
             }
         }
+//        System.out.println("Total demand: " + totalDemand);
 
-        // Decide on production, upgrades, and trading
+//        System.out.println("Country: " + this.name);
+        // Periodic production based on supply change
+        for (ResourceNode resourceNode : resourceNodes) {
+            Resource resource = resourceNode.getResource();
+            double supplyChange = totalSupplyChange.getOrDefault(resource, 0.0);
+
+            int maxCapacity = resourceNode.getMaxCapacity();
+//            System.out.println("Supply change: " + supplyChange);
+            int quantityToProduce = (int) Math.ceil(-supplyChange);
+
+            if (quantityToProduce <= maxCapacity) {
+//                System.out.println("Producing " + quantityToProduce + " " + resource.name());
+                resourceNode.produceResources(quantityToProduce);
+            } else {
+//                System.out.println("Producing " + maxCapacity + " " + resource.name());
+                resourceNode.produceResources(maxCapacity);
+                if (this.money >= resourceNode.getUpgradeCost() && !upgradedNodes.contains(resourceNode)) {
+                    resourceNode.upgradeNode();
+                    upgradedNodes.add(resourceNode);
+                }
+            }
+        }
+
+
+        // Decide on production, upgrades, and trading based on demand
         for (Map.Entry<Resource, Integer> demandEntry : totalDemand.entrySet()) {
             Resource resource = demandEntry.getKey();
             int demand = demandEntry.getValue();
-            double supplyChange = totalSupplyChange.getOrDefault(resource, 0.0);
 
             if (resourceStorage.get(resource).getQuantity() == 0) {
                 // Resource is not in storage, try to produce it
                 ResourceNode resourceNode = getNodeFromResource(resource);
                 if (resourceNode != null) {
-                    int maxCapacity = resourceNode.getMaxCapacity();
-                    int quantityToProduce = (int) Math.ceil(supplyChange);
-                    if (quantityToProduce <= maxCapacity) {
-                        resourceNode.produceResources(quantityToProduce);
-                    } else {
-                        resourceNode.produceResources(maxCapacity);
-                        if (this.money >= resourceNode.getUpgradeCost() && !upgradedNodes.contains(resourceNode)) {
-                            resourceNode.upgradeNode();
-                            upgradedNodes.add(resourceNode);
-                        }
-                    }
+                    resourceNode.produceResources(resourceNode.getMaxCapacity());
                 } else {
                     // Resource node not available, trade for the resource
                     int currentQuantity = resourceStorage.get(resource).getQuantity();
@@ -214,7 +234,21 @@ public class Country {
     }
 
     void addResources(Resource resource, int quantity) {
-        this.resourceStorage.get(resource).addQuantity(quantity);
+        ResourceInfo resourceInfo = this.resourceStorage.get(resource);
+        double productionCost;
+
+        // Check if the country has a resource node of that resource type
+        ResourceNode resourceNode = getNodeFromResource(resource);
+        if (resourceNode != null) {
+            productionCost = resourceNode.getProductionCost();
+        } else {
+            productionCost = resource.productionCost();
+        }
+
+        // Calculate the value of the resources
+        double value = productionCost * quantity * SimulationConfig.getPopulationSegmentSize();
+        resourceInfo.addQuantity(quantity);
+        resourceInfo.addValue(value);
     }
 
     void removeResources(Resource resource, int quantity) {

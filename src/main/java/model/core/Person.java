@@ -54,21 +54,27 @@ public class Person {
     void servePerson(double budget) {
         int totalDemand = demand.size();
 
+//        System.out.println("Demand: " + demand);
         Iterator<Map.Entry<Resource, Integer>> demandIterator = demand.entrySet().iterator();
         while (demandIterator.hasNext()) {
             Map.Entry<Resource, Integer> entry = demandIterator.next();
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
-            double totalCost = quantity * SimulationConfig.getPopulationSegmentSize() * country.getResourceValue(resource);
+            System.out.println("Serving " + quantity + " units of " + resource);
+            double totalCost = quantity * country.getResourceValue(resource);
+            System.out.println("Total cost: " + totalCost);
+            System.out.println("Budget: " + budget);
 
             if (country.getResourceQuantity(resource) >= quantity && budget >= totalCost) {
                 country.removeResources(resource, quantity);
                 country.addMoney(totalCost);
                 budget -= totalCost;
 
+                System.out.println("Served " + quantity + " units of " + resource + " for " + totalCost);
                 demandIterator.remove();
             }
         }
+//        System.out.println("Demand after serving: " + demand);
 
         double happinessChange = 0.0;
         if (totalDemand > 0) {

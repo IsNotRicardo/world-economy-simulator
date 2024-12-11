@@ -21,13 +21,18 @@
           <CategoryAxis side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis side="LEFT" forceZeroInRange="false" />
+          <NumberAxis forceZeroInRange="false" side="LEFT" />
         </yAxis>
       </LineChart>
    </center>
    <left>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
+            <Label text="Country:">
+               <font>
+                  <Font name="Georgia" size="16.0" />
+               </font>
+            </Label>
             <ComboBox fx:id="countryComboBox" minWidth="120.0" onAction="#handleCountrySelection" prefWidth="120.0" />
             <Button layoutX="15.0" layoutY="170.0" minWidth="120.0" mnemonicParsing="false" onAction="#handlePopulationButton" prefWidth="120.0" text="Population">
                <font>
@@ -54,6 +59,11 @@
    <right>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
+            <Label text="Resource:">
+               <font>
+                  <Font name="Georgia" size="16.0" />
+               </font>
+            </Label>
             <ComboBox fx:id="resourceComboBox" minWidth="120.0" onAction="#handleResourceSelection" prefWidth="120.0" />
             <Button minWidth="120.0" mnemonicParsing="false" onAction="#handleQuantityButton" prefWidth="120.0" text="Quantity">
                <font>
@@ -63,7 +73,18 @@
                <font>
                   <Font name="Verdana" size="16.0" />
                </font></Button>
-            <ComboBox fx:id="resourceNodeComboBox" layoutX="10.0" layoutY="157.0" minWidth="120.0" onAction="#handleResourceNodeSelection" prefWidth="120.0" />
+            <Label text="Resource Node:">
+               <font>
+                  <Font name="Georgia" size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
+            </Label>
+            <ComboBox fx:id="resourceNodeComboBox" layoutX="10.0" layoutY="157.0" minWidth="120.0" onAction="#handleResourceNodeSelection" prefWidth="120.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin></ComboBox>
             <Button layoutX="37.0" layoutY="170.0" minWidth="120.0" mnemonicParsing="false" onAction="#handleProductionCostButton" prefWidth="120.0" text="Prod. Cost">
                <font>
                   <Font name="Verdana" size="16.0" />
@@ -108,7 +129,7 @@
                   <Font name="Bell MT Bold" size="20.0" />
                </font>
             </Button>
-            <Label fx:id="delayWarningLabel" managed="false" text="❗" textFill="RED" visible="false">
+            <Label fx:id="delayWarningLabel" managed="false" styleClass="tooltipLabel" text="❗" textFill="RED" visible="false">
                <tooltip>
                   <Tooltip text="Delay must be a positive number" />
                </tooltip>
