@@ -244,11 +244,10 @@ public class SettingsViewController {
 						resourceList.stream().filter(resource -> resource.name().equals(newValue)).findFirst()
 						            .orElse(null);
 
-				if (selectedCountry != null && selectedResource != null) {
-					Map<Resource, ResourceNodeDTO> resourceNodes = countryResourceNodes.get(selectedCountry);
-					if (resourceNodes != null && resourceNodes.containsKey(selectedResource)) {
-						changeResourceNodeButtonVisibility(false);
-					}
+				if (selectedResource != null) {
+					resourceNodeTierField.setText("0");
+					resourceNodeBaseCapacityField.setText(String.valueOf(selectedResource.baseCapacity()));
+					resourceNodeProductionCostField.setText(String.valueOf(selectedResource.productionCost()));
 				}
 			}
 		});
