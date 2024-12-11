@@ -56,6 +56,10 @@ public class SimulationController {
 		int currentDay = Clock.getInstance().getTime();
 		daysTextField.setText(String.valueOf(currentDay));
 
+		if (currentSeriesName == null) {
+			return;
+		}
+
 		switch (currentSeriesName) {
 			case "Population/Day":
 				updatePopulationGraph();

@@ -896,9 +896,7 @@ public class SettingsViewController {
 		List<CountryEntity> countries = countryDao.findAll();
 
 		countryList.addAll(countries);
-		countryList.forEach(country -> {
-			countryListView.getItems().add(country.getName());
-		});
+		countryList.forEach(country -> countryListView.getItems().add(country.getName()));
 
 		countryList.forEach(country -> countryResourceNodes.put(country, new HashMap<>()));
 	}
@@ -916,7 +914,11 @@ public class SettingsViewController {
 		resourceList.forEach(resource -> resourceListView.getItems().add(resource.name()));
 	}
 
+	@FXML
 	public void handleStartSimulation(ActionEvent event) {
+		saveSimulationConfigs();
+		displayGeneralData();
+
 		try {
 			CountryDao countryDao = new CountryDao();
 			ResourceDao resourceDao = new ResourceDao();
@@ -954,9 +956,7 @@ public class SettingsViewController {
 			Parent root = fxmlLoader.load();
 
 			SimulationController simulationController = fxmlLoader.getController();
-
-			//TODO: uncomment this line if initialize method is implemented in SimulationController
-			//simulationController.initialize(resourceList, countries);
+			simulationController.initialize(resourceList, countries);
 
 			Scene scene = new Scene(root);
 
@@ -969,5 +969,16 @@ public class SettingsViewController {
 		} catch (IOException e) {
 			logger.error("Error loading simulation layout", e);
 		}
+	}
+
+	private void saveSimulationConfigs() {
+		SimulationConfig.setSimulationTime(Integer.parseInt(simulationTimeField.getText()));
+		SimulationConfig.setSimulationDelay(Integer.parseInt(simulationDelayField.getText()));
+		SimulationConfig.setSupplyArchiveTime(Integer.parseInt(countrySupplySampleField.getText()));
+		SimulationConfig.setPopulationSegmentSize(Integer.parseInt(populationSegmentSizeField.getText()));
+	}
+
+	private void displayGeneralData() {
+		// TODO: Update the labels with general data
 	}
 }

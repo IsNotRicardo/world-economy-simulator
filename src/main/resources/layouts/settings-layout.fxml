@@ -677,7 +677,7 @@
                         <Label text="You have:" />
                         <Label layoutX="10.0" layoutY="10.0" text="x Resources" />
                         <Label layoutX="10.0" layoutY="27.0" text="x Resources" />
-                        <Button mnemonicParsing="false" text="Start" />
+                        <Button mnemonicParsing="false" onAction="#handleStartSimulation" text="Start" />
                      </children>
                   </VBox>
                </content>
