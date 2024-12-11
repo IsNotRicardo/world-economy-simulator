@@ -197,7 +197,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
 
 		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
 		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getMoney).toList();
@@ -224,7 +224,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
 
 		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
 		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getAverageHappiness).toList();
@@ -251,7 +251,7 @@ public class SimulationController {
 		if (selectedCountry == null) {
 			return;
 		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
+		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
 
 		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
 		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getIndividualBudget).toList();
