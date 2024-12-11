@@ -156,12 +156,18 @@ public class Country {
         for (Map.Entry<Resource, ResourceInfo> entry : resourceStorage.entrySet()) {
             Resource resource = entry.getKey();
             ResourceInfo resourceInfo = entry.getValue();
+
             int[] supplyArchive = resourceInfo.getSupplyArchive();
+//            System.out.println("Supply archive: " + Arrays.toString(supplyArchive));
             double totalChange = 0;
-            for (int i = 1; i < resourceInfo.getCurrentSize(); i++) {
-                totalChange += supplyArchive[i] - supplyArchive[i - 1];
+
+            if (resourceInfo.getCurrentSize() > 1) {
+                totalChange = supplyArchive[0] - supplyArchive[resourceInfo.getCurrentSize() - 1];
             }
+
+//            System.out.println("Total change: " + totalChange);
             double averageChange = resourceInfo.getCurrentSize() > 1 ? totalChange / (resourceInfo.getCurrentSize() - 1) : 0;
+//            System.out.println("Average change: " + averageChange);
             totalSupplyChange.put(resource, averageChange);
         }
 
@@ -173,18 +179,23 @@ public class Country {
                 totalDemand.put(resource, totalDemand.getOrDefault(resource, 0) + demand);
             }
         }
+        System.out.println("Total demand: " + totalDemand);
 
+//        System.out.println("Country: " + this.name);
         // Periodic production based on supply change
         for (ResourceNode resourceNode : resourceNodes) {
             Resource resource = resourceNode.getResource();
             double supplyChange = totalSupplyChange.getOrDefault(resource, 0.0);
 
             int maxCapacity = resourceNode.getMaxCapacity();
-            int quantityToProduce = (int) Math.ceil(supplyChange);
+//            System.out.println("Supply change: " + supplyChange);
+            int quantityToProduce = (int) Math.ceil(-supplyChange);
 
             if (quantityToProduce <= maxCapacity) {
+//                System.out.println("Producing " + quantityToProduce + " " + resource.name());
                 resourceNode.produceResources(quantityToProduce);
             } else {
+//                System.out.println("Producing " + maxCapacity + " " + resource.name());
                 resourceNode.produceResources(maxCapacity);
                 if (this.money >= resourceNode.getUpgradeCost() && !upgradedNodes.contains(resourceNode)) {
                     resourceNode.upgradeNode();
