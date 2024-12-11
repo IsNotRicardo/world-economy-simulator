@@ -3,6 +3,7 @@ package controller;
 import dao.CountryDao;
 import dao.ResourceDao;
 import dao.ResourceNodeDao;
+import entity.CountryEntity;
 import entity.ResourceEntity;
 import entity.ResourceNodeEntity;
 import javafx.application.Platform;
@@ -17,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import entity.CountryEntity;
 import javafx.stage.Stage;
 import model.core.Country;
 import model.core.Resource;
@@ -486,12 +486,9 @@ public class SettingsViewController {
 		for (Map<Resource, ResourceNodeDTO> resourceNodes : countryResourceNodes.values()) {
 			if (resourceNodes.containsKey(oldResource)) {
 				ResourceNodeDTO oldResourceNode = resourceNodes.remove(oldResource);
-				ResourceNodeDTO updatedResourceNode = new ResourceNodeDTO(
-						oldResourceNode.tier(),
-						oldResourceNode.baseCapacity(),
-						oldResourceNode.productionCost(),
-						updatedResource
-				);
+				ResourceNodeDTO updatedResourceNode =
+						new ResourceNodeDTO(oldResourceNode.tier(), oldResourceNode.baseCapacity(),
+						                    oldResourceNode.productionCost(), updatedResource);
 				resourceNodes.put(updatedResource, updatedResourceNode);
 			}
 		}
@@ -514,6 +511,13 @@ public class SettingsViewController {
 				resourceList.remove(selectedIndex);
 				resourceListView.getItems().remove(selectedIndex);
 				resourceListView.getSelectionModel().clearSelection();
+
+				try {
+					ResourceDao resourceDao = new ResourceDao();
+					resourceDao.deleteByName(resourceToDelete.name());
+				} catch (Exception e) {
+					logger.error("Error deleting resource: {}", resourceToDelete.name(), e);
+				}
 
 				clearResourceFields();
 				changeResourceButtonVisibility(false);
@@ -621,6 +625,13 @@ public class SettingsViewController {
 				countryList.remove(selectedIndex);
 				countryListView.getItems().remove(selectedIndex);
 				countryListView.getSelectionModel().clearSelection();
+
+				try {
+					CountryDao countryDao = new CountryDao();
+					countryDao.deleteByName(countryToDelete.getName());
+				} catch (Exception e) {
+					logger.error("Error deleting country: {}", countryToDelete.getName(), e);
+				}
 
 				clearCountryFields();
 				changeCountryButtonVisibility(false);
@@ -732,6 +743,14 @@ public class SettingsViewController {
 				resourceNodeListView.getItems().remove(selectedIndex);
 				resourceNodeListView.getSelectionModel().clearSelection();
 
+				try {
+					ResourceNodeDao resourceNodeDao = new ResourceNodeDao();
+					ResourceDao resourceDao = new ResourceDao();
+					resourceNodeDao.delete(selectedCountry.getId(), resourceDao.findByName(selectedResource.name()).getId());
+				} catch (Exception e) {
+					logger.error("Error deleting resource node: {}", selectedCountry.getName(), e);
+				}
+
 				clearResourceNodeFields();
 				changeResourceNodeButtonVisibility(false);
 			}
@@ -743,8 +762,7 @@ public class SettingsViewController {
 		if (selectedCountry != null) {
 			Map<Resource, ResourceNodeDTO> resourceNodes = countryResourceNodes.get(selectedCountry);
 			if (resourceNodes != null) {
-				resourceNodes.forEach((resource, resourceNode) ->
-						                      resourceNodeListView.getItems().add(resource.name()));
+				resourceNodes.forEach((resource, resourceNode) -> resourceNodeListView.getItems().add(resource.name()));
 			}
 		}
 	}
@@ -801,15 +819,15 @@ public class SettingsViewController {
 
 			try {
 				return !resourceNameField.getText().equals(savedName) ||
-						Double.parseDouble(resourcePriorityField.getText()) != savedPriority ||
-						Integer.parseInt(resourceBaseCapacityField.getText()) != savedBaseCapacity ||
-						Double.parseDouble(resourceProductionCostField.getText()) != savedProductionCost;
+				       Double.parseDouble(resourcePriorityField.getText()) != savedPriority ||
+				       Integer.parseInt(resourceBaseCapacityField.getText()) != savedBaseCapacity ||
+				       Double.parseDouble(resourceProductionCostField.getText()) != savedProductionCost;
 			} catch (NumberFormatException e) {
 				return true;
 			}
 		} else {
 			return !resourceNameField.getText().isEmpty() || !resourcePriorityField.getText().isEmpty() ||
-					!resourceBaseCapacityField.getText().isEmpty() || !resourceProductionCostField.getText().isEmpty();
+			       !resourceBaseCapacityField.getText().isEmpty() || !resourceProductionCostField.getText().isEmpty();
 		}
 	}
 
@@ -856,8 +874,8 @@ public class SettingsViewController {
 
 			try {
 				return !countryNameField.getText().equals(savedName) ||
-						Double.parseDouble(countryInitialMoneyField.getText()) != savedInitialMoney ||
-						Long.parseLong(countryInitialPopulationField.getText()) != savedInitialPopulation;
+				       Double.parseDouble(countryInitialMoneyField.getText()) != savedInitialMoney ||
+				       Long.parseLong(countryInitialPopulationField.getText()) != savedInitialPopulation;
 			} catch (NumberFormatException e) {
 				return true;
 			}
@@ -912,8 +930,9 @@ public class SettingsViewController {
 						int baseCapacity = Integer.parseInt(resourceNodeBaseCapacityField.getText());
 						double productionCost = Double.parseDouble(resourceNodeProductionCostField.getText());
 
-						return currentResourceNode.tier() != tier || currentResourceNode.baseCapacity() != baseCapacity ||
-								currentResourceNode.productionCost() != productionCost;
+						return currentResourceNode.tier() != tier ||
+						       currentResourceNode.baseCapacity() != baseCapacity ||
+						       currentResourceNode.productionCost() != productionCost;
 					} catch (NumberFormatException e) {
 						return true;
 					}
@@ -970,30 +989,19 @@ public class SettingsViewController {
 			ResourceEntity resourceEntity = resourceNodeEntity.getResource();
 
 			if (countryEntity != null && resourceEntity != null) {
-				Resource resource = new Resource(
-						resourceEntity.getName(),
-						resourceEntity.getPriority(),
-						resourceEntity.getBaseCapacity(),
-						resourceEntity.getProductionCost()
-				);
+				Resource resource = new Resource(resourceEntity.getName(), resourceEntity.getPriority(),
+				                                 resourceEntity.getBaseCapacity(), resourceEntity.getProductionCost());
 
-				ResourceNodeDTO resourceNode = new ResourceNodeDTO(
-						resourceNodeEntity.getTier(),
-						resourceNodeEntity.getBaseCapacity(),
-						resourceNodeEntity.getBaseProductionCost(),
-						resource
-				);
+				ResourceNodeDTO resourceNode =
+						new ResourceNodeDTO(resourceNodeEntity.getTier(), resourceNodeEntity.getBaseCapacity(),
+						                    resourceNodeEntity.getBaseProductionCost(), resource);
 
-				countryResourceNodes.computeIfAbsent(countryEntity, k -> new HashMap<>())
-				                    .put(resource, resourceNode);
+				countryResourceNodes.computeIfAbsent(countryEntity, k -> new HashMap<>()).put(resource, resourceNode);
 			}
 		});
 
-		countryResourceNodes.forEach(
-				(countryEntity, resourceNodeEntities) -> resourceNodeEntities.forEach((resource, resourceNode) ->
-						                                                                      resourceNodeListView
-								                                                                      .getItems()
-								                                                                      .add(resource.name())));
+		countryResourceNodes.forEach((countryEntity, resourceNodeEntities) -> resourceNodeEntities.forEach(
+				(resource, resourceNode) -> resourceNodeListView.getItems().add(resource.name())));
 	}
 
 	@FXML
@@ -1005,72 +1013,74 @@ public class SettingsViewController {
 			ResourceDao resourceDao = new ResourceDao();
 			ResourceNodeDao resourceNodeDao = new ResourceNodeDao();
 
+			// Persist country
 			countryList.forEach(countryDao::persist);
 
+			// Persist resources
 			resourceList.forEach(resource -> {
-				ResourceEntity resourceEntity =
-						new ResourceEntity(
-								resource.name(),
-								resource.priority(),
-								resource.baseCapacity(),
-								resource.productionCost()
-						);
-				resourceDao.persist(resourceEntity);
+				ResourceEntity existingResource = resourceDao.findByName(resource.name());
+				if (existingResource == null) {
+					ResourceEntity resourceEntity = new ResourceEntity(
+							resource.name(),
+							resource.priority(),
+							resource.baseCapacity(),
+							resource.productionCost());
+					logger.debug("Persisting resource: {}, ID: {}", resourceEntity.getName(), resourceEntity.getId());
+					resourceDao.persist(resourceEntity);
+				}
 			});
 
-			countryResourceNodes.forEach(
-					(countryEntity, resourceNodes) -> resourceNodes.forEach((resource, resourceNode) -> {
-
-						ResourceEntity resourceEntity = resourceDao.findByName(resource.name());
-						ResourceNodeEntity resourceNodeEntity =
-								new ResourceNodeEntity(
-										countryEntity,
-										resourceEntity,
-										0,
-										resourceNode.tier(),
-										resourceNode.baseCapacity(),
-										resourceNode.productionCost()
-								);
-						resourceNodeDao.persist(resourceNodeEntity);
-					}));
-
-			List<Country> countries = new ArrayList<>();
-			countryList.forEach(country -> {
-				//TODO: TEMPORARY SOLUTION resourceList should have actual values in the future
-				Map<Resource, Integer> starterResources = new HashMap<>();
-				resourceList.forEach(resource -> starterResources.put(resource, 0));
-				Map<Resource, ResourceNodeDTO> ownedResources = new HashMap<>(countryResourceNodes.get(country));
-
-				Country newCountry =
-						new Country(
-								country.getName(),
-								country.getMoney(),
-								country.getPopulation(),
-								starterResources,
-								ownedResources
-						);
-				countries.add(newCountry);
+			// Persist resource nodes
+			countryResourceNodes.forEach((country, resourceNodes) -> {
+				resourceNodes.forEach((resource, resourceNode) -> {
+					ResourceNodeEntity resourceNodeEntity = new ResourceNodeEntity(
+							countryDao.findByName(country.getName()),
+							resourceDao.findByName(resource.name()),
+							0,
+							resourceNode.tier(),
+							resourceNode.baseCapacity(),
+							resourceNode.productionCost());
+					resourceNodeDao.persist(resourceNodeEntity);
+				});
 			});
 
 
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layouts/simulation-layout.fxml"));
-			Parent root = fxmlLoader.load();
-
-			SimulationController simulationController = fxmlLoader.getController();
-			simulationController.initialize(resourceList, countries);
-
-			Scene scene = new Scene(root);
-
-			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			stage.setScene(scene);
-			stage.setTitle("Simulation");
-			stage.setFullScreen(true);
-			stage.show();
-
-			Platform.runLater(simulationController::beginSimulation);
-		} catch (IOException e) {
-			logger.error("Error loading simulation layout", e);
+			loadSimulationLayout(event);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
+	}
+
+	private void loadSimulationLayout(ActionEvent event) throws IOException {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/layouts/simulation-layout.fxml"));
+		Parent root = fxmlLoader.load();
+
+		SimulationController simulationController = fxmlLoader.getController();
+		simulationController.initialize(resourceList, convertCountriesForSimulation());
+
+		Scene scene = new Scene(root);
+		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+		stage.setScene(scene);
+		stage.setTitle("Simulation");
+		stage.setFullScreen(true);
+		stage.show();
+
+		// Begin simulation
+		Platform.runLater(simulationController::beginSimulation);
+	}
+
+	private List<Country> convertCountriesForSimulation() {
+		List<Country> countries = new ArrayList<>();
+		countryList.forEach(country -> {
+			Map<Resource, Integer> starterResources = new HashMap<>();
+			resourceList.forEach(resource -> starterResources.put(resource, 0)); // Default resource values
+
+			Map<Resource, ResourceNodeDTO> ownedResources = new HashMap<>(countryResourceNodes.get(country));
+			countries.add(
+					new Country(country.getName(), country.getMoney(), country.getPopulation(), starterResources,
+					            ownedResources));
+		});
+		return countries;
 	}
 
 	private void saveSimulationConfigs() {
@@ -1083,9 +1093,7 @@ public class SettingsViewController {
 	private void displayGeneralData() {
 		int resourceCount = resourceList.size();
 		int countryCount = countryList.size();
-		int resourceNodeCount = countryResourceNodes.values().stream()
-				.mapToInt(Map::size)
-				.sum();
+		int resourceNodeCount = countryResourceNodes.values().stream().mapToInt(Map::size).sum();
 
 		confirmResourcesLabel.setText(resourceCount + " Resources");
 		confirmCountriesLabel.setText(countryCount + " Countries");
