@@ -1,7 +1,6 @@
 package dao;
 
 import entity.CountryEntity;
-import entity.ResourceEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.slf4j.Logger;
