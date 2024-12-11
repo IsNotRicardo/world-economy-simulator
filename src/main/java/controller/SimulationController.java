@@ -18,6 +18,8 @@ import model.simulation.Simulator;
 import java.util.List;
 
 public class SimulationController {
+	private Simulator simulator;
+
 	private CountryEntity selectedCountry;
 	private ResourceEntity selectedResource;
 	private Resource selectedResourceNode;
@@ -58,8 +60,15 @@ public class SimulationController {
 		countryComboBox.getItems().addAll(countries.stream().map(Country::getName).toList());
 		resourceComboBox.getItems().addAll(resources.stream().map(Resource::name).toList());
 
-		Simulator simulator = new Simulator(this, resources, countries);
-		simulator.runSimulation();
+		this.simulator = new Simulator(this, resources, countries);
+	}
+
+	public void beginSimulation() {
+		Thread simulationThread = new Thread(() -> {
+			this.simulator.runSimulation();
+		});
+		simulationThread.setDaemon(true);
+		simulationThread.start();
 	}
 
 	public void updateData() {

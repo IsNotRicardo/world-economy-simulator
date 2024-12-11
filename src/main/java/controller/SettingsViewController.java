@@ -3,6 +3,7 @@ package controller;
 import dao.CountryDao;
 import dao.ResourceDao;
 import entity.ResourceEntity;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -963,9 +964,10 @@ public class SettingsViewController {
 			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 			stage.setScene(scene);
 			stage.setTitle("Simulation");
-			stage.setMaximized(true);
+			stage.setFullScreen(true);
 			stage.show();
 
+			Platform.runLater(simulationController::beginSimulation);
 		} catch (IOException e) {
 			logger.error("Error loading simulation layout", e);
 		}
