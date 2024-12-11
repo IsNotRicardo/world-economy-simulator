@@ -223,7 +223,21 @@ public class Country {
     }
 
     void addResources(Resource resource, int quantity) {
-        this.resourceStorage.get(resource).addQuantity(quantity);
+        ResourceInfo resourceInfo = this.resourceStorage.get(resource);
+        double productionCost;
+
+        // Check if the country has a resource node of that resource type
+        ResourceNode resourceNode = getNodeFromResource(resource);
+        if (resourceNode != null) {
+            productionCost = resourceNode.getProductionCost();
+        } else {
+            productionCost = resource.productionCost();
+        }
+
+        // Calculate the value of the resources
+        double value = productionCost * quantity * SimulationConfig.getPopulationSegmentSize();
+        resourceInfo.addQuantity(quantity);
+        resourceInfo.addValue(value);
     }
 
     void removeResources(Resource resource, int quantity) {
