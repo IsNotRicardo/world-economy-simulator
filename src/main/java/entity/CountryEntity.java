@@ -23,7 +23,7 @@ public class CountryEntity {
 	private Long population;
 
 	@OneToMany(mappedBy = "country", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<CountryResource> countryResources;
+	private Set<ResourceNodeEntity> resourceNodes;
 
 	public CountryEntity() {
 	}
@@ -66,11 +66,34 @@ public class CountryEntity {
 		this.population = population;
 	}
 
-	public Set<CountryResource> getCountryResources() {
-		return countryResources;
+	public Set<ResourceNodeEntity> getResourceNodes() {
+		return resourceNodes;
 	}
 
-	public void setCountryResources(Set<CountryResource> countryResources) {
-		this.countryResources = countryResources;
+	public void setResourceNodes(Set<ResourceNodeEntity> resourceNodes) {
+		this.resourceNodes = resourceNodes;
+	}
+
+	@Override
+	public String toString() {
+		return "CountryEntity [" + "id=" + id + ", name='" + name + '\'' + ", money=" + money + ", population=" +
+		       population + ']';
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		CountryEntity country = (CountryEntity) obj;
+		return name != null && name.equals(country.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return name != null ? name.hashCode() : 0;
 	}
 }

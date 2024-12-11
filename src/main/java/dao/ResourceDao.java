@@ -1,5 +1,6 @@
 package dao;
 
+
 import entity.ResourceEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -16,28 +17,16 @@ public class ResourceDao {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			ResourceEntity existingResourceEntity = findByName(resourceEntity.getName());
-			if (existingResourceEntity != null) {
-				if (existingResourceEntity.getPriority() != resourceEntity.getPriority()) {
-					existingResourceEntity.setPriority(resourceEntity.getPriority());
-				}
-				if (existingResourceEntity.getBaseCapacity() != resourceEntity.getBaseCapacity()) {
-					existingResourceEntity.setBaseCapacity(resourceEntity.getBaseCapacity());
-				}
-				if (existingResourceEntity.getProductionCost() != resourceEntity.getProductionCost()) {
-					existingResourceEntity.setProductionCost(resourceEntity.getProductionCost());
-				}
-				em.merge(existingResourceEntity);
-				logger.debug("Updated existing resource: {}", resourceEntity.getName());
-			} else {
-				em.persist(resourceEntity);
-				logger.debug("Persisted new resource: {}", resourceEntity.getName());
-			}
+			em.merge(resourceEntity);
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
 			logger.error("Error persisting resource: {}", resourceEntity.getName(), e);
 			throw e;
+		} finally {
+			if (em.isOpen()) {
+				em.close();
+			}
 		}
 	}
 
@@ -53,22 +42,30 @@ public class ResourceDao {
 		} catch (Exception e) {
 			logger.error("Error finding resource by name: {}", name, e);
 			throw e;
+		} finally {
+			if (em.isOpen()) {
+				em.close();
+			}
 		}
 	}
 
-	public void deleteResourceByName(String resourceName) {
+	public void deleteByName(String name) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			em.createQuery("DELETE FROM ResourceEntity c WHERE c.name = :name")
-			  .setParameter("name", resourceName)
-			  .executeUpdate();
+			ResourceEntity resourceEntity = findByName(name);
+			if (resourceEntity != null) {
+				em.remove(em.contains(resourceEntity) ? resourceEntity : em.merge(resourceEntity));
+			}
 			em.getTransaction().commit();
-			logger.debug("Deleted country: {}", resourceName);
 		} catch (Exception e) {
 			em.getTransaction().rollback();
-			logger.error("Error deleting country: {}", resourceName, e);
+			logger.error("Error deleting resource by name: {}", name, e);
 			throw e;
+		} finally {
+			if (em.isOpen()) {
+				em.close();
+			}
 		}
 	}
 
@@ -79,6 +76,10 @@ public class ResourceDao {
 		} catch (Exception e) {
 			logger.error("Error finding all resources", e);
 			throw e;
+		} finally {
+			if (em.isOpen()) {
+				em.close();
+			}
 		}
 	}
 }

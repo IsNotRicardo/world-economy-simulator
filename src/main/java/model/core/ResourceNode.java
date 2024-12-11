@@ -5,6 +5,7 @@ import model.simulation.SimulationConfig;
 public class ResourceNode {
     // Constants
     private static final double MAX_REDUCTION_PERCENTAGE = 0.5;
+    private static final double TIER_UPGRADE_MULTIPLIER = 0.1;
 
     // Variables immediately initialized
     private int storedResources = 0;
@@ -52,15 +53,15 @@ public class ResourceNode {
     }
     // End of Getters
 
-    int getMaxCapacity() {
-        return (int) Math.round(baseCapacity * (1 + tier * 0.1));
+    public int getMaxCapacity() {
+        return (int) Math.round(baseCapacity * (1 + tier * TIER_UPGRADE_MULTIPLIER));
     }
 
     double getUpgradeCost() {
         return (tier + 1) * baseProductionCost * SimulationConfig.getPopulationSegmentSize();
     }
 
-    double getProductionCost() {
+    public double getProductionCost() {
         double reductionFactor = Math.min(daysSinceLastProduction * 0.01, MAX_REDUCTION_PERCENTAGE);
         return baseProductionCost * (1 - reductionFactor);
     }

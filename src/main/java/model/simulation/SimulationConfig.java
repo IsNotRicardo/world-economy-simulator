@@ -33,8 +33,8 @@ public class SimulationConfig {
     }
 
     public static void setSimulationDelay(int newSimulationDelay) {
-        if (newSimulationDelay < 0) {
-            throw new IllegalArgumentException("Simulation delay cannot be negative");
+        if (newSimulationDelay <= 0) {
+            throw new IllegalArgumentException("Simulation delay must be positive");
         }
         simulationDelay = newSimulationDelay;
     }

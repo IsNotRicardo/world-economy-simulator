@@ -16,14 +16,12 @@ public class DefaultCountryDao {
 	public List<CountryEntity> findAll() throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_country";
-		String countryName = null;
-		double money = 0;
-		long population = 0;
+		String countryName;
+		double money;
+		long population;
 		List<CountryEntity> countries = new ArrayList<>();
 
-		try (
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)
+		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)
 		) {
 			while (rs.next()) {
 				countryName = rs.getString("name");
@@ -62,7 +60,7 @@ public class DefaultCountryDao {
 		} catch (SQLException e) {
 			logger.error("Error finding country by name: {}", name, e);
 			throw e;
-
+			
 		} catch (NoResultException e) {
 			logger.debug("Country not found: {}", name);
 			return null;

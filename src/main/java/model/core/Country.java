@@ -23,7 +23,7 @@ public class Country {
     private double money;
     private long population;
 
-    public Country(String name, double initialMoney, int initialPopulation,
+    public Country(String name, double initialMoney, long initialPopulation,
                    Map<Resource, Integer> starterResources, Map<Resource, ResourceNodeDTO> ownedResources) {
         if (initialMoney < 0) {
             throw new IllegalArgumentException("Initial money cannot be negative.");
@@ -40,7 +40,14 @@ public class Country {
         for (Map.Entry<Resource, Integer> entry : starterResources.entrySet()) {
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
-            double baseProductionCost = ownedResources.get(resource).productionCost();
+            double baseProductionCost;
+
+            if (ownedResources.get(resource) != null) {
+                baseProductionCost = ownedResources.get(resource).productionCost();
+            } else {
+                baseProductionCost = resource.productionCost();
+            }
+
 
             resourceStorage.put(resource, new ResourceInfo(quantity, quantity * baseProductionCost,
                     SimulationConfig.getSupplyArchiveTime()));
@@ -92,17 +99,26 @@ public class Country {
         return resourceStorage.get(resource).getValuePerUnit() * (1 + COUNTRY_PROFIT_MARGIN);
     }
 
-    double getSegmentBudget() {
+    public double getSegmentBudget() {
         int totalTier = 0;
 
         for (ResourceNode resourceNode : resourceNodes) {
             totalTier += resourceNode.getTier();
         }
 
-        double calculatedBudget = totalTier * PERSON_BASE_BUDGET * (1 - COUNTRY_INDIVIDUAL_TAX)
+        double calculatedBudget = Math.max(1, totalTier) * PERSON_BASE_BUDGET * (1 - COUNTRY_INDIVIDUAL_TAX)
                 * SimulationConfig.getPopulationSegmentSize();
         return Math.max(calculatedBudget, PERSON_BASE_BUDGET);
+    }
 
+    public double getAverageHappiness() {
+        double totalHappiness = 0;
+
+        for (Person person : peopleObjects) {
+            totalHappiness += person.getHappiness();
+        }
+
+        return totalHappiness / peopleObjects.size();
     }
 
     public void updatePeople() {
