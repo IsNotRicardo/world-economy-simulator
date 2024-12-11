@@ -21,7 +21,7 @@
           <CategoryAxis side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis side="LEFT" forceZeroInRange="false" />
+          <NumberAxis forceZeroInRange="false" side="LEFT" />
         </yAxis>
       </LineChart>
    </center>
@@ -129,7 +129,7 @@
                   <Font name="Bell MT Bold" size="20.0" />
                </font>
             </Button>
-            <Label fx:id="delayWarningLabel" managed="false" text="❗" textFill="RED" visible="false">
+            <Label fx:id="delayWarningLabel" managed="false" styleClass="tooltipLabel" text="❗" textFill="RED" visible="false">
                <tooltip>
                   <Tooltip text="Delay must be a positive number" />
                </tooltip>

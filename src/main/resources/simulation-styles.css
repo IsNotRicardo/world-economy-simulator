@@ -1,3 +1,7 @@
+.tooltipLabel:hover {
+    -fx-cursor: hand;
+}
+
 .combo-box .text {
     -fx-font-family: "Verdana";
     -fx-font-size: 16px;
