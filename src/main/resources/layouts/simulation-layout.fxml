@@ -27,7 +27,7 @@
    <left>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <ComboBox fx:id="countryComboBox" prefWidth="150.0" />
+            <ComboBox fx:id="countryComboBox" prefWidth="150.0" onAction="#handleCountrySelection" />
             <Button layoutX="15.0" layoutY="170.0" mnemonicParsing="false" text="Population" onAction="#handlePopulationButton" />
             <Button mnemonicParsing="false" text="Money" onAction="#handleMoneyButton" />
             <Button layoutX="15.0" layoutY="183.0" mnemonicParsing="false" text="Average Happiness" onAction="#handleAverageHappinessButton" />
@@ -41,10 +41,10 @@
    <right>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <ComboBox fx:id="resourceComboBox" prefWidth="150.0" />
+            <ComboBox fx:id="resourceComboBox" prefWidth="150.0" onAction="#handleResourceSelection" />
             <Button mnemonicParsing="false" text="Quantity" onAction="#handleQuantityButton" />
             <Button layoutX="29.0" layoutY="157.0" mnemonicParsing="false" text="Value" onAction="#handleValueButton" />
-            <ComboBox fx:id="resourceNodeComboBox" layoutX="10.0" layoutY="157.0" prefWidth="150.0" />
+            <ComboBox fx:id="resourceNodeComboBox" layoutX="10.0" layoutY="157.0" prefWidth="150.0" onAction="#handleResourceNodeSelection" />
             <Button layoutX="37.0" layoutY="170.0" mnemonicParsing="false" text="Production Cost" onAction="#handleProductionCostButton" />
             <Button layoutX="10.0" layoutY="208.0" mnemonicParsing="false" text="Max Capacity" onAction="#handleMaxCapacityButton" />
             <Button layoutX="10.0" layoutY="221.0" mnemonicParsing="false" text="Tier" onAction="#handleTierButton" />

@@ -2,6 +2,7 @@ package controller;
 
 import dao.*;
 import entity.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -18,414 +19,437 @@ import model.simulation.Simulator;
 import java.util.List;
 
 public class SimulationController {
-	private Simulator simulator;
+    private Simulator simulator;
 
-	private CountryEntity selectedCountry;
-	private ResourceEntity selectedResource;
-	private Resource selectedResourceNode;
+    private CountryEntity selectedCountry;
+    private ResourceEntity selectedResource;
+    private Resource selectedResourceNode;
 
-	private String currentSeriesName;
-	private int currentDay = 0;
+    private String currentSeriesName;
+    private int currentDay = 0;
 
-	private final CountryDao countryDao = new CountryDao();
-	private final ResourceDao resourceDao = new ResourceDao();
-	private final CountryMetricsDao countryMetricsDao = new CountryMetricsDao();
-	private final ResourceMetricsDao resourceMetricsDao = new ResourceMetricsDao();
-	private final ResourceNodeMetricsDao resourceNodeMetricsDao = new ResourceNodeMetricsDao();
+    private final CountryDao countryDao = new CountryDao();
+    private final ResourceDao resourceDao = new ResourceDao();
+    private final CountryMetricsDao countryMetricsDao = new CountryMetricsDao();
+    private final ResourceMetricsDao resourceMetricsDao = new ResourceMetricsDao();
+    private final ResourceNodeMetricsDao resourceNodeMetricsDao = new ResourceNodeMetricsDao();
 
-	@FXML
-	private Button toggleSimulationButton;
-	@FXML
-	private TextField daysTextField;
-	@FXML
-	private Label delayWarningLabel;
-	@FXML
-	private TextField delayTextField;
-	@FXML
-	private ComboBox<String> countryComboBox;
-	@FXML
-	private ComboBox<String> resourceComboBox;
-	@FXML
-	private ComboBox<String> resourceNodeComboBox;
-	@FXML
-	private LineChart<String, Number> lineChart;
+    @FXML
+    private Button toggleSimulationButton;
+    @FXML
+    private TextField daysTextField;
+    @FXML
+    private Label delayWarningLabel;
+    @FXML
+    private TextField delayTextField;
+    @FXML
+    private ComboBox<String> countryComboBox;
+    @FXML
+    private ComboBox<String> resourceComboBox;
+    @FXML
+    private ComboBox<String> resourceNodeComboBox;
+    @FXML
+    private LineChart<String, Number> lineChart;
 
-	@FXML
-	private void initialize() {
-		delayWarningLabel.setVisible(false);
-		delayWarningLabel.setManaged(false);
-	}
+    @FXML
+    private void initialize() {
+        delayWarningLabel.setVisible(false);
+        delayWarningLabel.setManaged(false);
+    }
 
-	public void initialize(List<Resource> resources, List<Country> countries) {
-		countryComboBox.getItems().addAll(countries.stream().map(Country::getName).toList());
-		resourceComboBox.getItems().addAll(resources.stream().map(Resource::name).toList());
+    public void initialize(List<Resource> resources, List<Country> countries) {
+        countryComboBox.getItems().addAll(countries.stream().map(Country::getName).toList());
+        resourceComboBox.getItems().addAll(resources.stream().map(Resource::name).toList());
 
-		this.simulator = new Simulator(this, resources, countries);
-	}
+        this.simulator = new Simulator(this, resources, countries);
+    }
 
-	public void beginSimulation() {
-		Thread simulationThread = new Thread(() -> {
-			this.simulator.runSimulation();
-		});
-		simulationThread.setDaemon(true);
-		simulationThread.start();
-	}
+    public void beginSimulation() {
+        Thread simulationThread = new Thread(() -> {
+            this.simulator.runSimulation();
+        });
+        simulationThread.setDaemon(true);
+        simulationThread.start();
+    }
 
-	public void updateData() {
-		int currentDay = Clock.getInstance().getTime();
-		this.currentDay = currentDay;
-		daysTextField.setText(String.valueOf(currentDay));
+    public void updateData() {
+        int currentDay = Clock.getInstance().getTime();
+        this.currentDay = currentDay;
+        daysTextField.setText(String.valueOf(currentDay));
 
-		if (currentSeriesName == null) {
-			return;
-		}
+        if (currentSeriesName == null) {
+            return;
+        }
 
-		switch (currentSeriesName) {
-			case "Population/Day":
-				updatePopulationGraph();
-				break;
-			case "Money/Day":
-				updateMoneyGraph();
-				break;
-			case "Average Happiness/Day":
-				updateAverageHappinessGraph();
-				break;
-			case "Individual Budget/Day":
-				updateIndividualBudgetGraph();
-				break;
-			case "Quantity/Day":
-				updateQuantityGraph();
-				break;
-			case "Value/Day":
-				updateValueGraph();
-				break;
-			case "Production Cost/Day":
-				updateProductionCostGraph();
-				break;
-			case "Max Capacity/Day":
-				updateMaxCapacityGraph();
-				break;
-			case "Tier/Day":
-				updateTierGraph();
-				break;
-		}
-	}
+        switch (currentSeriesName) {
+            case "Population/Day":
+                updatePopulationGraph();
+                break;
+            case "Money/Day":
+                updateMoneyGraph();
+                break;
+            case "Average Happiness/Day":
+                updateAverageHappinessGraph();
+                break;
+            case "Individual Budget/Day":
+                updateIndividualBudgetGraph();
+                break;
+            case "Quantity/Day":
+                updateQuantityGraph();
+                break;
+            case "Value/Day":
+                updateValueGraph();
+                break;
+            case "Production Cost/Day":
+                updateProductionCostGraph();
+                break;
+            case "Max Capacity/Day":
+                updateMaxCapacityGraph();
+                break;
+            case "Tier/Day":
+                updateTierGraph();
+                break;
+        }
+    }
 
-	private void drawLineGraph(String seriesName, List<Integer> xData, List<? extends Number> yData) {
-		XYChart.Series<String, Number> series = new XYChart.Series<>();
-		series.setName(seriesName);
-		currentSeriesName = seriesName;
+    private void drawLineGraph(String seriesName, List<Integer> xData, List<? extends Number> yData) {
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(seriesName);
+        currentSeriesName = seriesName;
 
-		for (int i = 0; i < xData.size(); i++) {
-			series.getData().add(new XYChart.Data<>(String.valueOf(xData.get(i)), yData.get(i)));
-		}
+        for (int i = 0; i < xData.size(); i++) {
+            series.getData().add(new XYChart.Data<>(String.valueOf(xData.get(i)), yData.get(i)));
+        }
 
-		lineChart.getData().clear();
-		lineChart.getData().add(series);
-	}
+        lineChart.getData().clear();
+        lineChart.getData().add(series);
+    }
 
-	private void updateLineGraph(String seriesName, int xData, Number yData) {
-		XYChart.Series<String, Number> series = null;
+    private void updateLineGraph(String seriesName, int xData, Number yData) {
+        Platform.runLater(() -> {
+            XYChart.Series<String, Number> series = null;
 
-		// Check if the series already exists
-		for (XYChart.Series<String, Number> existingSeries : lineChart.getData()) {
-			if (existingSeries.getName().equals(seriesName)) {
-				series = existingSeries;
-				break;
-			}
-		}
+            // Check if the series already exists
+            for (XYChart.Series<String, Number> existingSeries : lineChart.getData()) {
+                if (existingSeries.getName().equals(seriesName)) {
+                    series = existingSeries;
+                    break;
+                }
+            }
 
-		// If the series doesn't exist, create a new one
-		if (series == null) {
-			series = new XYChart.Series<>();
-			series.setName(seriesName);
-			lineChart.getData().add(series);
-		}
+            // If the series doesn't exist, create a new one
+            if (series == null) {
+                series = new XYChart.Series<>();
+                series.setName(seriesName);
+                lineChart.getData().add(series);
+            }
 
-		// Update the series with new data
-		series.getData().clear();
-		series.getData().add(new XYChart.Data<>(String.valueOf(xData), yData));
-	}
+            // Update the series with new data
+            series.getData().clear();
+            series.getData().add(new XYChart.Data<>(String.valueOf(xData), yData));
+        });
+    }
 
-	@FXML
-	public void toggleSimulation() {
-		if (Clock.getInstance().isPaused()) {
-			Clock.getInstance().resume();
-			toggleSimulationButton.setText("Pause");
-		} else {
-			Clock.getInstance().pause();
-			toggleSimulationButton.setText("Resume");
-		}
-	}
+    @FXML
+    public void toggleSimulation() {
+        if (Clock.getInstance().isPaused()) {
+            Clock.getInstance().resume();
+            toggleSimulationButton.setText("Pause");
+        } else {
+            Clock.getInstance().pause();
+            toggleSimulationButton.setText("Resume");
+        }
+    }
 
-	@FXML
-	public void updateDelay() {
-		try {
-			int newDelay = Integer.parseInt(delayTextField.getText());
-			SimulationConfig.setSimulationDelay(newDelay);
-			delayWarningLabel.setVisible(false);
-			delayWarningLabel.setManaged(false);
-		} catch (IllegalArgumentException e) {
-			delayWarningLabel.setVisible(true);
-			delayWarningLabel.setManaged(true);
-			delayTextField.setText(String.valueOf(SimulationConfig.getSimulationDelay()));
-		}
-	}
+    @FXML
+    public void updateDelay() {
+        try {
+            int newDelay = Integer.parseInt(delayTextField.getText());
+            SimulationConfig.setSimulationDelay(newDelay);
+            delayWarningLabel.setVisible(false);
+            delayWarningLabel.setManaged(false);
+        } catch (IllegalArgumentException e) {
+            delayWarningLabel.setVisible(true);
+            delayWarningLabel.setManaged(true);
+            delayTextField.setText(String.valueOf(SimulationConfig.getSimulationDelay()));
+        }
+    }
 
-	@FXML
-	private void handlePopulationButton() {
+    @FXML
+    private void handleCountrySelection() {
+        String selectedCountryName = countryComboBox.getValue();
+        if (selectedCountryName != null) {
+            selectedCountry = countryDao.findByName(selectedCountryName);
+        }
+    }
 
-		if (selectedCountry == null) {
-			return;
-		}
-
-		List<CountryMetricsEntity> countryMetricEntities = countryMetricsDao.findByCountry(selectedCountry);
-
-		List<Integer> xData = countryMetricEntities.stream().map(CountryMetricsEntity::getDay).toList();
-		List<Long> yData = countryMetricEntities.stream().map(CountryMetricsEntity::getPopulation).toList();
-
-		drawLineGraph("Population/Day", xData, yData);
-	}
-
-	private void updatePopulationGraph() {
-
-		if (selectedCountry == null) {
-			return;
-		}
-		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
-
-		int xData = countryMetricsEntity.getDay();
-		long yData = countryMetricsEntity.getPopulation();
-
-		updateLineGraph("Population/Day", xData, yData);
-	}
+    @FXML
+    private void handleResourceSelection() {
+        String selectedResourceName = resourceComboBox.getValue();
+        if (selectedResourceName != null) {
+            selectedResource = resourceDao.findByName(selectedResourceName);
+        }
+    }
 
 	@FXML
-	private void handleMoneyButton() {
-
-		if (selectedCountry == null) {
-			return;
-		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
-
-		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
-		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getMoney).toList();
-
-		drawLineGraph("Money/Day", xData, yData);
+	private void handleResourceNodeSelection() {
+		// Cannot be implemented yet
 	}
 
-	private void updateMoneyGraph() {
+    @FXML
+    private void handlePopulationButton() {
 
-		if (selectedCountry == null) {
-			return;
-		}
-		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
+        if (selectedCountry == null) {
+            return;
+        }
 
-		int xData = countryMetricsEntity.getDay();
-		double yData = countryMetricsEntity.getMoney();
+        List<CountryMetricsEntity> countryMetricEntities = countryMetricsDao.findByCountry(selectedCountry);
 
-		updateLineGraph("Money/Day", xData, yData);
-	}
+        List<Integer> xData = countryMetricEntities.stream().map(CountryMetricsEntity::getDay).toList();
+        List<Long> yData = countryMetricEntities.stream().map(CountryMetricsEntity::getPopulation).toList();
 
-	@FXML
-	private void handleAverageHappinessButton() {
+        drawLineGraph("Population/Day", xData, yData);
+    }
 
-		if (selectedCountry == null) {
-			return;
-		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
+    private void updatePopulationGraph() {
 
-		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
-		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getAverageHappiness).toList();
+        if (selectedCountry == null) {
+            return;
+        }
+        CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
-		drawLineGraph("Average Happiness/Day", xData, yData);
-	}
+        int xData = countryMetricsEntity.getDay();
+        long yData = countryMetricsEntity.getPopulation();
 
-	private void updateAverageHappinessGraph() {
+        updateLineGraph("Population/Day", xData, yData);
+    }
 
-		if (selectedCountry == null) {
-			return;
-		}
-		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
+    @FXML
+    private void handleMoneyButton() {
 
-		int xData = countryMetricsEntity.getDay();
-		double yData = countryMetricsEntity.getAverageHappiness();
+        if (selectedCountry == null) {
+            return;
+        }
+        List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
 
-		updateLineGraph("Average Happiness/Day", xData, yData);
-	}
+        List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
+        List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getMoney).toList();
 
-	@FXML
-	private void handleIndividualBudgetButton() {
+        drawLineGraph("Money/Day", xData, yData);
+    }
 
-		if (selectedCountry == null) {
-			return;
-		}
-		List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
+    private void updateMoneyGraph() {
 
-		List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
-		List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getIndividualBudget).toList();
+        if (selectedCountry == null) {
+            return;
+        }
+        CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
-		drawLineGraph("Individual Budget/Day", xData, yData);
-	}
+        int xData = countryMetricsEntity.getDay();
+        double yData = countryMetricsEntity.getMoney();
 
-	private void updateIndividualBudgetGraph() {
+        updateLineGraph("Money/Day", xData, yData);
+    }
 
-		if (selectedCountry == null) {
-			return;
-		}
-		CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
+    @FXML
+    private void handleAverageHappinessButton() {
 
-		int xData = countryMetricsEntity.getDay();
-		double yData = countryMetricsEntity.getIndividualBudget();
+        if (selectedCountry == null) {
+            return;
+        }
+        List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
 
-		updateLineGraph("Individual Budget/Day", xData, yData);
-	}
+        List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
+        List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getAverageHappiness).toList();
 
-	@FXML
-	private void handleQuantityButton() {
+        drawLineGraph("Average Happiness/Day", xData, yData);
+    }
 
-		if (selectedResource == null) {
-			return;
-		}
-		List<ResourceMetricsEntity> resourceMetricsEntities =
-				resourceMetricsDao.findByResource(selectedCountry, selectedResource);
+    private void updateAverageHappinessGraph() {
 
-		List<Integer> xData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getDay).toList();
-		List<Integer> yData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getQuantity).toList();
+        if (selectedCountry == null) {
+            return;
+        }
+        CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
-		drawLineGraph("Quantity/Day", xData, yData);
-	}
+        int xData = countryMetricsEntity.getDay();
+        double yData = countryMetricsEntity.getAverageHappiness();
 
-	private void updateQuantityGraph() {
+        updateLineGraph("Average Happiness/Day", xData, yData);
+    }
 
-		if (selectedResource == null) {
-			return;
-		}
-		ResourceMetricsEntity resourceMetricsEntity =
-				resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, currentDay);
+    @FXML
+    private void handleIndividualBudgetButton() {
 
-		int xData = resourceMetricsEntity.getDay();
-		int yData = resourceMetricsEntity.getQuantity();
+        if (selectedCountry == null) {
+            return;
+        }
+        List<CountryMetricsEntity> countryMetricsEntities = countryMetricsDao.findByCountry(selectedCountry);
 
-		updateLineGraph("Quantity/Day", xData, yData);
-	}
+        List<Integer> xData = countryMetricsEntities.stream().map(CountryMetricsEntity::getDay).toList();
+        List<Double> yData = countryMetricsEntities.stream().map(CountryMetricsEntity::getIndividualBudget).toList();
 
-	@FXML
-	private void handleValueButton() {
+        drawLineGraph("Individual Budget/Day", xData, yData);
+    }
 
-		if (selectedResource == null) {
-			return;
-		}
-		List<ResourceMetricsEntity> resourceMetricsEntities =
-				resourceMetricsDao.findByResource(selectedCountry, selectedResource);
+    private void updateIndividualBudgetGraph() {
 
-		List<Integer> xData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getDay).toList();
-		List<Double> yData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getValue).toList();
+        if (selectedCountry == null) {
+            return;
+        }
+        CountryMetricsEntity countryMetricsEntity = countryMetricsDao.findByCountryAndDay(selectedCountry, currentDay);
 
-		drawLineGraph("Value/Day", xData, yData);
+        int xData = countryMetricsEntity.getDay();
+        double yData = countryMetricsEntity.getIndividualBudget();
 
-	}
+        updateLineGraph("Individual Budget/Day", xData, yData);
+    }
 
-	private void updateValueGraph() {
+    @FXML
+    private void handleQuantityButton() {
 
-		if (selectedResource == null) {
-			return;
-		}
-		ResourceMetricsEntity resourceMetricsEntity =
-				resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, currentDay);
+        if (selectedResource == null) {
+            return;
+        }
+        List<ResourceMetricsEntity> resourceMetricsEntities =
+                resourceMetricsDao.findByResource(selectedCountry, selectedResource);
 
-		int xData = resourceMetricsEntity.getDay();
-		double yData = resourceMetricsEntity.getValue();
+        List<Integer> xData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getDay).toList();
+        List<Integer> yData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getQuantity).toList();
 
-		updateLineGraph("Value/Day", xData, yData);
-	}
+        drawLineGraph("Quantity/Day", xData, yData);
+    }
 
-	@FXML
-	private void handleProductionCostButton() {
+    private void updateQuantityGraph() {
 
-		if (selectedResourceNode == null) {
-			return;
-		}
-		List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
-				resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
+        if (selectedResource == null) {
+            return;
+        }
+        ResourceMetricsEntity resourceMetricsEntity =
+                resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, currentDay);
 
-		List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
-		List<Double> yData =
-				resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getProductionCost).toList();
+        int xData = resourceMetricsEntity.getDay();
+        int yData = resourceMetricsEntity.getQuantity();
 
-		drawLineGraph("Production Cost/Day", xData, yData);
-	}
+        updateLineGraph("Quantity/Day", xData, yData);
+    }
 
-	private void updateProductionCostGraph() {
+    @FXML
+    private void handleValueButton() {
 
-		if (selectedResourceNode == null) {
-			return;
-		}
-		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
-				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
+        if (selectedResource == null) {
+            return;
+        }
+        List<ResourceMetricsEntity> resourceMetricsEntities =
+                resourceMetricsDao.findByResource(selectedCountry, selectedResource);
 
-		int xData = resourceNodeMetricsEntity.getDay();
-		double yData = resourceNodeMetricsEntity.getProductionCost();
+        List<Integer> xData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getDay).toList();
+        List<Double> yData = resourceMetricsEntities.stream().map(ResourceMetricsEntity::getValue).toList();
 
-		updateLineGraph("Production Cost/Day", xData, yData);
-	}
+        drawLineGraph("Value/Day", xData, yData);
 
-	@FXML
-	private void handleMaxCapacityButton() {
+    }
 
-		if (selectedResourceNode == null) {
-			return;
-		}
-		List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
-				resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
+    private void updateValueGraph() {
 
-		List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
-		List<Integer> yData =
-				resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getMaxCapacity).toList();
+        if (selectedResource == null) {
+            return;
+        }
+        ResourceMetricsEntity resourceMetricsEntity =
+                resourceMetricsDao.findByResourceAndDay(selectedCountry, selectedResource, currentDay);
 
-		drawLineGraph("Max Capacity/Day", xData, yData);
-	}
+        int xData = resourceMetricsEntity.getDay();
+        double yData = resourceMetricsEntity.getValue();
 
-	private void updateMaxCapacityGraph() {
+        updateLineGraph("Value/Day", xData, yData);
+    }
 
-		if (selectedResourceNode == null) {
-			return;
-		}
-		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
-				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
+    @FXML
+    private void handleProductionCostButton() {
 
-		int xData = resourceNodeMetricsEntity.getDay();
-		int yData = resourceNodeMetricsEntity.getMaxCapacity();
+        if (selectedResourceNode == null) {
+            return;
+        }
+        List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
+                resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
 
-		updateLineGraph("Max Capacity/Day", xData, yData);
-	}
+        List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
+        List<Double> yData =
+                resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getProductionCost).toList();
 
-	@FXML
-	private void handleTierButton() {
+        drawLineGraph("Production Cost/Day", xData, yData);
+    }
 
-		if (selectedResourceNode == null) {
-			return;
-		}
-		List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
-				resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
+    private void updateProductionCostGraph() {
 
-		List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
-		List<Integer> yData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getTier).toList();
+        if (selectedResourceNode == null) {
+            return;
+        }
+        ResourceNodeMetricsEntity resourceNodeMetricsEntity =
+                resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
 
-		drawLineGraph("Tier/Day", xData, yData);
-	}
+        int xData = resourceNodeMetricsEntity.getDay();
+        double yData = resourceNodeMetricsEntity.getProductionCost();
 
-	private void updateTierGraph() {
+        updateLineGraph("Production Cost/Day", xData, yData);
+    }
 
-		if (selectedResourceNode == null) {
-			return;
-		}
-		ResourceNodeMetricsEntity resourceNodeMetricsEntity =
-				resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
+    @FXML
+    private void handleMaxCapacityButton() {
 
-		int xData = resourceNodeMetricsEntity.getDay();
-		int yData = resourceNodeMetricsEntity.getTier();
+        if (selectedResourceNode == null) {
+            return;
+        }
+        List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
+                resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
 
-		updateLineGraph("Tier/Day", xData, yData);
-	}
+        List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
+        List<Integer> yData =
+                resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getMaxCapacity).toList();
+
+        drawLineGraph("Max Capacity/Day", xData, yData);
+    }
+
+    private void updateMaxCapacityGraph() {
+
+        if (selectedResourceNode == null) {
+            return;
+        }
+        ResourceNodeMetricsEntity resourceNodeMetricsEntity =
+                resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
+
+        int xData = resourceNodeMetricsEntity.getDay();
+        int yData = resourceNodeMetricsEntity.getMaxCapacity();
+
+        updateLineGraph("Max Capacity/Day", xData, yData);
+    }
+
+    @FXML
+    private void handleTierButton() {
+
+        if (selectedResourceNode == null) {
+            return;
+        }
+        List<ResourceNodeMetricsEntity> resourceNodeMetricsEntities =
+                resourceNodeMetricsDao.findByResourceNode(selectedCountry, selectedResource);
+
+        List<Integer> xData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getDay).toList();
+        List<Integer> yData = resourceNodeMetricsEntities.stream().map(ResourceNodeMetricsEntity::getTier).toList();
+
+        drawLineGraph("Tier/Day", xData, yData);
+    }
+
+    private void updateTierGraph() {
+
+        if (selectedResourceNode == null) {
+            return;
+        }
+        ResourceNodeMetricsEntity resourceNodeMetricsEntity =
+                resourceNodeMetricsDao.findByResourceNodeAndDay(selectedCountry, selectedResource, currentDay);
+
+        int xData = resourceNodeMetricsEntity.getDay();
+        int yData = resourceNodeMetricsEntity.getTier();
+
+        updateLineGraph("Tier/Day", xData, yData);
+    }
 }
