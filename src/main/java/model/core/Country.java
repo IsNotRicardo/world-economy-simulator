@@ -106,7 +106,7 @@ public class Country {
             totalTier += resourceNode.getTier();
         }
 
-        double calculatedBudget = totalTier * PERSON_BASE_BUDGET * (1 - COUNTRY_INDIVIDUAL_TAX)
+        double calculatedBudget = Math.max(1, totalTier) * PERSON_BASE_BUDGET * (1 - COUNTRY_INDIVIDUAL_TAX)
                 * SimulationConfig.getPopulationSegmentSize();
         return Math.max(calculatedBudget, PERSON_BASE_BUDGET);
     }
