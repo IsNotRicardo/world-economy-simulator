@@ -23,14 +23,20 @@
                     <content>
                         <VBox fx:id="simulationSettingsVBox" prefHeight="218.0" prefWidth="600.0">
                             <children>
-                                <Label prefHeight="17.0" prefWidth="601.0" text="General Configurations">
-                                    <font>
-                                        <Font name="Bell MT Bold" size="32.0" />
-                                    </font>
-                                    <VBox.margin>
-                                        <Insets left="40.0" />
-                                    </VBox.margin>
-                                </Label>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                                      <Label maxWidth="500.0" prefHeight="17.0" prefWidth="600.0" text="General Configurations">
+                                          <font>
+                                              <Font name="Bell MT Bold" size="32.0" />
+                                          </font>
+                                      </Label>
+                              <Label layoutX="10.0" layoutY="10.0" maxWidth="500.0" prefHeight="17.0" prefWidth="600.0" text="You can hover over the question marks to see tooltips!">
+                                 <font>
+                                    <Font name="Georgia" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                                 <HBox>
                                     <children>
                                         <Label alignment="CENTER" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" styleClass="tooltipLabel" text="❓">
