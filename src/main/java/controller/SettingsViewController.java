@@ -1075,8 +1075,8 @@ public class SettingsViewController {
 			Map<Resource, Integer> starterResources = new HashMap<>();
 			resourceList.forEach(resource -> starterResources.put(resource, 0)); // Default resource values
 
-			Map<Resource, ResourceNodeDTO> ownedResources = new HashMap<>(countryResourceNodes.get(country));
-			countries.add(
+            Map<Resource, ResourceNodeDTO> ownedResources = countryResourceNodes.computeIfAbsent(country, k -> new HashMap<>());
+            countries.add(
 					new Country(country.getName(), country.getMoney(), country.getPopulation(), starterResources,
 					            ownedResources));
 		});
