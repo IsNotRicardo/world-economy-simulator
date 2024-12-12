@@ -192,6 +192,7 @@ public class SimulationController {
 			selectedCountry = countryDao.findByName(selectedCountryName);
 		}
 		populateResourceNodeComboBox();
+		redrawGraph();
 	}
 
 	@FXML
@@ -200,6 +201,7 @@ public class SimulationController {
 		if (selectedResourceName != null) {
 			selectedResource = resourceDao.findByName(selectedResourceName);
 		}
+		redrawGraph();
 	}
 
 	private void populateResourceNodeComboBox() {
@@ -222,7 +224,44 @@ public class SimulationController {
 		if (selectedResourceNodeName != null) {
 			selectedResourceNode = resourceDao.findByName(selectedResourceNodeName);
 		}
-		System.out.println(selectedResourceNode);
+		redrawGraph();
+//		System.out.println(selectedResourceNode);
+	}
+
+	private void redrawGraph() {
+		if (currentSeriesName == null) {
+			return;
+		}
+
+		switch (currentSeriesName) {
+			case "Population/Day":
+				handlePopulationButton();
+				break;
+			case "Money/Day":
+				handleMoneyButton();
+				break;
+			case "Average Happiness/Day":
+				handleAverageHappinessButton();
+				break;
+			case "Individual Budget/Day":
+				handleIndividualBudgetButton();
+				break;
+			case "Quantity/Day":
+				handleQuantityButton();
+				break;
+			case "Value/Day":
+				handleValueButton();
+				break;
+			case "Production Cost/Day":
+				handleProductionCostButton();
+				break;
+			case "Max Capacity/Day":
+				handleMaxCapacityButton();
+				break;
+			case "Tier/Day":
+				handleTierButton();
+				break;
+		}
 	}
 
 	@FXML
