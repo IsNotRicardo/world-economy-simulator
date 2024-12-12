@@ -30,7 +30,7 @@ public class MariaDbConnection {
 				     Statement stmt = baseConn.createStatement()
 				) {
 					// Create the database if it doesn't exist
-					stmt.executeUpdate("DROP DATABASE IF EXISTS `simulation`");
+//					stmt.executeUpdate("DROP DATABASE IF EXISTS `simulation`");
 					stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS `simulation`");
 				}
 

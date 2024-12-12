@@ -60,17 +60,17 @@ public class Person {
             Map.Entry<Resource, Integer> entry = demandIterator.next();
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
-            System.out.println("Serving " + quantity + " units of " + resource);
+//            System.out.println("Serving " + quantity + " units of " + resource);
             double totalCost = quantity * country.getResourceValue(resource);
-            System.out.println("Total cost: " + totalCost);
-            System.out.println("Budget: " + budget);
+//            System.out.println("Total cost: " + totalCost);
+//            System.out.println("Budget: " + budget);
 
             if (country.getResourceQuantity(resource) >= quantity && budget >= totalCost) {
                 country.removeResources(resource, quantity);
                 country.addMoney(totalCost);
                 budget -= totalCost;
 
-                System.out.println("Served " + quantity + " units of " + resource + " for " + totalCost);
+//                System.out.println("Served " + quantity + " units of " + resource + " for " + totalCost);
                 demandIterator.remove();
             }
         }
