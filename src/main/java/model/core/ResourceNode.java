@@ -76,7 +76,7 @@ public class ResourceNode {
 
     void produceResources(int quantity) {
         double availableMoney = country.getMoney();
-        double actualProductionCost = getProductionCost();
+        double actualProductionCost = getProductionCost() * SimulationConfig.getPopulationSegmentSize();
         int producedQuantity = (int) Math.min(quantity, Math.min(getMaxCapacity(), availableMoney / actualProductionCost));
 
         if (quantity > 0) {
