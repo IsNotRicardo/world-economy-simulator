@@ -1,4 +1,5 @@
-import model.core.Resource;
+package model.core;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
