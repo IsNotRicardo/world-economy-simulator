@@ -61,7 +61,7 @@ public class Person {
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
 //            System.out.println("Serving " + quantity + " units of " + resource);
-            double totalCost = quantity * country.getResourceValue(resource);
+            double totalCost = quantity * country.getResourceSellPrice(resource);
 //            System.out.println("Total cost: " + totalCost);
 //            System.out.println("Budget: " + budget);
 

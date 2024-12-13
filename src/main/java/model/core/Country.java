@@ -95,7 +95,7 @@ public class Country {
         this.allCountries = allCountries;
     }
 
-    double getResourceValue(Resource resource) {
+    double getResourceSellPrice(Resource resource) {
         return resourceStorage.get(resource).getValuePerUnit() * (1 + COUNTRY_PROFIT_MARGIN);
     }
 
