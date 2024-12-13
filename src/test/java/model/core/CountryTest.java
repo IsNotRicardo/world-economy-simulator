@@ -94,16 +94,16 @@ public class CountryTest {
     // More complex tests
 
     @Test
-    public void testGetResourceValue() {
-        // value / quantity * (1 + COUNTRY_PROFIT_MARGIN)
+    public void testGetResourceSellPrice() {
+        // Resource sell price is value / quantity * (1 + COUNTRY_PROFIT_MARGIN)
         // value = quantity * productionCost
         double expectedValue = 100 * 10.0 / 100 * (1 + 0.1);
-        assertEquals(expectedValue, country.getResourceValue(water));
+        assertEquals(expectedValue, country.getResourceSellPrice(water));
     }
 
     @Test
     public void testGetSegmentBudget() {
-        // max(1, totalTier) * PERSON_BASE_BUDGET * (1 - COUNTRY_INDIVIDUAL_TAX) * SimulationConfig.getPopulationSegmentSize()
+        // Segment budget is max(1, totalTier) * PERSON_BASE_BUDGET * (1 - COUNTRY_INDIVIDUAL_TAX) * SimulationConfig.getPopulationSegmentSize()
         double expectedBudget = Math.max(1, 1) * 10 * (1 - 0.3) * 100_000;
         assertEquals(expectedBudget, country.getSegmentBudget());
     }
