@@ -3,12 +3,12 @@ package dao;
 import datasource.MariaDbConnection;
 import entity.CountryEntity;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,8 +18,14 @@ public class CountryDaoTest {
 
 	@BeforeAll
 	public static void setUpDatabase() throws SQLException {
-		MariaDbConnection.getConnection();
-		MariaDbConnection.terminate();
+		Connection conn = MariaDbConnection.getConnection();
+		MariaDbConnection.executeSqlFile("scripts/simulationDb.sql");
+	}
+
+	@AfterAll
+	public static void tearDownDatabase() throws SQLException {
+		Connection conn = MariaDbConnection.getConnection();
+		conn.createStatement().executeUpdate("DROP SCHEMA IF EXISTS `simulation`");
 	}
 
 	@BeforeEach
@@ -30,7 +36,6 @@ public class CountryDaoTest {
 		em.getTransaction().begin();
 		em.createQuery("DELETE FROM CountryEntity").executeUpdate();
 		em.getTransaction().commit();
-		em.close();
 	}
 
 	@Test
