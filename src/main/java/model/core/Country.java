@@ -4,6 +4,10 @@ import model.simulation.SimulationConfig;
 
 import java.util.*;
 
+/**
+ * Country represents a country with a name, money, population, resources, and people.
+ * It manages resources, people, and interactions with other countries.
+ */
 public class Country {
     // Constants
     private static final int PERSON_INITIAL_HAPPINESS = 0;
@@ -23,6 +27,15 @@ public class Country {
     private double money;
     private long population;
 
+    /**
+     * Constructs a new Country.
+     * @param name the name of the country
+     * @param initialMoney the initial amount of money, cannot be negative
+     * @param initialPopulation the initial population, must be positive
+     * @param starterResources the initial resources of the country
+     * @param ownedResources the resources owned by the country
+     * @throws IllegalArgumentException if initialMoney is negative or initialPopulation is not positive
+     */
     public Country(String name, double initialMoney, long initialPopulation,
                    Map<Resource, Integer> starterResources, Map<Resource, ResourceNodeDTO> ownedResources) {
         if (initialMoney < 0) {
@@ -65,40 +78,75 @@ public class Country {
         }
     }
 
-    // Start of Getters
+    /**
+     * Gets the name of the country.
+     * @return the name of the country
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Gets the current amount of money the country has.
+     * @return the current amount of money
+     */
     public double getMoney() {
         return money;
     }
 
+    /**
+     * Gets the current population of the country.
+     * @return the current population
+     */
     public long getPopulation() {
         return population;
     }
 
+    /**
+     * Gets the list of resource nodes in the country.
+     * @return the list of resource nodes
+     */
     public List<ResourceNode> getResourceNodes() {
         return resourceNodes;
     }
 
+    /**
+     * Gets the list of people objects in the country.
+     * @return the list of people objects
+     */
     public List<Person> getPeopleObjects() {
         return peopleObjects;
     }
 
+    /**
+     * Gets the resource storage of the country.
+     * @return the resource storage
+     */
     public Map<Resource, ResourceInfo> getResourceStorage() {
         return resourceStorage;
     }
-    // End of Getters
 
+    /**
+     * Adds all countries to the list of countries.
+     * @param allCountries the list of all countries
+     */
     public void addAllCountries(List<Country> allCountries) {
         this.allCountries = allCountries;
     }
 
+    /**
+     * Gets the sell price of a resource.
+     * @param resource the resource to get the sell price for
+     * @return the sell price of the resource
+     */
     double getResourceSellPrice(Resource resource) {
         return resourceStorage.get(resource).getValuePerUnit() * (1 + COUNTRY_PROFIT_MARGIN);
     }
 
+    /**
+     * Gets the budget for a population segment.
+     * @return the budget for a population segment
+     */
     public double getSegmentBudget() {
         int totalTier = 0;
 
@@ -111,6 +159,10 @@ public class Country {
         return Math.max(calculatedBudget, PERSON_BASE_BUDGET);
     }
 
+    /**
+     * Gets the average happiness of the people in the country.
+     * @return the average happiness
+     */
     public double getAverageHappiness() {
         double totalHappiness = 0;
 
@@ -121,6 +173,9 @@ public class Country {
         return totalHappiness / peopleObjects.size();
     }
 
+    /**
+     * Event type: Updates the people in the country.
+     */
     public void updatePeople() {
         updateNumberOfPeople();
 
@@ -129,12 +184,18 @@ public class Country {
         }
     }
 
+    /**
+     * Event type: Obtains resources from the resource nodes.
+     */
     public void obtainResources() {
         for (ResourceNode resourceNode : resourceNodes) {
             resourceNode.collectResources();
         }
     }
 
+    /**
+     * Event type: Serves the people in the country with the available budget.
+     */
     public void servePeople() {
         double budget = this.getSegmentBudget();
 
@@ -143,6 +204,9 @@ public class Country {
         }
     }
 
+    /**
+     * Event type: Requests resources based on the demand and supply changes.
+     */
     public void requestResources() {
         for (ResourceInfo resourceInfo : resourceStorage.values()) {
             resourceInfo.archiveSupply();
@@ -233,6 +297,11 @@ public class Country {
         }
     }
 
+    /**
+     * Adds a specified quantity of a resource to the country's storage.
+     * @param resource the resource to add
+     * @param quantity the quantity to add
+     */
     void addResources(Resource resource, int quantity) {
         ResourceInfo resourceInfo = this.resourceStorage.get(resource);
         double productionCost;
@@ -251,26 +320,52 @@ public class Country {
         resourceInfo.addValue(value);
     }
 
+    /**
+     * Removes a specified quantity of a resource from the country's storage.
+     * @param resource the resource to remove
+     * @param quantity the quantity to remove
+     */
     void removeResources(Resource resource, int quantity) {
         this.resourceStorage.get(resource).subtractQuantityAndValue(quantity);
     }
 
+    /**
+     * Gets the quantity of a specified resource in the country's storage.
+     * @param resource the resource to get the quantity for
+     * @return the quantity of the resource
+     */
     double getResourceQuantity(Resource resource) {
         return this.resourceStorage.get(resource).getQuantity();
     }
 
+    /**
+     * Adds a specified amount of money to the country's funds.
+     * @param amount the amount of money to add
+     */
     void addMoney(double amount) {
         this.money += amount;
     }
 
+    /**
+     * Subtracts a specified amount of money from the country's funds.
+     * @param amount the amount of money to subtract
+     */
     void subtractMoney(double amount) {
         this.money -= amount;
     }
 
+    /**
+     * Adds a specified number of people to the country's population.
+     * @param population the number of people to add
+     */
     void addPopulation(long population) {
         this.population += population;
     }
 
+    /**
+     * Subtracts a specified number of people from the country's population.
+     * @param population the number of people to subtract
+     */
     void subtractPopulation(long population) {
         if (this.population < population) {
             this.population = 1;
@@ -279,6 +374,9 @@ public class Country {
         this.population -= population;
     }
 
+    /**
+     * Updates the number of people in the country based on the population.
+     */
     private void updateNumberOfPeople() {
         int numberOfPeople = (int) Math.ceil((double) this.population / SimulationConfig.getPopulationSegmentSize());
 
@@ -291,6 +389,11 @@ public class Country {
         }
     }
 
+    /**
+     * Gets the resource node associated with a specified resource.
+     * @param resource the resource to get the node for
+     * @return the resource node associated with the resource, or null if not found
+     */
     private ResourceNode getNodeFromResource(Resource resource) {
         for (ResourceNode resourceNode : resourceNodes) {
             if (resourceNode.getResource().equals(resource)) {
@@ -300,6 +403,12 @@ public class Country {
         return null;
     }
 
+    /**
+     * Upgrades the most important resource node based on demand and supply changes.
+     * @param totalDemand the total demand for resources
+     * @param totalSupplyChange the total supply change for resources
+     * @param upgradedNodes the set of already upgraded nodes
+     */
     private void upgradeImportantResourceNode(Map<Resource, Integer> totalDemand, Map<Resource, Double> totalSupplyChange, Set<ResourceNode> upgradedNodes) {
         Resource mostImportantResource = null;
         double maxDifference = Double.MIN_VALUE;
@@ -325,6 +434,12 @@ public class Country {
         }
     }
 
+    /**
+     * Handles a trade request from another country.
+     * @param requestingCountry the country requesting the trade
+     * @param resource the resource to trade
+     * @param quantity the quantity of the resource to trade
+     */
     void requestTrade(Country requestingCountry, Resource resource, int quantity) {
         ResourceInfo resourceInfo = resourceStorage.get(resource);
         double exportPrice = resourceInfo.getValuePerUnit() * (1 + BASE_EXPORT_TAX);
