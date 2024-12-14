@@ -2,6 +2,7 @@ package entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -32,6 +33,7 @@ public class CountryEntity {
 		this.name = name;
 		this.money = money;
 		this.population = population;
+		this.resourceNodes = new HashSet<>();
 	}
 
 	public Long getId() {
@@ -66,12 +68,13 @@ public class CountryEntity {
 		this.population = population;
 	}
 
-	public Set<ResourceNodeEntity> getResourceNodes() {
-		return resourceNodes;
+	public void addResourceNode(ResourceNodeEntity resourceNode) {
+		resourceNodes.add(resourceNode);
+		resourceNode.setCountry(this);
 	}
 
-	public void setResourceNodes(Set<ResourceNodeEntity> resourceNodes) {
-		this.resourceNodes = resourceNodes;
+	public Set<ResourceNodeEntity> getResourceNodes() {
+		return resourceNodes;
 	}
 
 	@Override
