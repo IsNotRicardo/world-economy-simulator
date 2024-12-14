@@ -29,10 +29,8 @@ public class MariaDbConnection {
 	public static Connection getConnection() throws SQLException {
 		if (conn == null || conn.isClosed()) {
 			try {
-				try (Connection baseConn = DriverManager.getConnection(BASE_URL, USER, PASSWORD);
-				     Statement stmt = baseConn.createStatement()
-				) {
-					stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS `simulation`");
+				try (Connection baseConn = DriverManager.getConnection(BASE_URL, USER, PASSWORD)) {
+					baseConn.createStatement().executeUpdate("CREATE DATABASE IF NOT EXISTS `simulation`");
 				}
 
 				conn = DriverManager.getConnection(URL, USER, PASSWORD);
