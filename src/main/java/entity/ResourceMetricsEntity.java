@@ -14,11 +14,11 @@ public class ResourceMetricsEntity {
 	@Column(name = "day", nullable = false)
 	private int day;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "country_id", nullable = false)
 	private CountryEntity country;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "resource_id", nullable = false)
 	private ResourceEntity resource;
 
