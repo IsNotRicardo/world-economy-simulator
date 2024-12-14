@@ -4,6 +4,10 @@ import model.simulation.SimulationConfig;
 
 import java.util.*;
 
+/**
+ * Person represents a segment of individuals in a country, with preferences and demand for resources, and happiness.
+ * It manages the preferences, demand, and interactions with the country's resources.
+ */
 public class Person {
     // Constants
     private final static double PREFERENCE_ADJUSTMENT_PROBABILITY = 0.2;
@@ -20,6 +24,12 @@ public class Person {
     private final Country country;
     private double happiness;
 
+    /**
+     * Constructs a new Person.
+     * @param country the country this person belongs to
+     * @param initialHappiness the initial happiness of the person
+     * @param availableResources the set of resources available in the country
+     */
     public Person(Country country, double initialHappiness, Set<Resource> availableResources) {
         this.country = country;
         this.happiness = initialHappiness;
@@ -32,49 +42,58 @@ public class Person {
         generateDemand();
     }
 
-    // Start of Getters
+    /**
+     * Gets the happiness of the person.
+     * @return the happiness
+     */
     public double getHappiness() {
         return happiness;
     }
 
+    /**
+     * Gets the preferences of the person for resources.
+     * @return the preferences
+     */
     public Map<Resource, Double> getPreferences() {
         return preferences;
     }
 
+    /**
+     * Gets the demand of the person for resources.
+     * @return the demand
+     */
     public Map<Resource, Integer> getDemand() {
         return demand;
     }
-    // End of Getters
 
+    /**
+     * Updates the person's preferences and demand.
+     */
     void updatePerson() {
         adjustPreferences();
         generateDemand();
     }
 
+    /**
+     * Serves the person with the available budget, updating their happiness and the country's resources.
+     * @param budget the budget available to serve the person
+     */
     void servePerson(double budget) {
         int totalDemand = demand.size();
-
-//        System.out.println("Demand: " + demand);
         Iterator<Map.Entry<Resource, Integer>> demandIterator = demand.entrySet().iterator();
         while (demandIterator.hasNext()) {
             Map.Entry<Resource, Integer> entry = demandIterator.next();
             Resource resource = entry.getKey();
             int quantity = entry.getValue();
-//            System.out.println("Serving " + quantity + " units of " + resource);
             double totalCost = quantity * country.getResourceSellPrice(resource);
-//            System.out.println("Total cost: " + totalCost);
-//            System.out.println("Budget: " + budget);
 
             if (country.getResourceQuantity(resource) >= quantity && budget >= totalCost) {
                 country.removeResources(resource, quantity);
                 country.addMoney(totalCost);
                 budget -= totalCost;
-
-//                System.out.println("Served " + quantity + " units of " + resource + " for " + totalCost);
                 demandIterator.remove();
             }
         }
-//        System.out.println("Demand after serving: " + demand);
 
         double happinessChange = 0.0;
         if (totalDemand > 0) {
@@ -91,6 +110,9 @@ public class Person {
         }
     }
 
+    /**
+     * Adjusts the person's preferences for resources randomly.
+     */
     private void adjustPreferences() {
         Random random = new Random();
         int totalPreferences = preferences.size();
@@ -109,6 +131,9 @@ public class Person {
         }
     }
 
+    /**
+     * Generates the person's demand for resources based on their preferences and happiness.
+     */
     private void generateDemand() {
         int totalResources = preferences.size();
         int numberOfResources = Math.max(1, (int) Math.round((happiness + 1) / 2 * totalResources));
@@ -132,6 +157,10 @@ public class Person {
         }
     }
 
+    /**
+     * Calculates the weighted probabilities of resources based on the person's preferences.
+     * @return the weighted probabilities of resources
+     */
     private Map<Resource, Double> getWeighedProbabilities() {
         Map<Resource, Double> weightedProbabilities = new HashMap<>();
         double totalWeight = 0.0;
