@@ -3,12 +3,12 @@ package dao;
 import datasource.MariaDbConnection;
 import entity.ResourceEntity;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,15 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ResourceDaoTest {
 
-	private static final String USER = "simulation_user";
-	private static final String PASSWORD = "password";
-	private static final String BASE_URL = "jdbc:mariadb://localhost:3306/";
-
 	@BeforeAll
 	public static void setUpDatabase() throws SQLException {
-		Connection conn = DriverManager.getConnection(BASE_URL, USER, PASSWORD);
-		conn.createStatement().executeUpdate("CREATE DATABASE IF NOT EXISTS `simulation`");
-		conn.close();
+		MariaDbConnection.getConnection();
+		MariaDbConnection.executeSqlFile("scripts/simulationDb.sql");
+	}
+
+	@AfterAll
+	public static void tearDownDatabase() throws SQLException {
+		try (Connection conn = MariaDbConnection.getConnection()) {
+			conn.createStatement().executeUpdate("DROP SCHEMA IF EXISTS `simulation`");
+		}
 	}
 
 	@BeforeEach
@@ -35,7 +37,6 @@ public class ResourceDaoTest {
 		em.getTransaction().begin();
 		em.createQuery("DELETE FROM ResourceEntity").executeUpdate();
 		em.getTransaction().commit();
-		em.close();
 	}
 
 	@Test
