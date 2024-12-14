@@ -17,7 +17,7 @@ public class ResourceMetricsDao {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		try {
-			em.persist(resourceMetrics);
+			em.merge(resourceMetrics);
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
