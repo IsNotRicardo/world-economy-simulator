@@ -32,20 +32,6 @@ public class ResourceNodeDao {
 		}
 	}
 
-	public ResourceNodeEntity findById(long id) {
-		EntityManager em = datasource.MariaDbConnection.getEntityManager();
-		try {
-			return em.find(ResourceNodeEntity.class, id);
-		} catch (Exception e) {
-			logger.error("Error finding resource node by ID", e);
-			throw e;
-		} finally {
-			if (em.isOpen()) {
-				em.close();
-			}
-		}
-	}
-
 	public List<ResourceNodeEntity> findByCountry(CountryEntity country) {
 		EntityManager em = datasource.MariaDbConnection.getEntityManager();
 		try {
@@ -55,23 +41,6 @@ public class ResourceNodeDao {
 			).setParameter("countryId", country.getId()).getResultList();
 		} catch (Exception e) {
 			logger.error("Error finding resource nodes by country", e);
-			throw e;
-		} finally {
-			if (em.isOpen()) {
-				em.close();
-			}
-		}
-	}
-
-	public void deleteAll() {
-		EntityManager em = datasource.MariaDbConnection.getEntityManager();
-		em.getTransaction().begin();
-		try {
-			em.createQuery("DELETE FROM ResourceNodeEntity").executeUpdate();
-			em.getTransaction().commit();
-		} catch (Exception e) {
-			em.getTransaction().rollback();
-			logger.error("Error deleting all resource nodes", e);
 			throw e;
 		} finally {
 			if (em.isOpen()) {
