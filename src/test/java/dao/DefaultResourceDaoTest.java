@@ -3,6 +3,7 @@ package dao;
 import datasource.MariaDbConnection;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -13,42 +14,46 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class DefaultResourceDaoTest {
 
+	private DefaultResourceDao defaultResourceDao;
+
 	@BeforeAll
 	public static void setUpDatabase() throws SQLException {
-		MariaDbConnection.getConnection();
-		MariaDbConnection.executeSqlFile("scripts/SimulationDb.sql");
+		try (Connection conn = MariaDbConnection.getConnection()) {
+			MariaDbConnection.executeSqlFile("scripts/simulationDb.sql");
+		}
 	}
 
 	@AfterAll
 	public static void tearDownDatabase() throws SQLException {
-		Connection conn = MariaDbConnection.getConnection();
-		conn.createStatement().executeUpdate("DROP DATABASE IF EXISTS `simulation`");
-		conn.close();
+		try (Connection conn = MariaDbConnection.getConnection()) {
+			conn.createStatement().executeUpdate("DROP SCHEMA IF EXISTS `simulation`");
+		}
+	}
+
+	@BeforeEach
+	public void setUp() {
+		defaultResourceDao = new DefaultResourceDao();
 	}
 
 	@Test
 	public void testFindAll() throws SQLException {
-		DefaultResourceDao resourceDao = new DefaultResourceDao();
-		assertEquals(22, resourceDao.findAll().size());
+		assertEquals(22, defaultResourceDao.findAll().size());
 	}
 
 	@Test
 	public void testFindByName() throws SQLException {
-		DefaultResourceDao resourceDao = new DefaultResourceDao();
-		assertEquals("Food", resourceDao.findByName("Food").getName());
+		assertEquals("Food", defaultResourceDao.findByName("Food").getName());
 	}
 
 	@Test
 	public void testFindByNameNoResult() throws SQLException {
-		DefaultResourceDao resourceDao = new DefaultResourceDao();
-		assertNull(resourceDao.findByName("TestResource"));
+		assertNull(defaultResourceDao.findByName("TestResource"));
 	}
 
 	@Test
 	public void testFindByNameException() {
-		DefaultResourceDao resourceDao = new DefaultResourceDao();
 		try {
-			resourceDao.findByName("TestResource1");
+			defaultResourceDao.findByName("TestResource1");
 		} catch (SQLException e) {
 			assertEquals("Error finding resource by name", e.getMessage());
 		}
@@ -56,9 +61,8 @@ public class DefaultResourceDaoTest {
 
 	@Test
 	public void testFindAllException() {
-		DefaultResourceDao resourceDao = new DefaultResourceDao();
 		try {
-			resourceDao.findAll();
+			defaultResourceDao.findAll();
 		} catch (SQLException e) {
 			assertEquals("Error finding all resources", e.getMessage());
 		}
