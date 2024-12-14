@@ -8,13 +8,27 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object (DAO) class for managing operations on the "default_resource" database table.
+ * Provides methods to retrieve information about resources using raw SQL queries.
+ */
 public class DefaultResourceDao {
 
+	/**
+	 * Logger for logging debug and error messages.
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(DefaultResourceDao.class);
 
+	/**
+	 * Retrieves all resources from the "default_resource" table.
+	 *
+	 * @return A list of {@link ResourceEntity} objects representing all the rows in the "default_resource" table.
+	 * @throws SQLException If an SQL error occurs during the query execution.
+	 */
 	public List<ResourceEntity> findAll() throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_resource";
+
 		String name;
 		double priority;
 		int baseCapacity;
@@ -22,8 +36,7 @@ public class DefaultResourceDao {
 		List<ResourceEntity> resourceEntities = new ArrayList<>();
 
 		try (Statement stmt = conn.createStatement();
-		     ResultSet rs = stmt.executeQuery(sql)
-		) {
+		     ResultSet rs = stmt.executeQuery(sql)) {
 			while (rs.next()) {
 				name = rs.getString("name");
 				priority = rs.getDouble("priority");
@@ -38,9 +51,17 @@ public class DefaultResourceDao {
 		return resourceEntities;
 	}
 
+	/**
+	 * Finds a resource in the "default_resource" table by its name.
+	 *
+	 * @param name The name of the resource to search for.
+	 * @return A {@link ResourceEntity} object representing the resource with the specified name, or {@code null} if no match is found.
+	 * @throws SQLException If an SQL error occurs during the query execution.
+	 */
 	public ResourceEntity findByName(String name) throws SQLException {
 		Connection conn = datasource.MariaDbConnection.getConnection();
 		String sql = "SELECT * from default_resource where name = ?";
+
 		String resourceName = null;
 		double priority = 0;
 		int baseCapacity = 0;
@@ -70,5 +91,4 @@ public class DefaultResourceDao {
 			return null;
 		}
 	}
-
 }
