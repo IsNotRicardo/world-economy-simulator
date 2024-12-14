@@ -2,6 +2,7 @@ package entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -36,6 +37,7 @@ public class ResourceEntity {
 		this.priority = priority;
 		this.baseCapacity = baseCapacity;
 		this.productionCost = productionCost;
+		this.resourceNodeEntities = new HashSet<>();
 	}
 
 	public Long getId() {
