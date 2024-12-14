@@ -5,7 +5,6 @@ import entity.CountryEntity;
 import entity.ResourceEntity;
 import entity.ResourceNodeEntity;
 import jakarta.persistence.EntityManager;
-import model.core.Country;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
