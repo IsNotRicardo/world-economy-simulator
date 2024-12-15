@@ -72,6 +72,26 @@ public class MariaDbConnection {
 	}
 
 	/**
+	 * Resets the "simulation" database for testing purposes. Drops the existing database schema
+	 * and recreates it using the SQL scripts provided in the "scripts" directory. The database
+	 * is initialized with the necessary tables and procedures for the simulation.
+	 *
+	 * @throws SQLException If an error occurs while resetting the database.
+	 */
+	public static void resetDatabaseForTests() throws SQLException {
+		try (Connection conn = getConnection()) {
+			conn.createStatement().executeUpdate("DROP SCHEMA IF EXISTS `simulation`");
+			conn.createStatement().executeUpdate("CREATE DATABASE `simulation`");
+			conn.createStatement().executeUpdate("USE `simulation`");
+			executeSqlFile("scripts/simulationDb.sql");
+			executeSqlFile("scripts/simulationMetrics.sql");
+		} catch (SQLException e) {
+			logger.error("Failed to reset database!", e);
+			throw new SQLException(e);
+		}
+	}
+
+	/**
 	 * Retrieves a JPA {@link EntityManager}, which provides operations for querying
 	 * and persisting database entities. If the {@link EntityManagerFactory} does not exist, it
 	 * is initialized using the "Simulation" persistence unit.

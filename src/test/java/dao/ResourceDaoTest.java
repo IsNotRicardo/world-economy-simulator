@@ -3,10 +3,7 @@ package dao;
 import datasource.MariaDbConnection;
 import entity.ResourceEntity;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,8 +15,7 @@ public class ResourceDaoTest {
 
 	@BeforeAll
 	public static void setUpDatabase() throws SQLException {
-		MariaDbConnection.getConnection();
-		MariaDbConnection.executeSqlFile("scripts/simulationDb.sql");
+		MariaDbConnection.resetDatabaseForTests();
 	}
 
 	@AfterAll
@@ -31,8 +27,6 @@ public class ResourceDaoTest {
 
 	@BeforeEach
 	public void setUp() {
-		MariaDbConnection.getEntityManager();
-
 		EntityManager em = MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		em.createQuery("DELETE FROM ResourceEntity").executeUpdate();
