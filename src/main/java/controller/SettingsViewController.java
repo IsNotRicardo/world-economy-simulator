@@ -141,6 +141,10 @@ public class SettingsViewController {
 	@FXML
 	private TextField resourceNodeProductionCostField;
 	@FXML
+	private Label resourceNodeCountryErrorLabel;
+	@FXML
+	private Label resourceNodeResourceErrorLabel;
+	@FXML
 	private Label resourceNodeTierErrorLabel;
 	@FXML
 	private Label resourceNodeBaseCapacityErrorLabel;
@@ -341,6 +345,16 @@ public class SettingsViewController {
 		}
 	}
 
+	private boolean validateComboBoxField(ComboBox<String> comboBox, Label errorLabel, String errorMessage) {
+		if (comboBox.getSelectionModel().isEmpty()) {
+			errorLabel.setText(errorMessage);
+			return false;
+		} else {
+			errorLabel.setText("");
+			return true;
+		}
+	}
+
 	private boolean validateResourceFields() {
 		boolean isNameValid = validateStringField(resourceNameField, resourceNameErrorLabel, "Name must not be empty");
 		boolean isPriorityValid = validateDoubleField(resourcePriorityField, resourcePriorityErrorLabel, 0.0, 1.0,
@@ -387,6 +401,8 @@ public class SettingsViewController {
 	}
 
 	private boolean validateResourceNodeFields() {
+		boolean isCountryValid = validateComboBoxField(countryComboBox, resourceNodeCountryErrorLabel, "Country must be selected");
+		boolean isResourceValid = validateComboBoxField(resourceComboBox, resourceNodeResourceErrorLabel, "Resource must be selected");
 		boolean isTierValid =
 				validateIntField(resourceNodeTierField, resourceNodeTierErrorLabel, 0, "Tier cannot be negative");
 		boolean isBaseCapacityValid =
@@ -396,7 +412,7 @@ public class SettingsViewController {
 				validateDoubleField(resourceNodeProductionCostField, resourceNodeProductionCostErrorLabel, 0.0,
 				                    Double.MAX_VALUE, "Production cost cannot be negative");
 
-		return isTierValid && isBaseCapacityValid && isProductionCostValid;
+		return isCountryValid && isResourceValid && isTierValid && isBaseCapacityValid && isProductionCostValid;
 	}
 
 	@FXML
@@ -952,7 +968,10 @@ public class SettingsViewController {
 		resourceNodeProductionCostField.setText("");
 		resourceComboBox.getSelectionModel().clearSelection();
 		resourceComboBox.setValue(null);
+		selectedResource = null;
 
+		resourceNodeCountryErrorLabel.setText("");
+		resourceNodeResourceErrorLabel.setText("");
 		resourceNodeTierErrorLabel.setText("");
 		resourceNodeBaseCapacityErrorLabel.setText("");
 		resourceNodeProductionCostErrorLabel.setText("");

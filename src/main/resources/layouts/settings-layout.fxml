@@ -573,7 +573,18 @@
                                                         <Font name="Georgia" size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <ComboBox fx:id="countryComboBox" maxHeight="32.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0" />
+                                                <ComboBox fx:id="countryComboBox" maxHeight="32.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0">
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin></ComboBox>
+                                    <Label fx:id="resourceNodeCountryErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED">
+                                       <font>
+                                          <Font name="Georgia Bold" size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="30.0" />
+                                       </HBox.margin>
+                                    </Label>
                                             </children>
                                         </HBox>
                                         <HBox>
@@ -592,6 +603,14 @@
                                                     </font>
                                                 </Label>
                                                 <ComboBox fx:id="resourceComboBox" maxHeight="32.0" maxWidth="150.0" minHeight="30.0" minWidth="150.0" prefWidth="150.0" />
+                                    <Label fx:id="resourceNodeResourceErrorLabel" maxHeight="30.0" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="600.0" textFill="RED">
+                                       <font>
+                                          <Font name="Georgia Bold" size="16.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="30.0" />
+                                       </HBox.margin>
+                                    </Label>
                                             </children>
                                         </HBox>
                                         <HBox>
