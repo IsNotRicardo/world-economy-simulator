@@ -19,10 +19,7 @@ public class CountryMetricsDaoTest {
 
 	@BeforeAll
 	public static void setUpDatabase() throws SQLException {
-		try (Connection conn = MariaDbConnection.getConnection()) {
-			MariaDbConnection.executeSqlFile("scripts/simulationDb.sql");
-			MariaDbConnection.executeSqlFile("scripts/simulationMetrics.sql");
-		}
+		MariaDbConnection.resetDatabaseForTests();
 	}
 
 	@AfterAll
@@ -33,8 +30,6 @@ public class CountryMetricsDaoTest {
 
 	@BeforeEach
 	public void setUp() {
-		MariaDbConnection.getEntityManager();
-
 		EntityManager em = MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		em.createQuery("DELETE FROM CountryMetricsEntity").executeUpdate();

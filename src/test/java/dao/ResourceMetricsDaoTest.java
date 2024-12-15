@@ -5,10 +5,7 @@ import entity.CountryEntity;
 import entity.ResourceEntity;
 import entity.ResourceMetricsEntity;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,14 +17,11 @@ public class ResourceMetricsDaoTest {
 
 	@BeforeAll
 	public static void setUpDatabase() throws SQLException {
-		MariaDbConnection.getConnection();
-		MariaDbConnection.executeSqlFile("scripts/simulationDb.sql");
-		MariaDbConnection.executeSqlFile("scripts/simulationMetrics.sql");
+		MariaDbConnection.resetDatabaseForTests();
 	}
 
 	@AfterAll
 	public static void tearDown() throws SQLException {
-
 		try (Connection conn = MariaDbConnection.getConnection()) {
 			conn.createStatement().executeUpdate("DROP SCHEMA IF EXISTS `simulation`");
 		}
@@ -35,8 +29,6 @@ public class ResourceMetricsDaoTest {
 
 	@BeforeEach
 	public void setUp() {
-		MariaDbConnection.getEntityManager();
-
 		EntityManager em = MariaDbConnection.getEntityManager();
 		em.getTransaction().begin();
 		em.createQuery("DELETE FROM ResourceMetricsEntity").executeUpdate();
