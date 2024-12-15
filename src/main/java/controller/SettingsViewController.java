@@ -401,8 +401,14 @@ public class SettingsViewController {
 	}
 
 	private boolean validateResourceNodeFields() {
-		boolean isCountryValid = validateComboBoxField(countryComboBox, resourceNodeCountryErrorLabel, "Country must be selected");
-		boolean isResourceValid = validateComboBoxField(resourceComboBox, resourceNodeResourceErrorLabel, "Resource must be selected");
+		boolean isCountryValid = true;
+		boolean isResourceValid = true;
+
+		if (!isResourceNodeEditingMode) {
+			isCountryValid = validateComboBoxField(countryComboBox, resourceNodeCountryErrorLabel, "Country must be selected");
+			isResourceValid = validateComboBoxField(resourceComboBox, resourceNodeResourceErrorLabel, "Resource must be selected");
+		}
+
 		boolean isTierValid =
 				validateIntField(resourceNodeTierField, resourceNodeTierErrorLabel, 0, "Tier cannot be negative");
 		boolean isBaseCapacityValid =
